@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,7 +23,7 @@ const Navbar = () => {
   return (
     <div
       className={`navbar bg-[#003FA4] text-white fixed top-3 left-1/2 transform -translate-x-1/2 rounded-full shadow-lg w-[90%] lg:w-[70%] z-50 flex justify-between items-center px-4 transition-all duration-300 ${
-        isScrolled ? "py-1 px-28 rounded-3xl center-1 opacity-90 top-0 shadow-md " : "py-4 top-3"
+        isScrolled ? "py-0 px-28 rounded-3xl center-1 opacity-95 bg-[#2656a1] top-0 shadow-md " : "py-4 top-3"
       }`}
     >
       {/* Logo */}
