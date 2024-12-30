@@ -1,3 +1,5 @@
+import '@fontsource/poppins'; // Defaults to 400 weight
+import '@fontsource/raleway'; // Defaults to 400 weight
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'

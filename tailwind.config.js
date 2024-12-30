@@ -5,7 +5,17 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        raleway: ["Raleway", "sans-serif"], // Add Poppins as a custom font
+      },
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"], // Add Poppins as a custom font
+      },
+     
+      
+
+    },
   },
   plugins: [
     require('daisyui'),
