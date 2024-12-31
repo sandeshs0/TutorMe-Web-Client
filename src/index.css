@@ -1,4 +1,4 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -6,4 +6,15 @@ body {
   margin: 0;
   font-family: "Inter", sans-serif;
   background-color: #f2fafa;
+} */
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background-color: #F5F5F5; /* Updated to light grey for minimal eye strain */
 }
