@@ -37,8 +37,12 @@ import HeroSection from "../components/HeroSection";
 import Navbar from "../components/Navbar";
 import SortingOptions from "../components/sort";
 import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
+import SearchSection from "../components/SearchBar";
+
 
 const HomePage = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <Navbar />
@@ -53,7 +57,8 @@ const HomePage = () => {
           </p>
         </div>
       </div>
-      <SortingOptions />
+      {/* <SortingOptions /> */}
+      <SearchSection />
       <Footer />
     </div>
   );
