@@ -127,92 +127,31 @@
 // export default HeroSection;
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
-  const steps = [
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-12 w-12 text-primary"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 11c0-1.104.896-2 2-2h.002a2 2 0 1 1 0 4H10.002c-.555 0-1-.448-1-1 0-.553.447-1 1-1h2.001zM12 19a7 7 0 1 0-7-7"
-          />
-        </svg>
-      ),
-      title: "Create Account",
-      description: "First you have to create an account here",
-    },
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-12 w-12 text-primary"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M8 16l2 2l6-6"
-          />
-        </svg>
-      ),
-      title: "Select a Tutor",
-      description: "Select a suitable tutor",
-    },
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-12 w-12 text-primary"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4.5v2m0 6.5h7m2 6.5H3l3-6m3 3h3"
-          />
-        </svg>
-      ),
-      title: "Schedule a Session",
-      description: "Book a session at mutual convenience",
-    },
-  ];
-
+  const navigate = useNavigate();
   return (
     <div className="hero min-h-screen flex items-center justify-center px-6">
-      <div className="hero-content flex-col lg:flex-row w-full max-w-7xl">
+      <div className="hero-content flex flex-col lg:flex-row w-full max-w-7xl">
         {/* Left Content */}
-        <div className="text-left lg:w-1/2">
-          <h1 className="text-6xl font-black text-neutral">
+        <div className="text-left lg:w-1/2 px-4 lg:px-8">
+          <h1 className="text-4xl font-black text-neutral md:text-5xl lg:text-6xl leading-snug">
             Expert Tutoring <br />
-            <span className="text-4xl text-primary">anytime, anywhere!</span>
+            <span className="text-3xl md:text-4xl text-primary">anytime, anywhere!</span>
           </h1>
-          <p className="py-6 text-xl font-light text-gray-500">
+          <p className="py-4 md:py-6 text-lg md:text-xl font-light text-gray-500">
             Book a session with our tutors and clear your doubts instantly.
           </p>
-          <div className="flex items-center space-x-4 mt-8">
-            <button className="btn font-normal text-xl bg-primary text-white px-6 py-2 rounded-xl">
-              Explore Tutors
+          <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 mt-6 md:mt-8">
+            <button className="btn  font-semibold text-poppins text-lg md:text-xl bg-primary text-white px-6 py-3 rounded-xll" onClick={() => navigate("/signup")}>
+              Get Started
             </button>
-            <div className="flex items-center bg-white shadow-md rounded-xl px-5 py-3 w-80">
+            {/* <div className="flex items-center bg-white shadow-md rounded-xl px-4 py-2 w-full md:w-80">
               <input
                 type="text"
                 placeholder="Search by subjects"
-                className="flex-1 outline-none text-gray-700"
+                className="flex-1 outline-none text-gray-700 text-sm md:text-lg"
               />
               <button className="text-primary">
                 <svg
@@ -221,7 +160,7 @@ const HeroSection = () => {
                   viewBox="0 0 24 24"
                   strokeWidth="2"
                   stroke="currentColor"
-                  className="w-5 h-5"
+                  className="w-5 h-5 md:w-6 md:h-6"
                 >
                   <path
                     strokeLinecap="round"
@@ -230,16 +169,16 @@ const HeroSection = () => {
                   />
                 </svg>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
         {/* Right Illustration */}
-        <div className="lg:w-1/2">
+        <div className="lg:w-1/2 px-4 lg:px-8 mt-6 lg:mt-0">
           <img
             src="src/assets/illustration.png"
             alt="Tutoring Illustration"
-            className="max-w-full"
+            className="w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto"
           />
         </div>
       </div>

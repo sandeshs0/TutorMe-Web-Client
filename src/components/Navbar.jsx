@@ -106,10 +106,14 @@
 
 
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -134,8 +138,8 @@ const Navbar = () => {
       }`}
     >
       {/* Logo */}
-      <div className="flex items-center">
-        <a className="btn btn-ghost normal-case text-xl font-bold transition-all duration-600">
+      <div className="hidden lg:flex items-center">
+        <a href="/" className="bg-transparent normal-case text-xl font-bold transition-all duration-600">
           <img
             src="src/assets/logostroke.png"
             alt="TutorMe Logo"
@@ -197,9 +201,10 @@ const Navbar = () => {
         </ul>
       </div>
 
-      <div className="hidden lg:flex items-center ml-4">
-        <button className={`btn rounded-full bg-[#ffffff] hover:bg-primary-light hover:text-white hover:border-white text-black px-6 mr-4 transition-colors duration-300 ${isScrolled ? "text-sm mr-0" : "text-lg px-6"}`}>
+      <div className=" lg:flex items-center ml-4">
+        <button className={`btn rounded-full bg-[#ffffff] hover:bg-primary-light hover:text-white hover:border-white text-black px-6 mr-4 transition-colors duration-300 ${isScrolled ? "text-sm mr-0" : "text-lg px-6"}`} onClick={() => navigate("/login")}>
           Login
+          
         </button>
       </div>
     </div>
