@@ -35,14 +35,41 @@
 import React from "react";
 import HeroSection from "../components/HeroSection";
 import Navbar from "../components/Navbar";
-import SortingOptions from "../components/sort";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import SearchSection from "../components/SearchBar";
-
+import PopularTutors from "../components/PopularTutors";
 
 const HomePage = () => {
   const navigate = useNavigate();
+
+  const tutors = [
+    {
+      name: "Er. Ramesh Silwal",
+      experience: "6 years",
+      expertise: ["JavaScript", "Python", "Java", "Mathematics", "AI/ML"],
+      hourlyRate: 350,
+      rating: 5,
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      name: "Nikesh Bhandari",
+      experience: "3 years",
+      expertise: ["JavaScript", "Python", "Java", "Mathematics", "AI/ML"],
+      hourlyRate: 150,
+      rating: 4,
+      image: "https://m.media-amazon.com/images/M/MV5BOGJkMzRiYmQtOTVjNy00MWU3LTg5YjctNjcwMmZlNGIwMjhmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    },
+    {
+      name: "Bisakha Chaudhary",
+      experience: "6 years",
+      expertise: ["JavaScript", "Python", "Java", "Mathematics", "AI/ML"],
+      hourlyRate: 350,
+      rating: 4,
+      image: "https://plus.unsplash.com/premium_photo-1688350808212-4e6908a03925?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+  ];
+  
   return (
     <div>
       <Navbar />
@@ -59,6 +86,9 @@ const HomePage = () => {
       </div>
       {/* <SortingOptions /> */}
       <SearchSection />
+      <div >
+      <PopularTutors tutors={tutors} />
+</div>
       <Footer />
     </div>
   );
