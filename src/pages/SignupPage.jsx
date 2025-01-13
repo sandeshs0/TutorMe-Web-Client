@@ -1,12 +1,137 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
+import OtpModal from "../components/OtpModal"; // Import the OTP modal
+import { registerUser, resendOtp, verifyEmail } from "../services/api";
 
 const SignupPage = () => {
   const [isStudent, setIsStudent] = useState(true);
   const [currentStep, setCurrentStep] = useState(1); // Step tracker for Tutor Signup
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    bio: "",
+    description: "",
+    hourlyRate: "",
+    subjects: "",
+  }); // Common form data for Student/Tutor
+  const [error, setError] = useState(""); // Error message state
+    const [success, setSuccess] = useState(""); // Success message state
+
+  
+    const [otp, setOtp] = useState(""); // OTP state
+    const [isOtpModalVisible, setIsOtpModalVisible] = useState(false); // OTP modal state
+    const handleOtpChange = (e) => {
+      setOtp(e.target.value);
+    };
+    const [resendCooldown, setResendCooldown] = useState(0); // Resend OTP cooldown state
 
   const navigate = useNavigate();
+    
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value }); // Update form state
+  };
+
+  const handleStudentSignup = async (e) => {
+    e.preventDefault(); // Prevent page reload
+    setError("");
+    setSuccess("");
+
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      password: formData.password,
+      role: "student", // Role is fixed to "student" for this form
+    };
+    try {
+      const response = await registerUser(payload); // Call API
+      setSuccess(response.message); // Show success message
+      setIsOtpModalVisible(true); // Show OTP modal
+      setResendCooldown(60); // Set cooldown to 30 seconds
+      startCooldown(); // Start cooldown timer
+
+    } catch (err) {
+      setError(err.message || "An error occurred. Please try again."); // Show error message
+    }
+  };
+  const handleVerifyOtp = async () => {
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await verifyEmail({ email: formData.email, otp }); // Call OTP verification API
+      setSuccess("Email verified successfully! Redirecting to login...");
+      setTimeout(() => navigate("/login"), 2000); // Redirect to login page
+    } catch (err) {
+      setError(err.message || "Invalid OTP. Please try again.");
+    }
+  };
+  const handleResendOtp = async () => {
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await resendOtp({ email: formData.email }); // Call resend OTP API
+      setSuccess("OTP has been resent to your email.");
+      setResendCooldown(30); // Reset cooldown to 30 seconds
+      startCooldown(); // Restart cooldown timer
+    } catch (err) {
+      setError(err.message || "Failed to resend OTP. Please try again.");
+    }
+  };
+  const startCooldown = () => {
+    const interval = setInterval(() => {
+      setResendCooldown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval); // Stop the timer
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000); // Decrement cooldown every second
+  };
+
+  const handleTutorSignup = async () => {
+    setError("");
+    setSuccess("");
+
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      password: formData.password,
+      role: "tutor",
+      bio: formData.bio,
+      description: formData.description,
+      hourlyRate: formData.hourlyRate,
+      subjects: formData.subjects.split(",").map((subject) => subject.trim()),
+    };
+
+    try {
+      const response = await registerUser(payload);
+      setSuccess(response.message);
+      setTimeout(() => navigate("/login"), 2000); // Redirect after success
+    } catch (err) {
+      setError(err.message || "An error occurred. Please try again.");
+    }
+  };
+
 
   // Functions for navigation in the multistep flow
   const handleNextStep = () => {
@@ -17,10 +142,6 @@ const SignupPage = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
-  const handleComplete = () => {
-    alert("Tutor registration complete!");
-    navigate("/login");
-  };
 
   return (
     <div>
@@ -61,7 +182,7 @@ const SignupPage = () => {
           <div className="grid grid-cols-1">
             <div className="p-8 lg:p-12">
               {isStudent && (
-                <form className="space-y-4">
+                <form onSubmit={handleStudentSignup} className="space-y-4">
                   <div>
                     <label
                       htmlFor="fullname"
@@ -72,6 +193,10 @@ const SignupPage = () => {
                     <input
                       type="text"
                       id="fullname"
+                      name="name"
+                      onChange={handleInputChange}
+                      value={formData.name}
+                  required
                       placeholder="Enter Your Full Name"
                       className="w-full mt-1 p-3 border text-black rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -87,6 +212,10 @@ const SignupPage = () => {
                     <input
                       type="email"
                       id="email"
+                      name="email"
+                      onChange={handleInputChange}
+                      value={formData.email}
+                  required
                       placeholder="Enter Your Email"
                       className="w-full mt-1 p-3 text-black border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -102,6 +231,10 @@ const SignupPage = () => {
                     <input
                       type="tel"
                       id="phone"
+                      name="phone"
+                      onChange={handleInputChange}
+                      value={formData.phone}
+                  required
                       placeholder="98XXXXXXXX"
                       className="w-full text-black mt-1 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -117,6 +250,10 @@ const SignupPage = () => {
                     <input
                       type="password"
                       id="password"
+                      name="password"
+                      onChange={handleInputChange}
+                      value={formData.password}
+                  required
                       placeholder="***************"
                       className="w-full text-black mt-1 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -133,10 +270,16 @@ const SignupPage = () => {
                       type="password"
                       id="confirm-password"
                       placeholder="***************"
+                      name="confirmPassword"
+                      onChange={handleInputChange}
+                      value={formData.confirmPassword}
+                  required
+
                       className="w-full text-black mt-1 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
                   </div>
-
+                  {error && <p className="text-red-500">{error}</p>}
+                  {success && <p className="text-green-500">{success}</p>}
                   <button
                     type="submit"
                     className="w-full bg-blue-500 text-xl text-white py-3 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200"
@@ -387,6 +530,20 @@ const SignupPage = () => {
           </div>
         </div>
       </div>
+
+{/* OTP Modal */}
+{/* {isOtpModalVisible && ( */}
+        <OtpModal
+          otp={otp}
+          setOtp={setOtp}
+          onVerify={handleVerifyOtp}
+          onResend={handleResendOtp}
+          resendCooldown={resendCooldown}
+          error={error}
+          success={success}
+          closeModal={() => setIsOtpModalVisible(false)}
+        />
+      {/* )} */}
 
       <Footer />
     </div>

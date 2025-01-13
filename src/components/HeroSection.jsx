@@ -144,7 +144,7 @@ const HeroSection = () => {
             Book a session with our tutors and clear your doubts instantly.
           </p>
           <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 mt-6 md:mt-8">
-            <button className="btn  font-semibold text-poppins text-lg md:text-xl bg-primary text-white px-6 py-3 rounded-xll" onClick={() => navigate("/signup")}>
+            <button className="btn border-none  font-semibold text-poppins text-lg md:text-xl bg-primary text-white px-6 py-3 rounded-xll" onClick={() => navigate("/signup")}>
               Get Started
             </button>
             {/* <div className="flex items-center bg-white shadow-md rounded-xl px-4 py-2 w-full md:w-80">
