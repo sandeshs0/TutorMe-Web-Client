@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import OtpPage from './pages/OtpPage';
 
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/verify-otp" element={<OtpPage />} />
 
     </Routes>
   </Router>
