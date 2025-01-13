@@ -20,7 +20,7 @@ const LoginPage = () => {
         {/* Login Card */}
         <div className="relative bg-white shadow-md rounded-2xl max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2">
         <button
-        className="absolute top-0 right-0 font-thin text-gray-100 text-2xl bg-red-800 px-4 py-1 hover:bg-red-600 focus:outline-none z-50"
+        className="absolute font-poppins opacity-50 hover:opacity-100 top-0 right-0 font-thin text-gray-100 text-2xl hover:bg-red-800 px-4 py-1 bg-blue-600 focus:outline-none z-50"
         onClick={() => navigate("/")}
         // aria-label="Close"
       >
