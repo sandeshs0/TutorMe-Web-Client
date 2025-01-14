@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify"; 
+import { useAuth } from "../context/AuthContext";
 
 const ProfileDropdown = ({ userName, userAvatar }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+    const { logout } = useAuth(); // Use AuthContext for logout
+    const navigate = useNavigate();
 
 
-  const handleLogout = () => {
-    localStorage.clear();
-    setIsLoggedIn(false);
-    setUser(null);
-    navigate("/");
-    toast.info("Logout successful");
-  };
+    const handleLogout = () => {
+        logout(); // Clear user data and navigate
+        toast.info("Logout successful", { position: "bottom-right" });
+        navigate("/");
+      };
 
   const generateInitialsAvatar = (name) => {
     const firstLetter = name?.charAt(0)?.toUpperCase() || "?"; // Get the first letter of the first name
@@ -29,7 +28,6 @@ const ProfileDropdown = ({ userName, userAvatar }) => {
       {/* Profile Button */}
       <button
       tabIndex={0}
-        onClick={() => setIsOpen(!isOpen)}
         className="flex items-center px-3 py-2 bg-blue-900 text-white font-medium rounded-full hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
       >
         {userAvatar ? (

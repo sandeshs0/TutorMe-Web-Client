@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { loginUser } from "../services/api";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext"; // Import AuthContext
 
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth(); // Access login method from AuthContext
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const [formData, setFormData] = useState({
     email:"",
@@ -35,16 +37,16 @@ const LoginPage = () => {
 
       // Call the loginUser function from the API
       const response = await loginUser(formData);
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("user", JSON.stringify(response.user));
+      // Call the login method from AuthContext
+      login(response.user);
       // Redirect based on user role
     if (response.user.role === "student") {
       navigate("/");
-      toast.success("Login successful");
+      toast.success("Login successful", { position: "bottom-right" });
     } else if (response.user.role === "tutor") {
       navigate("/tutor-dashboard");
-      toast.success("Login successful as Tutor");
-      toast.info("Redirecting to dashboard...");
+      toast.success("Login successful as Tutor", { position: "bottom-right" });
+      toast.info("Redirecting to dashboard...", { position: "bottom-right" });
     }
 
 
