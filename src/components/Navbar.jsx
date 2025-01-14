@@ -107,12 +107,16 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ProfileDropdown from "./ProfileDropdown";
 
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+
 
 
   useEffect(() => {
@@ -124,12 +128,23 @@ const Navbar = () => {
       }
     };
 
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      setIsLoggedIn(true);
+    }
     window.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+  // const handleLogout = () => {
+  //   localStorage.clear();
+  //   setIsLoggedIn(false);
+  //   setUser(null);
+  //   navigate("/");
+  // };
 
   return (
     <div
@@ -202,10 +217,44 @@ const Navbar = () => {
       </div>
 
       <div className=" lg:flex items-center ml-4">
+
+        <div>
+          {!isLoggedIn ? (
         <button className={`btn rounded-full bg-[#ffffff] hover:bg-primary-light hover:text-white hover:border-white text-black px-6 mr-4 transition-colors duration-300 ${isScrolled ? "text-sm mr-0" : "text-lg px-6"}`} onClick={() => navigate("/login")}>
-          Login
-          
-        </button>
+        Login
+        
+      </button>
+          ) : (
+            <ProfileDropdown userName={user?.name || "User"} />
+            // <div className="relative">
+            //   <button className="flex items-center space-x-2 bg-gray-100 px-4 py-2 rounded-lg shadow">
+            //     <i className="fas fa-user-circle text-xl text-blue-500"></i>
+            //     <span>{user.name}</span>
+            //   </button>
+
+            //   <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
+            //     <button
+            //       onClick={() => navigate("/my-account")}
+            //       className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+            //     >
+            //       My Account
+            //     </button>
+            //     <button
+            //       onClick={() => navigate("/settings")}
+            //       className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+            //     >
+            //       Settings
+            //     </button>
+            //     <button
+            //       onClick={handleLogout}
+            //       className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
+            //     >
+            //       Logout
+            //     </button>
+            //   </div>
+            // </div>
+          )}
+        </div>
       </div>
     </div>
   );
