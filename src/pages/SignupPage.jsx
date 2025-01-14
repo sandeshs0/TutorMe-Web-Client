@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import { registerUser } from "../services/api";
+import { registerUser, resendOtp, verifyEmail } from "../services/api";
 
 const SignupPage = () => {
   const [isStudent, setIsStudent] = useState(true);
@@ -18,10 +18,13 @@ const SignupPage = () => {
     hourlyRate: "",
     subjects: "",
   }); // Common form data for Student/Tutor
+  const [otp, setOtp] = useState(""); // OTP state
   const [errors, setErrors] = useState({});
+  const [showModal, setShowModal] = useState(false); // Success modal state
   const [error, setError] = useState(""); // Error message state
     const [success, setSuccess] = useState(""); // Success message state
-
+    const [isSubmitting, setIsSubmitting] = useState(false); // Loading state for API calls
+    
     const isStrongPassword = (password) => {
       const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       return strongPasswordRegex.test(password);
@@ -70,6 +73,7 @@ const togglePasswordVisibility = () => {
     e.preventDefault(); // Prevent page reload
     setError("");
     setSuccess("");
+    setIsSubmitting(true); // Show loading animation
 
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
@@ -91,18 +95,21 @@ const togglePasswordVisibility = () => {
 
     } catch (err) {
       setError(err.message || "An error occurred. Please try again."); // Show error message
+    }finally{
+      setIsSubmitting(false);
     }
   };
 
   const handleTutorSignup = async () => {
     setError("");
     setSuccess("");
-
-    // Validate passwords match
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
+    if(!validateStep()){
       return;
     }
+    setIsSubmitting(true); // Show loading animation
+
+
+    // Validate passwords match
 
     const payload = {
       name: formData.name,
@@ -119,11 +126,44 @@ const togglePasswordVisibility = () => {
     try {
       const response = await registerUser(payload);
       setSuccess(response.message);
-      navigate("/verify-otp", { state: { email: formData.email } }); // Redirect after success
+      setCurrentStep(4);
     } catch (err) {
       setError(err.message || "An error occurred. Please try again.");
+    } finally{
+      setIsSubmitting(false);
     }
   };
+
+  const handleOtpVerification = async () => {
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const response = await verifyEmail({ email: formData.email, otp }); // Call OTP verification API
+      setShowModal(true); // Show success modal
+    } catch (err) {
+      setError(err.message || "Invalid OTP. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setError("");
+    setIsSubmitting(true);
+  
+    try {
+      // Call your resend OTP API here
+      await resendOtp({ email: formData.email });
+      setSuccess("A new OTP has been sent to your email.");
+    } catch (err) {
+      setError(err.message || "Failed to resend OTP. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+
 
   // Functions for navigation in the multistep flow
 const validateStep = () => {
@@ -146,7 +186,13 @@ const validateStep = () => {
   if (currentStep === 2) {
     if (!formData.bio) newErrors.bio = "Bio is required.";
     if (!formData.description) newErrors.description = "Description is required.";
+    if (!formData.hourlyRate) newErrors.hourlyRate = "Hourly rate is required.";
+    else if (isNaN(formData.hourlyRate) || formData.hourlyRate <= 0) {
+      newErrors.hourlyRate = "Hourly rate must be a positive number.";
+    }
+    if (!formData.subjects) newErrors.subjects = "Subjects are required.";
   }
+  
 
   if (currentStep === 3) {
     if (!formData.password) newErrors.password = "Password is required.";
@@ -180,12 +226,13 @@ const handleNextStep = () => {
       <div className="min-h-screen flex flex-col items-center px-4 py-4 font-poppins">
         {/* Card Container */}
         <div className="relative bg-white shadow-md rounded-2xl max-w-5xl w-full p-4">
-          <button
-            className="absolute top-0 right-0 font-thin text-gray-100 text-2xl bg-red-800 px-4 py-1 hover:bg-red-600 focus:outline-none z-50"
-            onClick={() => navigate("/")}
-          >
-            <i className="fas fa-xmark"></i>
-          </button>
+        <button
+        className="absolute font-poppins opacity-100 hover:opacity-100 top-3 right-3 font-thin text-red-300 hover:text-red-500 text-3xl hover:bg-red-100 px-3 rounded-md py-2 bg-transparent focus:outline-none z-50"
+        onClick={() => navigate("/")}
+        // aria-label="Close"
+      >
+<i class="fas fa-xmark"></i>
+      </button>
 
           <h1 className="flex font-poppins text-3xl font-bold items-center justify-center text-gray-800 p-4">
             Sign Up as a
@@ -470,6 +517,40 @@ const handleNextStep = () => {
         ></textarea>
         {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
       </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-600">Hourly Rate</label>
+        <input
+          type="number"
+          name="hourlyRate"
+          placeholder="Enter your hourly rate NRs"
+          className={`w-full mt-2 p-3 border ${
+            errors.hourlyRate ? "border-red-500" : "border-gray-300"
+          } rounded-lg shadow-sm focus:ring focus:ring-blue-200`}
+          value={formData.hourlyRate}
+          onChange={handleInputChange}
+        />
+        {errors.hourlyRate && (
+          <p className="text-red-500 text-sm">{errors.hourlyRate}</p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-600">Subjects</label>
+        <input
+          type="text"
+          name="subjects"
+          placeholder="Enter subjects separated by commas, e.g., Math, Physics, Chemistry"
+          className={`w-full mt-2 p-3 border ${
+            errors.subjects ? "border-red-500" : "border-gray-300"
+          } rounded-lg shadow-sm focus:ring focus:ring-blue-200`}
+          value={formData.subjects}
+          onChange={handleInputChange}
+        />
+        {errors.subjects && (
+          <p className="text-red-500 text-sm">{errors.subjects}</p>
+        )}
+      </div>
     </div>
 
         </div>
@@ -571,6 +652,99 @@ const handleNextStep = () => {
   </div>
 )}
 
+{currentStep === 4 && (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-bold text-blue-700">Verify Your Email</h2>
+    <p className="text-gray-600">
+      Enter the OTP sent to <span className="font-medium">{formData.email}</span>.
+    </p>
+
+    {/* OTP Inputs */}
+    <div className="flex justify-center space-x-2">
+      {Array.from({ length: 6 }).map((_, index) => (
+        <input
+          key={index}
+          type="text"
+          maxLength="1"
+          className="w-12 h-14 text-gray-950 font-extrabold text-center border hover:border-blue-500  bg-blue-100 text-xl  rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^\d*$/.test(value)) {
+              const newOtp = otp.split("");
+              newOtp[index] = value;
+              setOtp(newOtp.join(""));
+              // Move focus to next input if not empty
+              if (value !== "" && index < 5) {
+                e.target.nextSibling?.focus();
+              }
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Backspace" && !e.target.value && index > 0) {
+              e.target.previousSibling?.focus();
+            }
+          }}
+          value={otp[index] || ""}
+        />
+      ))}
+    </div>
+
+    {error && <p className="text-red-500 text-center">{error}</p>}
+    {success && <p className="text-green-500 text-center mb-2">{success}</p>}
+
+
+
+    {/* Verify Button */}
+    <button
+      onClick={handleOtpVerification}
+      className="w-full btn flex justify-center bg-blue-700 text-white py-3 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none"
+      disabled={isSubmitting}
+    >
+      {isSubmitting ? "Verifying..." : "Verify"}
+    </button>
+        {/* Resend Option */}
+        <div className="text-center">
+      <p className="text-gray-600">
+        Didn't get a code?{" "}
+        <button
+          onClick={handleResendOtp}
+          className="text-blue-600 font-medium  hover:underline disabled:text-gray-400"
+          disabled={isSubmitting}
+        >
+          Resend
+        </button>
+      </p>
+    </div>
+  </div>
+)}
+
+ {showModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-8 rounded-lg shadow-lg text-center">
+                <i className="fas fa-check-circle text-green-500 text-5xl mb-4"></i>
+                <h3 className="text-xl font-bold mb-4">Welcome Onboard!</h3>
+                <p className="text-gray-600  text-left"></p>
+                <p className="text-gray-600 text-lg">Your tutor account has been created successfully.<span className="text-2xl">🥳</span> </p>
+                <p className="text-gray-600 mb-6 text-lg">Happy Tutoring!</p>
+                <button
+                  onClick={() => navigate("/login")}
+                  className="bg-blue-700 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-800"
+                >
+                  Go to Login
+                </button>
+              </div>
+            </div>
+            )}  
+
+{isSubmitting && (
+  <div Name="flex items-center justify-center h-screen">
+    <div className="relative">
+        <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+        <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin">
+        </div>
+    </div>
+</div>
+          )}
 
       {/* Navigation Buttons */}
       <div className="flex justify-between mt-8">
@@ -597,10 +771,10 @@ const handleNextStep = () => {
         {currentStep === 3 && (
           <button
             type="button"
-            // onClick={handleComplete}
-            className="bg-green-500 text-white px-6 py-2 rounded-lg shadow hover:bg-green-600"
+            onClick={handleTutorSignup}
+            className="bg-blue-700 text-white px-6 py-2 rounded-lg shadow hover:bg-green-600"
           >
-            Complete Registration
+            Complete Registration <i className="fa fa-paper-plane"></i>
           </button>
         )}
       </div>
@@ -627,7 +801,6 @@ const handleNextStep = () => {
         /> */}
       {/* )} */}
 
-      <Footer />
     </div>
   );
 };

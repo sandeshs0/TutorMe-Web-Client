@@ -1,12 +1,68 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
+import * as yup from "yup";
+import { loginUser } from "../services/api";
+import { toast } from "react-toastify";
 
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [formData, setFormData] = useState({
+    email:"",
+    password:"",
+  });
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  //validation schema with yup
+  const validationSchema = yup.object().shape({
+    email: yup.string().email("Invalid email format").required("Email is required"),
+    password: yup.string().required("Password is required"),
+  });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
+  const handleLogin=async(e)=>{
+    e.preventDefault();
+    setErrors({});
+    setIsSubmitting(true);
+    try{
+      // Validate form data with Yup schema
+      await validationSchema.validate(formData, { abortEarly: false });
+
+      // Call the loginUser function from the API
+      const response = await loginUser(formData);
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("user", JSON.stringify(response.user));
+      // Redirect based on user role
+    if (response.user.role === "student") {
+      navigate("/");
+      toast.success("Login successful");
+    } else if (response.user.role === "tutor") {
+      navigate("/tutor-dashboard");
+      toast.success("Login successful as Tutor");
+      toast.info("Redirecting to dashboard...");
+    }
+
+
+    }catch(err){
+      if (err.name==="ValidationError"){
+        const validationErrors = {};
+        err.inner.forEach(({ path, message }) => {
+          validationErrors[path] = message;
+        });
+        setErrors(validationErrors);
+    }else{
+      toast.error(err.message || "Login failed. Please try again.");
+      setErrors({ general: err.message || "Login failed. Please try again." });
+    }
+  }finally{
+    setIsSubmitting(false);
+  }
+  };
   
   return (
     <div>
@@ -20,7 +76,7 @@ const LoginPage = () => {
         {/* Login Card */}
         <div className="relative bg-white shadow-md rounded-2xl max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2">
         <button
-        className="absolute font-poppins opacity-50 hover:opacity-100 top-0 right-0 font-thin text-gray-100 text-2xl hover:bg-red-800 px-4 py-1 bg-blue-600 focus:outline-none z-50"
+        className="absolute font-poppins opacity-100 hover:opacity-100 top-3 right-3 font-thin text-red-300 hover:text-red-500 text-3xl hover:bg-red-100 px-3 rounded-md py-2 bg-transparent focus:outline-none z-50"
         onClick={() => navigate("/")}
         // aria-label="Close"
       >
@@ -34,7 +90,7 @@ const LoginPage = () => {
               Welcome back! Please enter your details.
             </p>
 
-            <form className="mt-6 space-y-6 font-poppins ">
+            <form className="mt-6 space-y-6 font-poppins" onSubmit={handleLogin}>
               {/* Email Input */}
               <div>
                 <label htmlFor="email" className="block text-md text-gray-800 font-semibold">
@@ -43,9 +99,14 @@ const LoginPage = () => {
                 <input
                   type="email"
                   id="email"
+                  name="email"
                   placeholder="Enter your email"
                   className="w-full mt-1 p-3 border text-black rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
+                  value={formData.email}
+                  onChange={handleInputChange}
                 />
+                {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+
               </div>
 
               {/* Password Input */}
@@ -61,6 +122,9 @@ const LoginPage = () => {
                   id="password"
                   placeholder="********"
                   className="w-full mt-1 p-3 text-black border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
                 />
 <button
                   type="button"
@@ -74,9 +138,9 @@ const LoginPage = () => {
                     <i className="fas fa-eye"></i> // Eye icon for "show"
                   )}
                 </button>
-
+                {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
               </div>
-
+              {errors.general && <p className="text-red-500 text-sm">{errors.general}</p>}
               {/* Remember Me and Forgot Password */}
               <div className="flex items-center justify-between text-sm lg:text-md font-poppins">
                 <div className="flex items-center">
@@ -98,8 +162,10 @@ const LoginPage = () => {
               <button
                 type="submit"
                 className="btn w-full bg-blue-500 text-white py-3 text-xl font-poppins rounded-lg shadow-md hover:bg-blue-600 focus:outline-none "
+                disabled={isSubmitting}
               >
-                Login
+                {isSubmitting ? "Logging in..." : "Login"}
+                
               </button>
             </form>
 
@@ -122,7 +188,6 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
