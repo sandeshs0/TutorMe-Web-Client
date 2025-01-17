@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
+import SubjectsInput from "../components/SubjectField";
 import { registerUser, resendOtp, verifyEmail } from "../services/api";
 
 const SignupPage = () => {
@@ -16,7 +16,7 @@ const SignupPage = () => {
     bio: "",
     description: "",
     hourlyRate: "",
-    subjects: "",
+    subjects: [],
   }); // Common form data for Student/Tutor
   const [otp, setOtp] = useState(""); // OTP state
   const [errors, setErrors] = useState({});
@@ -120,7 +120,7 @@ const togglePasswordVisibility = () => {
       bio: formData.bio,
       description: formData.description,
       hourlyRate: formData.hourlyRate,
-      subjects: formData.subjects.split(",").map((subject) => subject.trim()),
+      subjects: formData.subjects, 
     };
 
     try {
@@ -190,7 +190,10 @@ const validateStep = () => {
     else if (isNaN(formData.hourlyRate) || formData.hourlyRate <= 0) {
       newErrors.hourlyRate = "Hourly rate must be a positive number.";
     }
-    if (!formData.subjects) newErrors.subjects = "Subjects are required.";
+    if (formData.subjects.length === 0) {
+      newErrors.subjects = "Please add at least one subject.";
+    }
+    
   }
   
 
@@ -489,7 +492,7 @@ const handleNextStep = () => {
           {/* Add fields for step 2 */}
           <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-600">Bio</label>
+        <label className="block text-md font-medium text-gray-900">Bio</label>
         <textarea
           name="bio"
           placeholder="Write about yourself in a few words..."
@@ -504,7 +507,7 @@ const handleNextStep = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-600">Description</label>
+        <label className="block text-md font-medium text-gray-900">Description</label>
         <textarea
           name="description"
           placeholder="Describe your teaching style, experience, and areas of expertise."
@@ -519,7 +522,7 @@ const handleNextStep = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-600">Hourly Rate</label>
+        <label className="block text-md font-medium text-gray-900">Hourly Rate</label>
         <input
           type="number"
           name="hourlyRate"
@@ -536,7 +539,7 @@ const handleNextStep = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-600">Subjects</label>
+        {/* <label className="block text-sm font-medium text-gray-600">Subjects</label>
         <input
           type="text"
           name="subjects"
@@ -546,10 +549,12 @@ const handleNextStep = () => {
           } rounded-lg shadow-sm focus:ring focus:ring-blue-200`}
           value={formData.subjects}
           onChange={handleInputChange}
-        />
-        {errors.subjects && (
-          <p className="text-red-500 text-sm">{errors.subjects}</p>
-        )}
+        /> */}
+        <SubjectsInput
+  formData={formData}
+  setFormData={setFormData}
+  errors={errors}
+/>
       </div>
     </div>
 
