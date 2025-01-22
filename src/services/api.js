@@ -8,7 +8,9 @@ const API = axios.create({
 const loginUser = async (credentials) => {
     try {
         const response = await API.post("/auth/login", credentials);
-        return response.data; // Return the data from the API
+        const { token, user } = response.data;
+        console.log(token, user);
+        return {token,user}; // Return the data from the API
     } catch (error) {
         throw error.response ? error.response.data : { message: "Network error" };
     }
@@ -40,4 +42,5 @@ const resendOtp = async (payload) => {
     }
 };
 
-export { loginUser, registerUser, verifyEmail, resendOtp };
+export { loginUser, registerUser, resendOtp, verifyEmail };
+

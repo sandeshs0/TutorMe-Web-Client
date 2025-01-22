@@ -114,7 +114,7 @@ const Navbar = () => {
         
       </button>
           ) : (
-            <ProfileDropdown userName={user?.name || "User"} 
+            <ProfileDropdown userName={user?.name || "User"}  userAvatar={user?.profileImage}
             // onLogout={() => {
             //   logout(); // Call the logout function from AuthContext
             //   navigate("/"); // Redirect to home after logout

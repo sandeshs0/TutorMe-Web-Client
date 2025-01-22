@@ -37,7 +37,7 @@ const SubjectsInput = ({ formData, setFormData, errors }) => {
         {formData.subjects.map((tag, index) => (
           <div
             key={index}
-            className="flex items-center bg-blue-100 text-blue-800 rounded-full px-3 py-1 mr-2 mb-2 animate-fade-in"
+            className="flex items-center bg-blue-100 text-blue-800 rounded-xl px-3 py-1 mr-2 mb-2 animate-fade-in"
           >
             <span>{tag}</span>
             <button

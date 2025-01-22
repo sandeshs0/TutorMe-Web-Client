@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import OtpPage from './pages/OtpPage';
 import SignupPage from './pages/SignupPage';
 import { ToastContainer } from "react-toastify";
+import TutorDashboard from './pages/TutorDashboard';
 
 
 const App = () => {
@@ -18,6 +19,8 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify-otp" element={<OtpPage />} />
+        <Route path="/tutor-dashboard" element={<TutorDashboard />} />
+        
 
       </Routes>
     </Router>

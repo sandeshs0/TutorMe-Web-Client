@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import * as yup from "yup";
-import { loginUser } from "../services/api";
 import { toast } from "react-toastify";
+import * as yup from "yup";
 import { useAuth } from "../context/AuthContext"; // Import AuthContext
+import { loginUser } from "../services/api";
 
 
 const LoginPage = () => {
@@ -36,14 +36,13 @@ const LoginPage = () => {
       await validationSchema.validate(formData, { abortEarly: false });
 
       // Call the loginUser function from the API
-      const response = await loginUser(formData);
-      // Call the login method from AuthContext
-      login(response.user);
+const { user, token } = await loginUser(formData);      // Call the login method from AuthContext
+      login({userData:user, authToken:token});
       // Redirect based on user role
-    if (response.user.role === "student") {
+    if (user.role === "student") {
       navigate("/");
       toast.success("Login successful", { position: "bottom-right" });
-    } else if (response.user.role === "tutor") {
+    } else if (user.role === "tutor") {
       navigate("/tutor-dashboard");
       toast.success("Login successful as Tutor", { position: "bottom-right" });
       toast.info("Redirecting to dashboard...", { position: "bottom-right" });

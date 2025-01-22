@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import SubjectsInput from "../components/SubjectField";
 import { registerUser, resendOtp, verifyEmail } from "../services/api";
 
@@ -61,7 +62,6 @@ const togglePasswordVisibility = () => {
   setIsPasswordVisible((prevState) => !prevState);
 };
     
-
   const navigate = useNavigate();
     
   const handleInputChange = (e) => {
@@ -90,11 +90,12 @@ const togglePasswordVisibility = () => {
     try {
       const response = await registerUser(payload); // Call API
       setSuccess(response.message); // Show success message
-      navigate("/verify-otp", { state: { email: formData.email } });
-
+      toast.success("User Registered successfully", { position: "bottom-right" });
+      navigate("/verify-otp", { state: { email: formData.email } })
 
     } catch (err) {
       setError(err.message || "An error occurred. Please try again."); // Show error message
+      toast.error("An Error Occurred.", {position:"bottom-right"});
     }finally{
       setIsSubmitting(false);
     }
@@ -365,8 +366,9 @@ const handleNextStep = () => {
                   <button
                     type="submit"
                     className="w-full bg-blue-500 text-xl text-white py-3 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200"
+                  disabled={isSubmitting}
                   >
-                    Sign Up
+                   {isSubmitting ? "Signing up..." : "Sign Up"}
                   </button>
                 </form>
               )}
@@ -778,8 +780,9 @@ const handleNextStep = () => {
             type="button"
             onClick={handleTutorSignup}
             className="bg-blue-700 text-white px-6 py-2 rounded-lg shadow hover:bg-green-600"
+            disabled={isSubmitting}
           >
-            Complete Registration <i className="fa fa-paper-plane"></i>
+            {isSubmitting ? "Signing up..." : "Complete Signup"}<i className="fa fa-paper-plane"></i>
           </button>
         )}
       </div>
