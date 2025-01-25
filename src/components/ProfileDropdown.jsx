@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; 
+import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 
 const ProfileDropdown = ({ userName, userAvatar }) => {
-    const { logout } = useAuth(); // Use AuthContext for logout
-    const navigate = useNavigate();
+  const { logout } = useAuth(); // Use AuthContext for logout
+  const navigate = useNavigate();
+    const { user } = useAuth();
 
-
-    const handleLogout = () => {
-        logout(); // Clear user data and navigate
-        toast.info("Logout successful", { position: "bottom-right" });
-        navigate("/");
-      };
+  const handleLogout = () => {
+    logout(); // Clear user data and navigate
+    toast.info("Logout successful", { position: "bottom-right" });
+    navigate("/");
+  };
 
   const generateInitialsAvatar = (name) => {
     const firstLetter = name?.charAt(0)?.toUpperCase() || "?"; // Get the first letter of the first name
@@ -27,7 +27,7 @@ const ProfileDropdown = ({ userName, userAvatar }) => {
     <div className="dropdown dropdown-end dropdown-hover relative inline-block">
       {/* Profile Button */}
       <button
-      tabIndex={0}
+        tabIndex={0}
         className="flex items-center px-3 py-2 bg-blue-900 text-white font-medium rounded-full hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
       >
         {userAvatar ? (
@@ -39,7 +39,8 @@ const ProfileDropdown = ({ userName, userAvatar }) => {
         ) : (
           generateInitialsAvatar(userName)
         )}
-        <span className="hidden sm: font-sans">{userName}</span> {/* Hide on small screens */}
+        <span className="hidden sm: font-sans">{userName}</span>{" "}
+        {/* Hide on small screens */}
         <i className="fas fa-chevron-down ml-2 text-sm"></i>
       </button>
 
@@ -69,18 +70,25 @@ const ProfileDropdown = ({ userName, userAvatar }) => {
         </div>
       )} */}
 
-<ul
+      <ul
         tabIndex={0}
         className="dropdown-content menu font-poppins font-semibold bg-gray-50 rounded-lg z-10 w-52 mt-2 shadow-lg p-2 text-sm"
       >
         <li>
-          <p
-           
-            className="block px-4 py-2 mb-1 text-gray-900 bg-blue-100 hover:bg-blue-100 rounded-md"
-          >
-{userName}
+          <p className="block px-4 py-2 mb-1 text-gray-900 bg-blue-100 hover:bg-blue-100 rounded-md">
+            {userName}
           </p>
         </li>
+        {user.role === "tutor" && (
+          <li>
+            <a
+              href="/tutor-dashboard"
+              className="block px-4 py-2 text-gray-900 hover:bg-blue-100 rounded-md"
+            >
+Tutor Dashboard           
+ </a>
+          </li>
+        )}
         <li>
           <a
             href="/account"
