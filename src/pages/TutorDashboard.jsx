@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import TutorDashboardOverview from "../components/OverViewTutorDashboard";
 import TutorProfile from "../components/TutorMyProfile";
@@ -16,6 +16,9 @@ const TutorDashboard = () => {
   const [tutorData, setTutorData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false); // State for side drawer
+
+  const drawerRef = useRef(null); // Ref for the side drawer
 
   // Toggle Dark Mode
   const toggleDarkMode = () => {
@@ -45,6 +48,23 @@ const TutorDashboard = () => {
     fetchData();
   }, [currentPage]);
 
+  // Close drawer on outside click
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        drawerRef.current &&
+        !drawerRef.current.contains(event.target) &&
+        drawerOpen
+      ) {
+        setDrawerOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [drawerOpen]);
+
   // Dynamic rendering based on `currentPage`
   const renderContent = () => {
     if (loading) return <p>Loading...</p>;
@@ -68,11 +88,15 @@ const TutorDashboard = () => {
 
   return (
     <div
-      className="flex h-screen font-poppins dark:bg-gray-900 dark:text-white  bg-gray-100 text-gray-900
-      "
+      className="flex flex-col lg:flex-row h-screen font-poppins dark:bg-gray-900 dark:text-white bg-gray-100 text-gray-900"
     >
-      {/* Sidebar */}
-      <aside className="w-64 bg-gray-200 dark:bg-gray-900 text-black dark:text-white flex flex-col">
+      {/* Side Drawer */}
+      <div
+        ref={drawerRef}
+        className={`fixed top-0 left-0 h-full bg-gray-200 dark:bg-gray-900 z-50 transform ${
+          drawerOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform lg:translate-x-0 lg:static lg:w-64`}
+      >
         <div className="lg:flex items-center m-5 mb-10">
           <a
             href="/tutor-dashboard"
@@ -81,7 +105,7 @@ const TutorDashboard = () => {
             <img
               src="src/assets/logostroke.png"
               alt="TutorMe Logo"
-              className="h-12"
+              className="h-12 mx-auto lg:mx-0"
             />
           </a>
         </div>
@@ -100,7 +124,10 @@ const TutorDashboard = () => {
                       ? "bg-gray-700 text-white font-semibold"
                       : "hover:bg-gray-600 hover:text-white"
                   }`}
-                  onClick={() => setCurrentPage(item.name)}
+                  onClick={() => {
+                    setCurrentPage(item.name);
+                    setDrawerOpen(false); // Close drawer after selection
+                  }}
                 >
                   <i className={`${item.icon} mr-2`}></i> {item.name}
                 </button>
@@ -108,12 +135,20 @@ const TutorDashboard = () => {
             ))}
           </ul>
         </nav>
-      </aside>
+      </div>
 
       {/* Main Content Area */}
       <div className="flex-grow flex flex-col">
         {/* Header */}
         <header className="bg-gray-200 dark:bg-gray-800 shadow p-4 flex justify-between items-center">
+          {/* Hamburger for small screens */}
+          <button
+            className="lg:hidden text-xl"
+            onClick={() => setDrawerOpen(!drawerOpen)}
+            aria-label="Toggle Sidebar"
+          >
+            <i className="fas fa-bars"></i>
+          </button>
           <h1 className="text-xl font-bold">
             Hi, {tutorData?.name || "User"}!
           </h1>
@@ -127,7 +162,7 @@ const TutorDashboard = () => {
               {darkMode ? (
                 <i className="fas fa-sun text-yellow-400"></i>
               ) : (
-                <i className="fas fa-moon text-blue-500"></i>
+                <i className="fas fa-moon text-black"></i>
               )}
             </button>
             {/* Profile Dropdown */}
@@ -141,7 +176,7 @@ const TutorDashboard = () => {
         </header>
 
         {/* Dynamic Content */}
-        <main className="flex-grow p-6 bg-white dark:bg-gray-900 rounded-t-lg shadow-lg">
+        <main className="flex-grow p-6 bg-white dark:bg-gray-900 rounded-t-lg shadow-lg overflow-y-auto">
           {renderContent()} {/* Dynamic content based on selected menu item */}
         </main>
       </div>

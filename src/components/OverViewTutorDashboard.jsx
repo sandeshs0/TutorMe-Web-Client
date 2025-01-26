@@ -11,7 +11,7 @@ const OverviewSection = ({ tutorData }) => {
       {/* Wallet Card */}
       <TutorWalletCard
         name={tutorData.name || "N/A"}
-        balance={tutorData.walletBalance || 0}
+        balance={tutorData.walletBalance || "N/A"}
         date={new Date().toLocaleDateString()}
         onWithdraw={() => alert("Withdraw initiated!")} // Replace with real functionality
       />
