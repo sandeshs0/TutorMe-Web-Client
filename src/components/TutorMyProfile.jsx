@@ -74,17 +74,22 @@ const TutorProfile = () => {
     const formData = new FormData();
     formData.append("profileImage", selectedFile);
 
-    try {
-      const updatedProfile = await updateTutorProfile(formData);
-      console.log("Updated Profile Data:", updatedProfile); // Log updated profile
-
-      // setProfile(updatedProfile);
-      fetchData();
-      setShowModal(false);
-      toast.success("Profile picture updated successfully");
-    } catch (e) {
-      toast.error(e.message || "Failed to update profile picture");
-    }
+    toast.promise(
+      updateTutorProfile(formData)
+        .then((updatedProfile) => {
+          console.log("Updated Profile Data:", updatedProfile);
+          fetchData();
+          setShowModal(false);
+        })
+        .catch((error) => {
+          throw new Error(error.message || "Failed to update profile picture");
+        }),
+      {
+        pending: "Updating profile picture...",
+        success: "Profile picture updated successfully!",
+        error: "Failed to update profile picture.",
+      }
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -99,23 +104,28 @@ const TutorProfile = () => {
     //   formDataToSend.append("profileImage", profileImage);
     // }
 
-    try {
-      const payload = {
-        bio: formData.bio || "",
-        description: formData.description || "",
-        hourlyRate: formData.hourlyRate || 0,
-        subjects: formData.subjects, // Send subjects as an array
-      };
-
-      const updatedProfile = await updateTutorProfile(payload);
-      console.log("Updated Profile Data:", updatedProfile); // Log updated profile
-      fetchData();
-      // setProfile(updatedProfile);
-      setIsEditing(false);
-      toast.success("Profile updated successfully");
-    } catch (e) {
-      toast.error(e.message || "Failed to update profile");
-    }
+    const payload = {
+      bio: formData.bio || "",
+      description: formData.description || "",
+      hourlyRate: formData.hourlyRate || 0,
+      subjects: formData.subjects, // Send subjects as an array
+    };
+    toast.promise(
+      updateTutorProfile(payload)
+        .then((updatedProfile) => {
+          console.log("Updated Profile Data:", updatedProfile);
+          fetchData();
+          setIsEditing(false);
+        })
+        .catch((error) => {
+          throw new Error(error.message || "Failed to update profile");
+        }),
+      {
+        pending: "Updating profile details...",
+        success: "Profile details updated successfully!",
+        error: "Failed to update profile details.",
+      }
+    );
   };
 
   if (loading) {
@@ -136,7 +146,7 @@ const TutorProfile = () => {
             <h2 className="text-lg font-bold">Update Profile Picture</h2>
             {/* Image Preview */}
             {selectedFile ? (
-              <div className="w-32 h-32 rounded-full overflow-hidden border">
+              <div className="w-40 h-40 rounded-full overflow-hidden border">
                 <img
                   src={URL.createObjectURL(selectedFile)}
                   alt="Profile Preview"
