@@ -93,7 +93,7 @@ const TutorDashboard = () => {
       {/* Side Drawer */}
       <div
         ref={drawerRef}
-        className={`fixed top-0 left-0 h-full bg-gray-200 dark:bg-gray-900 z-50 transform ${
+        className={`fixed top-0 left-0 h-full bg-gray-100 dark:bg-gray-800 z-50 transform ${
           drawerOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform lg:translate-x-0 lg:static lg:w-64`}
       >
@@ -121,8 +121,8 @@ const TutorDashboard = () => {
                 <button
                   className={`w-full flex items-center px-4 py-2 rounded-md transition ${
                     currentPage === item.name
-                      ? "bg-gray-700 text-white font-semibold"
-                      : "hover:bg-gray-600 hover:text-white"
+                      ? "bg-[#0961f5] text-white font-semibold"
+                      : "dark:hover:bg-gray-700 hover:bg-gray-400 hover:text-white"
                   }`}
                   onClick={() => {
                     setCurrentPage(item.name);
@@ -140,7 +140,7 @@ const TutorDashboard = () => {
       {/* Main Content Area */}
       <div className="flex-grow flex flex-col">
         {/* Header */}
-        <header className="bg-gray-200 dark:bg-gray-800 shadow p-4 flex justify-between items-center">
+        <header className="bg-gray-100 dark:bg-gray-800 shadow p-4 flex justify-between items-center">
           {/* Hamburger for small screens */}
           <button
             className="lg:hidden text-xl"
@@ -150,7 +150,7 @@ const TutorDashboard = () => {
             <i className="fas fa-bars"></i>
           </button>
           <h1 className="text-xl font-bold">
-            Hi, {tutorData?.name || "User"}!
+            Hi, {tutorData?.name || "User"} !
           </h1>
           <div className="flex items-center space-x-2">
             {/* Dark Mode Toggle */}
