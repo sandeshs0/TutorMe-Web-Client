@@ -77,151 +77,141 @@
 // };
 
 // export default SubjectsInput;
-import React, { useState, useEffect } from "react";
-import { fetchAllSubjects } from "../services/api"; // Import the API call
+
+import React, { useEffect, useState } from "react";
+import { fetchAllSubjects } from "../services/api";
 
 const SubjectsInput = ({ formData, setFormData, errors }) => {
-  const [currentTag, setCurrentTag] = useState(""); // Current input value
-  const [allSubjects, setAllSubjects] = useState([]); // List of all available subjects
-  const [filteredSuggestions, setFilteredSuggestions] = useState([]); // Filtered suggestions based on input
+  const [currentTag, setCurrentTag] = useState("");
+  const [filteredSubjects, setFilteredSubjects] = useState([]);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
-  // Fetch all subjects from the database on component mount
-  useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const subjects = await fetchAllSubjects(); // Fetch the subjects from the API
-        // Check if subjects exist and map safely
-        console.log(subjects);
-        if (subjects && Array.isArray(subjects)) {
-          setAllSubjects(subjects.map((subject) => subject.name || ""));
-        } else {
-          console.error("Invalid subjects data format:", subjects);
-          setAllSubjects([]); // Set an empty array if the format is incorrect
-        }
-      } catch (error) {
-        console.error(
-          "Error fetching subjects:",
-          error.message || "Unknown error occurred"
-        );
-      }
-    };
-  
-    fetchSubjects();
-  }, []);
-  
-
-  // Handle adding a tag on Enter or comma press
-  const handleAddTag = (e) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      const trimmedTag = currentTag.trim();
-      if (trimmedTag && !formData.subjects.includes(trimmedTag)) {
-        setFormData({
-          ...formData,
-          subjects: [...formData.subjects, trimmedTag],
-        });
-      }
-      setCurrentTag(""); // Reset input
-      setFilteredSuggestions([]); // Clear suggestions
+  const fetchSubjects = async () => {
+    try {
+      const subjects = await fetchAllSubjects(); // Assuming fetchAllSubjects is imported
+      setFilteredSubjects(subjects.map((subject) => subject.name || ""));
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
     }
   };
 
-  // Handle removing a tag
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
+
+  const handleAddTag = (tag) => {
+    if (tag.trim() && !formData.subjects.includes(tag)) {
+      setFormData({
+        ...formData,
+        subjects: [...formData.subjects, tag.trim()],
+      });
+      setCurrentTag(""); // Clear input field
+      setHighlightedIndex(-1); // Reset highlighted index
+    }
+  };
+
   const handleRemoveTag = (index) => {
     const updatedTags = formData.subjects.filter((_, i) => i !== index);
     setFormData({ ...formData, subjects: updatedTags });
   };
 
-  // Handle input changes and dynamically filter suggestions
   const handleInputChange = (e) => {
     const value = e.target.value;
     setCurrentTag(value);
 
-    // Dynamically filter suggestions
-    if (value) {
-      const suggestions = allSubjects.filter((subject) =>
-        subject.toLowerCase().startsWith(value.toLowerCase())
+    // Filter suggestions based on input
+    const filtered = filteredSubjects.filter((subject) =>
+      subject.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredSubjects(filtered);
+    setHighlightedIndex(-1); // Reset highlighted index
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (highlightedIndex >= 0 && filteredSubjects[highlightedIndex]) {
+        handleAddTag(filteredSubjects[highlightedIndex]);
+      } else {
+        handleAddTag(currentTag);
+      }
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev < filteredSubjects.length - 1 ? prev + 1 : 0
       );
-      setFilteredSuggestions(suggestions);
-    } else {
-      setFilteredSuggestions([]);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev > 0 ? prev - 1 : filteredSubjects.length - 1
+      );
     }
   };
 
-  // Handle clicking on a suggestion to add it as a tag
-  const handleSuggestionClick = (suggestion) => {
-    if (!formData.subjects.includes(suggestion)) {
-      setFormData({
-        ...formData,
-        subjects: [...formData.subjects, suggestion],
-      });
-    }
-    setCurrentTag(""); // Clear input
-    setFilteredSuggestions([]); // Clear suggestions
-  };
-
-  // Handle clearing all tags
   const handleRemoveAll = () => {
     setFormData({ ...formData, subjects: [] });
   };
 
+  const handleSuggestionClick = (subject) => {
+    handleAddTag(subject);
+  };
+
   return (
     <div>
-      <label className="block text-md font-medium text-gray-900">Subjects</label>
-      <div className="relative">
-        {/* Tags Input */}
-        <div className="flex flex-wrap items-center p-4 border rounded-lg shadow-sm focus:ring focus:ring-blue-200 transition-all duration-200">
-          {formData.subjects.map((tag, index) => (
-            <div
-              key={index}
-              className="flex items-center bg-blue-100 text-blue-800 rounded-xl px-3 py-1 mr-2 mb-2"
+      <label className="block text-md font-medium text-gray-900">
+        Subjects
+      </label>
+      <div className="flex flex-wrap items-center p-4 border rounded-lg shadow-sm focus:ring focus:ring-blue-200 transition-all duration-200 relative">
+        {formData.subjects.map((tag, index) => (
+          <div
+            key={index}
+            className="flex items-center bg-blue-100 text-blue-800 rounded-xl px-3 py-1 mr-2 mb-2 "
+          >
+            <span>{tag}</span>
+            <button
+              type="button"
+              className="ml-2 text-blue-400 hover:text-red-700 transition-colors duration-150"
+              onClick={() => handleRemoveTag(index)}
             >
-              <span>{tag}</span>
-              <button
-                type="button"
-                className="ml-2 text-blue-400 hover:text-red-700"
-                onClick={() => handleRemoveTag(index)}
-              >
-                ✕
-              </button>
-            </div>
-          ))}
-          <input
-            type="text"
-            value={currentTag}
-            onChange={handleInputChange}
-            onKeyDown={handleAddTag}
-            placeholder="Type and press Enter or comma to add"
-            className="flex-grow bg-transparent outline-none text-sm"
-          />
-        </div>
-
-        {/* Suggestions Dropdown */}
-        {filteredSuggestions.length > 0 && (
-          <ul className="absolute z-10 bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-40 overflow-y-auto w-full">
-            {filteredSuggestions.map((suggestion, index) => (
+              ✕
+            </button>
+          </div>
+        ))}
+        <input
+          type="text"
+          value={currentTag}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          placeholder="Type and press Enter or comma to add"
+          className="flex-grow bg-transparent outline-none text-sm"
+        />
+        {currentTag && filteredSubjects.length > 0 && (
+          <ul className="absolute top-full right-10 w-1/2 bg-white border rounded-lg shadow-md z-10 max-h-40 overflow-y-auto">
+            {filteredSubjects.map((subject, index) => (
               <li
                 key={index}
-                onClick={() => handleSuggestionClick(suggestion)}
-                className="px-4 py-2 cursor-pointer hover:bg-blue-100"
+                onClick={() => handleSuggestionClick(subject)}
+                className={`px-4 py-2 cursor-pointer ${
+                  index === highlightedIndex
+                    ? "bg-blue-100 text-gray-800"
+                    : "bg-white text-gray-800"
+                }`}
               >
-                {suggestion}
+                {subject}
               </li>
             ))}
           </ul>
         )}
       </div>
-
-      {/* Error Message */}
       {errors.subjects && (
-        <p className="text-red-500 text-sm">{errors.subjects}</p>
+        <p className="text-red-500 text-sm animate-fade-in">
+          {errors.subjects}
+        </p>
       )}
-
-      {/* Clear Button */}
       {formData.subjects.length > 0 && (
         <button
           type="button"
-          className="mt-2 bg-red-700 text-white px-4 py-1 rounded-lg hover:bg-red-600"
+          className="mt-2 bg-red-700 text-white px-4 py-1 rounded-lg hover:bg-red-600 transition-transform duration-200 transform hover:scale-105"
           onClick={handleRemoveAll}
         >
           Clear
