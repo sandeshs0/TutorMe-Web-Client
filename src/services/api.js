@@ -89,7 +89,7 @@ const fetchTutors = async (queryParams) => {
 const fetchAllSubjects = async () => {
   try {
     const response = await API.get("/api/subjects/getAll");
-    return response.data.subjects; // Return the subjects data
+    return response.data; // Return the subjects data
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }

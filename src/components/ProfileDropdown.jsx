@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 
+
 const ProfileDropdown = ({ userName, userAvatar }) => {
   const { logout } = useAuth(); // Use AuthContext for logout
   const navigate = useNavigate();

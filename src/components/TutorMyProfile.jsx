@@ -21,6 +21,7 @@ const TutorProfile = () => {
   const [selectedFile, setSelectedFile] = useState(null); // Profile image file
   const [allSubjects, setAllSubjects] = useState([]); // List of all available subjects
   const [showModal, setShowModal] = useState(false); // Modal visibility state
+  const [isSubmitting, setIsSubmitting] = useState(false); // New loading state
 
   useEffect(() => {
     fetchData();
@@ -73,17 +74,21 @@ const TutorProfile = () => {
 
     const formData = new FormData();
     formData.append("profileImage", selectedFile);
+    setIsSubmitting(true);
 
     toast.promise(
-      updateTutorProfile(formData)
-        .then((updatedProfile) => {
-          console.log("Updated Profile Data:", updatedProfile);
-          fetchData();
-          setShowModal(false);
-        })
-        .catch((error) => {
-          throw new Error(error.message || "Failed to update profile picture");
-        }),
+      new Promise(async (resolve, reject) => {
+        try {
+          await updateTutorProfile(formData);
+          fetchData(); // Refresh data after the update
+          setShowModal(false); // Close modal
+          resolve(); // Resolve the promise for success toast
+        } catch (error) {
+          reject(error); // Reject the promise for error toast
+        } finally {
+          setIsSubmitting(false); // Reset loading state
+        }
+      }),
       {
         pending: "Updating profile picture...",
         success: "Profile picture updated successfully!",
@@ -111,15 +116,18 @@ const TutorProfile = () => {
       subjects: formData.subjects, // Send subjects as an array
     };
     toast.promise(
-      updateTutorProfile(payload)
-        .then((updatedProfile) => {
-          console.log("Updated Profile Data:", updatedProfile);
-          fetchData();
-          setIsEditing(false);
-        })
-        .catch((error) => {
-          throw new Error(error.message || "Failed to update profile");
-        }),
+      new Promise(async (resolve, reject) => {
+        try {
+          await updateTutorProfile(payload);
+          fetchData(); // Refresh data after the update
+          setIsEditing(false); // Exit editing mode
+          resolve(); // Resolve the promise for success toast
+        } catch (error) {
+          reject(error); // Reject the promise for error toast
+        } finally {
+          setIsSubmitting(false); // Reset loading state
+        }
+      }),
       {
         pending: "Updating profile details...",
         success: "Profile details updated successfully!",
@@ -138,7 +146,7 @@ const TutorProfile = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto mt-6 p-6 bg-gray-100 dark:bg-gray-800 dark:text-white shadow-md rounded-lg font-poppins space-y-8">
+    <div className="animate-slide-in max-w-5xl mx-auto mt-6 p-6 bg-gray-100 dark:bg-gray-800 dark:text-white shadow-md rounded-lg font-poppins space-y-8">
       {/* Modal for file upload */}
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>
@@ -174,8 +182,16 @@ const TutorProfile = () => {
               <button
                 className="px-4 py-2 bg-blue-600 text-white rounded"
                 onClick={handleProfilePictureSubmit}
+                disabled={isSubmitting}
               >
-                Upload
+                {isSubmitting ? (
+                  <div className="flex items-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
+                    Updating...{" "}
+                  </div>
+                ) : (
+                  "Update"
+                )}
               </button>
             </div>
           </div>
@@ -271,8 +287,16 @@ const TutorProfile = () => {
             <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded dark:bg-blue-500"
+              disabled={isSubmitting}
             >
-              Save Changes
+              {isSubmitting ? (
+                <div className="flex items-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
+                  Saving...
+                </div>
+              ) : (
+                "Save Changes"
+              )}
             </button>
           </div>
         </form>
