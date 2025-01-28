@@ -92,7 +92,7 @@ Tutor Dashboard
         )}
         <li>
           <a
-            href="/account"
+            href="/account-center"
             className="block px-4 py-2 text-gray-900 hover:bg-blue-100 rounded-md"
           >
             My Account

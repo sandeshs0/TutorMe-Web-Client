@@ -150,52 +150,68 @@ const TutorProfile = () => {
       {/* Modal for file upload */}
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>
-          <div className="flex flex-col items-center space-y-4">
-            <h2 className="text-lg font-bold">Update Profile Picture</h2>
-            {/* Image Preview */}
-            {selectedFile ? (
-              <div className="w-40 h-40 rounded-full overflow-hidden border">
-                <img
-                  src={URL.createObjectURL(selectedFile)}
-                  alt="Profile Preview"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ) : (
-              <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                No Preview
-              </div>
-            )}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="border rounded p-2"
-            />
-            <div className="flex justify-end space-x-2">
-              <button
-                className="px-4 py-2 bg-gray-500 text-white rounded"
-                onClick={() => setShowModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-blue-600 text-white rounded"
-                onClick={handleProfilePictureSubmit}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
-                    Updating...{" "}
-                  </div>
-                ) : (
-                  "Update"
-                )}
-              </button>
-            </div>
-          </div>
-        </Modal>
+  <div className="flex flex-col w-full max-w-md bg-white dark:bg-gray-800 rounded-lg">
+    {/* Modal Title */}
+    <div className="pb-2 mb-4 border-b border-gray-300 dark:border-gray-600">
+      <h2 className="text-lg font-bold text-gray-800 dark:text-white text-center">
+        Update Profile Picture
+      </h2>
+    </div>
+
+    {/* Modal Content */}
+    <div className=" flex flex-col items-center space-y-6 mb-6 ">
+      {selectedFile ? (
+        <div className="w-40 h-40 rounded-full overflow-hidden border">
+          <img
+            src={URL.createObjectURL(selectedFile)}
+            alt="Profile Preview"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ) : (
+        <div className="w-40 h-40 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+          No Preview
+        </div>
+      )}
+
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className="border rounded w-full p-2 dark:text-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+
+    {/* Modal Buttons */}
+    <div className="pt-4 border-t border-gray-300 dark:border-gray-600 flex justify-end space-x-8">
+      <button
+        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+        onClick={() => setShowModal(false)}
+      >
+        Cancel
+      </button>
+      <button
+        className={`px-4 py-2 rounded text-white ${
+          isSubmitting
+            ? "bg-blue-300 cursor-not-allowed"
+            : "bg-blue-600 hover:bg-blue-700"
+        } transition flex items-center`}
+        onClick={handleProfilePictureSubmit}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? (
+          <>
+            <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
+            Updating...
+          </>
+        ) : (
+          "Update"
+        )}
+      </button>
+    </div>
+  </div>
+</Modal>
+
       )}
 
       {isEditing ? (
