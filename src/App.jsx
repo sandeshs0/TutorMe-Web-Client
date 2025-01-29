@@ -12,6 +12,7 @@ import SignupPage from './pages/SignupPage';
 import { ToastContainer } from "react-toastify";
 import TutorDashboard from './pages/TutorDashboard';
 import StudentDashboard from './pages/StudentDashboard';
+import PaymentCallback from './components/PaymentCallback';
 
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/verify-otp" element={<OtpPage />} />
         <Route path="/tutor-dashboard" element={<TutorDashboard />} />
         <Route path="/account-center" element={<StudentDashboard />} />
+        <Route path="/payment-callback" element={<PaymentCallback />} />
         
 
       </Routes>

@@ -105,14 +105,107 @@ const getTutors = async (page = 1, limit = 1) => {
   }
 };
 
+// Fetch student profile (Authenticated student)
+const fetchStudentProfile = async () => {
+  try {
+    const response = await API.get("/api/student/profile");
+    return response.data.student; // Return the student's profile
+  } catch (error) {
+    throw error.response ? error.response.data : { message: "Network error" };
+  }
+};
+
+// Update student profile
+const updateStudentProfile = async (profileData) => {
+  try {
+    const response = await API.put("/api/student/profile", profileData, {
+      headers: {
+        "Content-Type": "multipart/form-data", // To handle file uploads
+      },
+    });
+    return response.data.updatedUser; // Return the updated profile data
+  } catch (error) {
+    throw error.response ? error.response.data : { message: "Network error" };
+  }
+};
+const fetchWalletBalance = async (studentId) => {
+  try {
+    const response = await API.get(`api/wallet/balance/${studentId}`);
+    return response.data; // Return wallet balance data
+  } catch (error) {
+    console.error(
+      "Error fetching wallet balance:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+const initiateWalletTransaction = async (studentId, amount, paymentGateway) => {
+  try {
+    const response = await API.post(`/api/transaction/initiate`, {
+      studentId, // Pass studentId as a string
+      amount,
+      paymentGateway,
+    });
+    return response.data; // Return transaction initiation response
+  } catch (error) {
+    console.error(
+      "Error initiating wallet transaction:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+const confirmWalletTransaction = async (pidx, transaction_id) => {
+  try {
+    console.log(
+      "Inside confirmWalletTransaction api function, pidx:",
+      pidx,
+      transaction_id
+    );
+    const response = await API.post(`api/transaction/verify`, {
+      pidx,
+      transaction_id,
+    });
+    return response.data; // Return confirmation response
+  } catch (error) {
+    console.error(
+      "Error confirming wallet transaction:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+// Fetch transaction history
+const fetchWalletTransactions = async (studentId) => {
+  try {
+    const response = await API.get(`api/transaction/transactions/${studentId}`);
+    return response.data; // Return wallet transactions data
+  } catch (error) {
+    console.error(
+      "Error fetching wallet transactions:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 export {
+  confirmWalletTransaction,
   fetchAllSubjects,
+  fetchStudentProfile,
   fetchTutorProfile,
   fetchTutors,
+  fetchWalletBalance,
+  fetchWalletTransactions,
   getTutors,
+  initiateWalletTransaction,
   loginUser,
   registerUser,
   resendOtp,
+  updateStudentProfile,
   updateTutorProfile,
   verifyEmail,
 };

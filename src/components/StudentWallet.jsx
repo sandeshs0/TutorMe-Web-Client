@@ -1,6 +1,12 @@
+import KhaltiCheckout from "khalti-checkout-web";
 import { ArrowUpDown, ChevronLeft, ChevronRight, Search } from "lucide-react";
-import React, { useMemo, useState, useEffect } from "react";
-import { fetchStudentProfile } from "../services/api";
+import React, { useMemo, useState } from "react";
+import { toast } from "react-toastify";
+import {
+  confirmWalletTransaction,
+  initiateWalletTransaction,
+} from "../services/api";
+import khaltiConfig from "../utils/khaltiConfig";
 
 const SortButton = ({ active, ascending, onClick }) => (
   <button
@@ -209,8 +215,9 @@ const CustomTable = ({ data, columns, pageSize = 5 }) => {
   );
 };
 
-const WalletPage = ({studentData}) => {
+const WalletPage = ({ studentData }) => {
   const walletBalance = studentData.walletBalance || 0;
+  const [loading, setLoading] = useState(false);
 
   const deductionData = [
     {
@@ -276,6 +283,136 @@ const WalletPage = ({studentData}) => {
     { headerName: "Amount", field: "amount" },
   ];
 
+  // const handleLoadBalance = async () => {
+  //   try {
+  //     // Call initiate transaction API
+  //     const studentId = studentData.id; // Replace with dynamic ID
+  //     const amount = 1000; // Replace with dynamic amount
+  //     const paymentGateway = "Khalti";
+
+  //     const { data } = await initiateWalletTransaction(
+  //       studentId,
+  //       amount,
+  //       paymentGateway
+  //     );
+
+  //     const checkout = new KhaltiCheckout({
+  //       ...khaltiConfig,
+  //       eventHandler: {
+  //         ...khaltiConfig.eventHandler,
+  //         onSuccess: async (payload) => {
+  //           console.log("Khalti Payload:", payload);
+  //           const response = await confirmWalletTransaction(
+  //             data.transactionId,
+  //             payload.token
+  //           );
+
+  //           if (response.success) {
+  //             setWalletBalance(walletBalance + 1000); // Update UI balance
+  //             toast.success("Wallet loaded successfully!");
+  //           } else {
+  //             toast.error("Transaction failed.");
+  //           }
+  //         },
+  //       },
+  //     });
+
+  //     checkout.show({ amount: 1000 * 100 }); // Amount in paisa
+  //   } catch (err) {
+  //     console.error(err);
+  //     toast.error("Failed to load wallet.");
+  //   }
+  // };
+
+  // const handleLoadBalance = async () => {
+  //   try {
+  //     // Call backend to initiate the transaction
+  //     const studentId = studentData.id; // Replace with the logged-in student ID
+  //     const amount = 1000; // Amount in rupees
+  //     const response = await initiateWalletTransaction(studentId, amount,"Khalti");
+
+  //     if (response.success) {
+  //       // Redirect the user to Khalti's payment page
+  //       window.location.href = response.payment_url;
+  //     } else {
+  //       toast.error("Failed to initiate wallet transaction.");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error initiating wallet transaction:", err.message);
+  //     toast.error("An error occurred while loading balance.");
+  //   }
+  // };
+
+  const handleLoadBalance = async () => {
+    try {
+      setLoading(true);
+
+      const amount = 1000; // Amount to load (in Rs.)
+      const paymentGateway = "Khalti";
+
+      // Step 1: Initiate transaction on the backend
+      const initiateResponse = await initiateWalletTransaction(
+        studentData.id, // Replace with student ID from props
+        amount,
+        paymentGateway
+      );
+
+      const { transactionId, payment_url, pidx } = initiateResponse;
+      localStorage.setItem("transactionID", transactionId);
+      // Step 2: Configure Khalti Checkout with the payment details
+      // const checkout = new KhaltiCheckout({
+      //   ...khaltiConfig,
+      //   eventHandler: {
+      //     onSuccess: async (payload) => {
+      //       try {
+      //         console.log("Khalti Payment Success:", payload);
+
+      //         // Step 3: Verify the transaction with the backend
+      //         const verifyResponse = await confirmWalletTransaction(
+      //           transactionId,
+      //           pidx // Using pidx to verify the transaction
+      //         );
+
+      //         if (verifyResponse.success) {
+      //           // Update wallet balance in UI
+      //           setWalletBalance(walletBalance + amount);
+      //           toast.success("Wallet loaded successfully!");
+      //         } else {
+      //           toast.error("Transaction verification failed.");
+      //         }
+      //       } catch (err) {
+      //         console.error("Error verifying transaction:", err.message);
+      //         toast.error("Failed to verify transaction.");
+      //       }
+      //     },
+      //     onError: (error) => {
+      //       console.error("Khalti Payment Error:", error);
+      //       toast.error("Payment failed. Please try again.");
+      //     },
+      //     onClose: () => {
+      //       console.log("Khalti Payment Widget Closed.");
+      //     },
+      //   },
+      // });
+      if (payment_url) {
+        // Step 2: Redirect the user to the payment URL provided by Khalti
+        window.location.href = payment_url;
+  
+        // Optionally, you can add a loading indicator while waiting for the user to complete the payment
+      } else {
+        toast.error("Failed to get payment URL. Please try again.");
+      }
+
+      // Step 4: Open Khalti checkout widget
+      // checkout.show({ amount: amount * 100 }); // Amount in paisa
+    } catch (err) {
+      console.error("Error initiating wallet transaction:", err.message);
+      toast.error("Failed to initiate wallet transaction.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="p-6 space-y-8 font-poppins min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       {/* Wallet Balance Card */}
@@ -286,7 +423,10 @@ const WalletPage = ({studentData}) => {
           </h2>
           <p className="text-5xl font-bold">Rs. {walletBalance}</p>
         </div>
-        <button className="px-6 py-3 bg-white text-blue-600 hover:bg-blue-50 transition-all duration-200 rounded-lg shadow-md hover:shadow-lg font-semibold">
+        <button
+          onClick={handleLoadBalance}
+          className="px-6 py-3 bg-white text-blue-600 hover:bg-blue-50 transition-all duration-200 rounded-lg shadow-md hover:shadow-lg font-semibold"
+        >
           Load Balance
         </button>
       </div>

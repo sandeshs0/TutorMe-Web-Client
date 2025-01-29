@@ -6,11 +6,12 @@ import TutorProfileDropdown from "../components/TutorProfileDropdown";
 import { useAuth } from "../context/AuthContext";
 import { fetchTutorProfile } from "../services/api";
 import OverviewSection from "../components/OverViewTutorDashboard";
+import { Horizon } from "@theme-toggles/react"
 
 const TutorDashboard = () => {
   const { user } = useAuth(); // Using AuthContext for user
   const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("darkMode") === "true"
+    localStorage.getItem("darkMode")==="true" || false
   ); // State for dark mode
   const [currentPage, setCurrentPage] = useState("Overview"); // State for current page
   const [tutorData, setTutorData] = useState(null);
@@ -152,19 +153,20 @@ const TutorDashboard = () => {
           <h1 className="text-xl font-bold">
             Hi, {tutorData?.name || "User"} !
           </h1>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center md:space-x-6 space-x-2">
             {/* Dark Mode Toggle */}
             <button
-              className="btn btn-md text-xl btn-circle btn-ghost"
+              className="btn btn-md hover:animate-pulse dark:bg-gray-700 bg-slate-200 text-2xl btn-circle btn-ghost"
               onClick={toggleDarkMode}
               aria-label="Toggle Dark Mode"
             >
               {darkMode ? (
                 <i className="fas fa-sun text-yellow-400"></i>
               ) : (
-                <i className="fas fa-moon text-black"></i>
+                <i className="fas fa-moon text-blue-900"></i>
               )}
             </button>
+
             {/* Profile Dropdown */}
             <TutorProfileDropdown
               userName={tutorData?.name || "User"}
