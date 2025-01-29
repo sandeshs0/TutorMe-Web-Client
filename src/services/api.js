@@ -179,9 +179,9 @@ const confirmWalletTransaction = async (pidx, transaction_id) => {
 };
 
 // Fetch transaction history
-const fetchWalletTransactions = async (studentId) => {
+const fetchWalletTransactions = async () => {
   try {
-    const response = await API.get(`api/transaction/transactions/${studentId}`);
+    const response = await API.get("api/transaction/history/");
     return response.data; // Return wallet transactions data
   } catch (error) {
     console.error(
