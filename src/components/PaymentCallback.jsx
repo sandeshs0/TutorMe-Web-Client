@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { confirmWalletTransaction } from "../services/api";
 import { toast } from "react-toastify";
@@ -6,9 +6,14 @@ import { toast } from "react-toastify";
 const PaymentCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const hasRun = useRef(false); // Track if function has run
+
 
   useEffect(() => {
     const handlePaymentVerification = async () => {
+      if (hasRun.current) return; // Prevent duplicate execution
+      hasRun.current = true;
+      
       const pidx = searchParams.get("pidx");
       const status = searchParams.get("status");
       const trans_ID= localStorage.getItem("transactionID")
