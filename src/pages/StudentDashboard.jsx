@@ -17,7 +17,7 @@ const StudentDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false); // State for side drawer
-
+  console.log("Student:",studentData);
   const drawerRef = useRef(null); // Ref for the side drawer
 
   // Toggle Dark Mode
@@ -175,7 +175,7 @@ const StudentDashboard = () => {
             <StudentProfileDropdown
               userName={studentData?.name || "Student"}
               userAvatar={
-                studentData?.profileImage || "https://via.placeholder.com/40"
+                studentData?.profileImage
               }
             />
           </div>
