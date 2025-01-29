@@ -6,6 +6,8 @@ import { useAuth } from "../context/AuthContext";
 const StudentProfileDropdown = ({ userName, userAvatar }) => {
   const { logout } = useAuth(); // Use AuthContext for logout
   const navigate = useNavigate();
+  console.log("User Avatar: ", userAvatar);
+
 
   const handleLogout = () => {
     logout(); // Clear user data and navigate
@@ -16,7 +18,7 @@ const StudentProfileDropdown = ({ userName, userAvatar }) => {
   const generateInitialsAvatar = (name) => {
     const firstLetter = name?.charAt(0)?.toUpperCase() || "?"; // Get the first letter of the first name
     return (
-      <div className="w-8 h-8 flex font-sans items-center justify-center rounded-full bg-green-500 text-white mr-2">
+      <div className="w-12 h-12 flex font-sans text-lg font-bold items-center justify-center rounded-full bg-green-700 text-white ">
         {firstLetter}
       </div>
     );
