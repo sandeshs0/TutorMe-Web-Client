@@ -3,9 +3,11 @@ import { toast, ToastContainer } from "react-toastify";
 // import StudentProfile from "../components/StudentProfile";
 import StudentProfileDropdown from "../components/StudentProfileDropdown";
 // import ProfileDropdown from "../components/ProfileDropdown";
+import useSound from "use-sound";
+import lightSound from "../assets/sounds/light.mp3";
+import StudentWallet from "../components/StudentWallet";
 import { useAuth } from "../context/AuthContext";
 import { fetchStudentProfile } from "../services/api";
-import StudentWallet from "../components/StudentWallet";
 
 const StudentDashboard = () => {
   const { user } = useAuth(); // Using AuthContext for user
@@ -17,13 +19,14 @@ const StudentDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false); // State for side drawer
-  console.log("Student:",studentData);
+  console.log("Student:", studentData);
   const drawerRef = useRef(null); // Ref for the side drawer
-
+  const [playLight] = useSound(lightSound, { volume: 0.04 });
   // Toggle Dark Mode
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
+    playLight();
     document.documentElement.classList.toggle("dark", newMode);
     localStorage.setItem("darkMode", newMode);
   };
@@ -48,7 +51,7 @@ const StudentDashboard = () => {
 
     fetchData();
   }, [currentPage]);
-  console.log("state: ",studentData);
+  console.log("state: ", studentData);
 
   // Close drawer on outside click
   useEffect(() => {
@@ -81,11 +84,13 @@ const StudentDashboard = () => {
         return <h1 className="text-2xl font-bold">Sessions</h1>;
       case "Statement":
         return <h1 className="text-2xl font-bold">Statement</h1>;
+      case "Browse Tutors":
+        return window.location.replace("/browse");
       case "Wallet":
-        return <StudentWallet studentData={studentData}/>
+        return <StudentWallet studentData={studentData} />;
       case "Profile":
-      // return <StudentProfile studentData={studentData} />;
-      return <h1 className="text-2xl font-bold">Profile</h1>;
+        // return <StudentProfile studentData={studentData} />;
+        return <h1 className="text-2xl font-bold">Profile</h1>;
 
       default:
         return <h1 className="text-2xl font-bold">Welcome!</h1>;
@@ -118,6 +123,7 @@ const StudentDashboard = () => {
             {[
               { name: "Overview", icon: "fas fa-home" },
               { name: "Sessions", icon: "fas fa-video" },
+              { name: "Browse Tutors", icon: "fas fa-globe" },
               { name: "Statement", icon: "fas fa-chart-line" },
               { name: "Profile", icon: "fas fa-user" },
               { name: "Wallet", icon: "fas fa-wallet" },
@@ -145,7 +151,7 @@ const StudentDashboard = () => {
       {/* Main Content Area */}
       <div className="flex-grow flex flex-col">
         {/* Header */}
-        <header className="bg-gray-100 dark:bg-gray-800 shadow p-4 flex justify-between items-center">
+        <header className="bg-white border-b-2 border-gray-200 dark:border-gray-600 dark:bg-gray-800 shadow p-4 flex justify-between items-center">
           {/* Hamburger for small screens */}
           <button
             className="lg:hidden text-xl"
@@ -154,8 +160,8 @@ const StudentDashboard = () => {
           >
             <i className="fas fa-bars"></i>
           </button>
-          <h1 className="text-xl font-bold">
-            Hi, {studentData?.name || "Student"}!
+          <h1 className="text-2xl font-bold">
+            Welcome Back, {studentData?.name || "Student"}!
           </h1>
           <div className="flex items-center md:space-x-6 space-x-2">
             {/* Dark Mode Toggle */}
@@ -174,15 +180,13 @@ const StudentDashboard = () => {
             {/* Profile Dropdown */}
             <StudentProfileDropdown
               userName={studentData?.name || "Student"}
-              userAvatar={
-                studentData?.profileImage
-              }
+              userAvatar={studentData?.profileImage}
             />
           </div>
         </header>
 
         {/* Dynamic Content */}
-        <main className="flex-grow p-6 bg-white dark:bg-gray-900 rounded-t-lg shadow-lg overflow-y-auto">
+        <main className="flex-grow p-6 bg-white dark:bg-gray-900 shadow-lg overflow-y-auto">
           {renderContent()} {/* Dynamic content based on selected menu item */}
         </main>
       </div>
