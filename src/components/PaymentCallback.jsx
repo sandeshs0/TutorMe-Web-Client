@@ -1,23 +1,31 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { confirmWalletTransaction } from "../services/api";
 import { toast } from "react-toastify";
+import { confirmWalletTransaction } from "../services/api";
 
 const PaymentCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const hasRun = useRef(false); // Track if function has run
 
-
   useEffect(() => {
     const handlePaymentVerification = async () => {
       if (hasRun.current) return; // Prevent duplicate execution
       hasRun.current = true;
-      
+
       const pidx = searchParams.get("pidx");
       const status = searchParams.get("status");
-      const trans_ID= localStorage.getItem("transactionID")
-      console.log("Inside payment call back, search paran:", searchParams,"pidx:", pidx, "status:", status, "transaction id:",trans_ID);
+      const trans_ID = localStorage.getItem("transactionID");
+      console.log(
+        "Inside payment call back, search paran:",
+        searchParams,
+        "pidx:",
+        pidx,
+        "status:",
+        status,
+        "transaction id:",
+        trans_ID
+      );
 
       if (status === "Completed" && pidx) {
         try {

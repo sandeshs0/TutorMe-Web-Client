@@ -83,12 +83,12 @@ const Navbar = () => {
       >
         <ul className="menu lg:menu-horizontal px-1 space-y-4 lg:space-y-0 lg:space-x-6">
           <li>
-            <a className="text-lg font-light text-white font-poppins hover:font-bold hover:text-xl hover:bg-transparent transition-colors">
+            <a href="/" className="text-lg font-light text-white font-poppins hover:font-bold hover:text-xl hover:bg-transparent transition-colors">
               Home
             </a>
           </li>
           <li>
-            <a className="text-lg font-light text-white font-poppins hover:font-bold hover:text-xl hover:bg-transparent transition-colors">
+            <a href="/browse" className="text-lg font-light text-white font-poppins hover:font-bold hover:text-xl hover:bg-transparent transition-colors">
               Find Tutor
             </a>
           </li>

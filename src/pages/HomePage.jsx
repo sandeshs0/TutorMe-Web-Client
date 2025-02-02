@@ -119,7 +119,7 @@ const HomePage = () => {
           <PopularTutors tutors={tutors} />
         )}
       </div>
-      <PaginatedTutors tutors={tutorsRandom} itemsPerPage={6} />
+      <PaginatedTutors itemsPerPage={6} />
 
       <Footer />
     </div>

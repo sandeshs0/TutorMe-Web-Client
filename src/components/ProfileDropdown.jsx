@@ -1,13 +1,22 @@
-import React from "react";
+import { React, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 
-
 const ProfileDropdown = ({ userName, userAvatar }) => {
   const { logout } = useAuth(); // Use AuthContext for logout
   const navigate = useNavigate();
-    const { user } = useAuth();
+  const { user } = useAuth();
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("darkMode") === "true"
+  );
+
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    document.documentElement.classList.toggle("dark", newMode);
+    localStorage.setItem("darkMode", newMode);
+  };
 
   const handleLogout = () => {
     logout(); // Clear user data and navigate
@@ -29,7 +38,7 @@ const ProfileDropdown = ({ userName, userAvatar }) => {
       {/* Profile Button */}
       <button
         tabIndex={0}
-        className="flex items-center px-3 py-2 bg-blue-900 text-white font-medium rounded-full hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-200"
+        className="flex items-center px-3 py-2 bg-blue-900 dark:bg-gray-800 text-white font-medium rounded-full hover:bg-blue-900 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:focus:ring-gray-500"
       >
         {userAvatar ? (
           <img
@@ -41,42 +50,14 @@ const ProfileDropdown = ({ userName, userAvatar }) => {
           generateInitialsAvatar(userName)
         )}
         <span className="hidden sm: font-sans">{userName}</span>{" "}
-        {/* Hide on small screens */}
         <i className="fas fa-chevron-down ml-2 text-sm"></i>
       </button>
-
-      {/* Dropdown Menu */}
-      {/* {isOpen && (
-        <div className="absolute dropdown right-0 mt-2 w-48 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-10">
-          <div className="py-2">
-            <a
-              href="/account"
-              className="block btn-ghost px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              My Account
-            </a>
-            <a
-              href="/settings"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              Settings
-            </a>
-            <button
-              onClick={handleLogout}
-              className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      )} */}
-
       <ul
         tabIndex={0}
-        className="dropdown-content menu font-poppins font-semibold bg-gray-50 rounded-lg z-10 w-52 mt-2 shadow-lg p-2 text-sm"
+        className="dropdown-content menu font-poppins font-semibold bg-gray-50 dark:bg-gray-900 rounded-lg z-10 w-52 mt-2 shadow-lg p-2 text-sm text-gray-900 dark:text-white"
       >
         <li>
-          <p className="block px-4 py-2 mb-1 text-gray-900 bg-blue-100 hover:bg-blue-100 rounded-md">
+          <p className="block px-4 py-2 mb-1 bg-blue-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-blue-100 dark:hover:bg-gray-600 rounded-md">
             {userName}
           </p>
         </li>
@@ -84,16 +65,16 @@ const ProfileDropdown = ({ userName, userAvatar }) => {
           <li>
             <a
               href="/tutor-dashboard"
-              className="block px-4 py-2 text-gray-900 hover:bg-blue-100 rounded-md"
+              className="block px-4 py-2 text-gray-900 dark:text-white hover:bg-blue-100 dark:hover:bg-gray-600 rounded-md"
             >
-Tutor Dashboard           
- </a>
+              Tutor Dashboard
+            </a>
           </li>
         )}
         <li>
           <a
             href="/account-center"
-            className="block px-4 py-2 text-gray-900 hover:bg-blue-100 rounded-md"
+            className="block px-4 py-2 text-gray-900 dark:text-white hover:bg-blue-100 dark:hover:bg-gray-600 rounded-md"
           >
             My Account
           </a>
@@ -101,15 +82,30 @@ Tutor Dashboard
         <li>
           <a
             href="/settings"
-            className="block px-4 py-2 text-gray-900 hover:bg-blue-100 rounded-md"
+            className="block px-4 py-2 text-gray-900 dark:text-white hover:bg-blue-100 dark:hover:bg-gray-600 rounded-md"
           >
             Settings
           </a>
         </li>
         <li>
+          <div
+            onClick={toggleDarkMode}
+            className="block px-4 py-2 text-gray-900 dark:text-white hover:bg-blue-100 dark:hover:bg-gray-600 rounded-md"
+          >
+            Switch Mode
+              {darkMode ? (
+                <>
+                  <i className="fas fa-sun text-yellow-400 ml-2"></i>
+                </>
+              ) : (
+                <i className="fas fa-moon text-blue-900 ml-2"></i>
+              )}
+          </div>
+        </li>
+        <li>
           <button
             onClick={handleLogout}
-            className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-100 rounded-md"
+            className="w-full text-left px-4 py-2 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-700 rounded-md"
           >
             <i className="fas fa-sign-out-alt mr-2"></i>
             Logout

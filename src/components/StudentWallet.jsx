@@ -2,14 +2,14 @@ import { ArrowUpDown, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import Tablicious from "react-tablicious";
 import { toast } from "react-toastify";
+import { useDarkMode } from "../hooks/useDarkMode";
 import {
   fetchWalletTransactions,
   initiateWalletTransaction,
 } from "../services/api";
-import { useDarkMode } from "../hooks/useDarkMode";
-
-
+import { GiWallet } from "react-icons/gi";
 const SortButton = ({ active, ascending, onClick }) => (
   <button
     onClick={onClick}
@@ -51,18 +51,16 @@ const TableRow = ({ row, columns }) => (
       <td
         key={column.field}
         className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100"
-        // className={`px-6 py-4 whitespace-nowrap text-md ${
-        //   column.field === 'amount' 
-        //     ? 'bg-green-200 dark:bg-green-900/30 text-green-800 dark:text-green-200'
-        //     : 'text-gray-900 dark:text-gray-100'
-        // } transition-colors duration-200`}
->
-        <p className={`${
-          column.field === 'amount' 
-            ? 'bg-green-200 text-center rounded-lg py-1 px- border-2 dark:border-green-800 border-green-400 font-bold dark:bg-green-900/30 text-green-800 dark:text-green-200'
-            : 'text-gray-900 dark:text-gray-100'
-        } transition-colors duration-200`}>{row[column.field]}</p>
-        
+      >
+        <p
+          className={`${
+            column.field === "amount"
+              ? "bg-green-200 text-center rounded-lg py-1 px- border-2 dark:border-green-800 border-green-400 font-bold dark:bg-green-900/30 text-green-800 dark:text-green-200"
+              : "text-gray-900 dark:text-gray-100"
+          } transition-colors duration-200`}
+        >
+          {row[column.field]}
+        </p>
       </td>
     ))}
   </tr>
@@ -300,7 +298,6 @@ const WalletPage = ({ studentData }) => {
     { headerName: "Date", field: "paymentDate" },
     { headerName: "Method", field: "paymentGateway" },
     { headerName: "Amount", field: "amount" },
-
   ];
 
   useEffect(() => {
@@ -468,7 +465,7 @@ const WalletPage = ({ studentData }) => {
       </dialog>
       {/* Payment Modal End */}
       {/* Wallet Balance Card */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8 rounded-xl flex justify-between items-center shadow-lg transition-transform duration-200 hover:shadow-xl">
+      <div className="bg-gradient-to-r from-indigo-800 via-blue-700 to-cyan-700 text-white p-8 rounded-xl flex justify-between items-center shadow-lg transition-transform duration-200 hover:shadow-xl">
         <div className="space-y-2">
           <h2 className="text-2xl font-semibold text-blue-100">
             Wallet Balance
@@ -494,14 +491,15 @@ const WalletPage = ({ studentData }) => {
           onClick={() => document.getElementById("payment_modal").showModal()}
           className="px-6 py-3 bg-white text-blue-600 hover:bg-blue-50 transition-all duration-200 rounded-lg shadow-md hover:shadow-lg font-semibold"
         >
-          Load Balance
+<i className="fas fa-wallet mr-2"></i>
+Load Balance
         </button>
       </div>
 
       {/* Tables Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className=" grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Recent Deductions Table */}
-        <div className="bg-slate-100 dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-200">
+        {/* <div className="bg-slate-100 dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-200">
           <h3 className="text-xl font-bold mb-6 text-gray-800 dark:text-white">
             Recent Deductions
           </h3>
@@ -510,7 +508,7 @@ const WalletPage = ({ studentData }) => {
             columns={deductionColumns}
             pageSize={5}
           />
-        </div>
+        </div> */}
 
         {/* Balance Load Transactions Table */}
         <div className="bg-slate-100 dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-200">
@@ -535,7 +533,37 @@ const WalletPage = ({ studentData }) => {
             <CustomTable
               data={transactions}
               columns={balanceLoadColumns}
-              pageSize={5}
+              pageSize={7}
+            />
+          ) : (
+            <p className="text-gray-600 dark:text-gray-300">
+              No transactions found.
+            </p>
+          )}
+        </div>
+        <div className="bg-slate-100 dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-200">
+          <h3 className="text-xl font-bold mb-6 text-gray-800 dark:text-white">
+            Balance Load Transactions
+          </h3>
+          {loading ? (
+            // <p className="text-gray-600 dark:text-gray-300">
+            //   Loading transactions...
+            // </p>
+            <Skeleton
+              count={6}
+              height={30}
+              borderRadius={8}
+              className="mb-2"
+              // baseColor={"#e5e7eb"}
+              baseColor={darkMode ? "#374151" : "#e5e7eb"}
+              highlightColor={darkMode ? "#4b5563" : "#f3f4f6"}
+              // highlightColor={"#f3f4f6"}
+            />
+          ) : transactions.length > 0 ? (
+            <Tablicious
+              data={transactions}
+              columns={balanceLoadColumns}
+              pageSize={7}
             />
           ) : (
             <p className="text-gray-600 dark:text-gray-300">

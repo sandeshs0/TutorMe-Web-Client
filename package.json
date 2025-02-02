@@ -28,10 +28,13 @@
     "react-loading-skeleton": "^3.5.0",
     "react-router-dom": "^7.1.1",
     "react-slick": "^0.30.3",
+    "react-tablicious": "^1.0.9",
+    "react-tagaroo": "^1.0.2",
     "react-toastify": "^11.0.2",
     "slick-carousel": "^1.8.1",
     "socket.io": "^4.8.1",
     "swiper": "^11.2.0",
+    "use-sound": "^4.0.3",
     "yup": "^1.6.1"
   },
   "devDependencies": {
