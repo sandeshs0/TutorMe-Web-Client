@@ -1,58 +1,85 @@
 import React from "react";
-import { FaRegStar, FaStar } from "react-icons/fa";
+import { FaStar, FaRegStar, FaCheckCircle } from "react-icons/fa";
 
 const TutorCardGrid = ({ tutor }) => {
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 max-w-sm w-full border border-gray-200 dark:border-gray-700 hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-      <div className="relative flex flex-col items-center">
-        {/* Profile Image with Online Status Indicator */}
-        <div className="relative w-32 h-32">
+    <div className="group bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out relative overflow-hidden">
+      {/* Profile Header Section */}
+      <div className="relative mb-6">
+        <div className="relative w-full h-48 rounded-xl overflow-hidden">
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 to-transparent" />
           <img
-            src={tutor.profileImage || "https://via.placeholder.com/150"}
+            src={tutor.profileImage || "https://via.placeholder.com/400x200"}
             alt={tutor.name}
-            className="w-full h-full rounded-full border-4 border-primary dark:border-primary-500 object-cover"
+            className="w-full h-full object-cover"
           />
-          {/* Online status as a dot */}
-          <span
-            className={`absolute bottom-2 right-2 w-4 h-4 rounded-full ${
-              tutor.isOnline ? "bg-green-500" : "bg-gray-400"
-            } border-2 border-white dark:border-gray-800`}
-          />
+          
+          {/* Online Status */}
+          <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-white/90 dark:bg-gray-800/90 px-3 py-1 rounded-full backdrop-blur-sm">
+            <span className={`w-3 h-3 rounded-full ${tutor.isOnline ? "bg-green-500" : "bg-gray-400"}`} />
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {tutor.isOnline ? "Available Now" : "Offline"}
+            </span>
+          </div>
         </div>
 
-        {/* Tutor Details */}
-        <h2 className="mt-4 text-lg font-bold text-gray-800 dark:text-white">
+        {/* Profile Image */}
+        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
+          <div className="relative w-20 h-20 border-4 border-white dark:border-gray-800 rounded-full shadow-lg">
+            <img
+              src={tutor.profileImage || "https://via.placeholder.com/100"}
+              alt={tutor.name}
+              className="w-full h-full rounded-full object-cover"
+            />
+            {tutor.isVerified && (
+              <FaCheckCircle className="absolute bottom-0 right-0 text-blue-500 bg-white rounded-full text-xl" />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="pt-10 text-center">
+        {/* Name and Bio */}
+        <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-1">
           {tutor.name}
         </h2>
         {tutor.bio && (
-          <p className="text-gray-500 dark:text-gray-400 text-sm text-center">
+          <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
             {tutor.bio}
           </p>
         )}
 
-        {/* Ratings */}
-        <div className="flex items-center mt-2">
-          {[...Array(5)].map((_, index) => (
-            <span key={index} className="text-yellow-400">
-              {index < tutor.rating ? <FaStar /> : <FaRegStar />}
+        {/* Rating and Price */}
+        <div className="flex items-center justify-center gap-4 mb-6">
+          <div className="flex items-center bg-primary/10 dark:bg-gray-600 px-3 py-1 rounded-full">
+            {[...Array(5)].map((_, index) => (
+              <span key={index} className="text-yellow-600 text-lg">
+                {index < tutor.rating ? <FaStar /> : <FaRegStar />}
+              </span>
+            ))}
+            <span className="text-gray-600 dark:text-gray-100 text-sm font-medium ml-2">
+              {tutor.rating.toFixed(1)}
             </span>
-          ))}
-          <p className="text-gray-500 dark:text-gray-400 text-sm ml-2">
-            {tutor.rating.toFixed(1)} / 5
-          </p>
+          </div>
+          <span className="text-lg font-bold text-gray-800 dark:text-white">
+            ₹{tutor.hourlyRate}
+            <span className="text-sm font-normal text-gray-500 ml-1">/hr</span>
+          </span>
         </div>
 
         {/* Expertise */}
         {tutor.subjects?.length > 0 && (
-          <div className="w-full mt-4 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">
-              Expertise in:
+          <div className="mb-6">
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-3">
+              Teaching Expertise
             </p>
-            <div className="flex flex-wrap gap-2">
-              {tutor.subjects?.map((subject, index) => (
+            <div className="flex flex-wrap justify-center gap-2">
+              {tutor.subjects.slice(0, 4).map((subject, index) => (
                 <span
                   key={index}
-                  className="bg-primary text-white text-xs font-medium px-3 py-1 rounded-full"
+                  className="bg-primary/80 text-gray-100 text-xs font-medium px-3 py-1.5 rounded-full hover:bg-primary/60 transition-colors"
                 >
                   {subject.replace(/["[\]]/g, "")}
                 </span>
@@ -61,15 +88,20 @@ const TutorCardGrid = ({ tutor }) => {
           </div>
         )}
 
-        {/* Rate & Book Button */}
-        <div className="flex justify-between items-center w-full mt-4">
-          <p className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-            Rs. {tutor.hourlyRate}/hr
-          </p>
-          <button className="bg-primary btn text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors">
-            Book Now
-          </button>
-        </div>
+        {/* Action Button */}
+        <button className="w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-[1.02] shadow-sm hover:shadow-md flex items-center justify-center gap-2">
+          <span>Book Session</span>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Floating Stats */}
+      <div className="absolute top-4 left-4 flex items-center gap-2">
+        <span className="bg-white/90 dark:bg-gray-800/90 px-3 py-1 rounded-full text-sm font-medium text-gray-700 dark:text-gray-300 backdrop-blur-sm">
+          {tutor.lessonsTaught || "100+"} lessons
+        </span>
       </div>
     </div>
   );
