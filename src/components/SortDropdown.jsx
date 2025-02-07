@@ -22,7 +22,7 @@ const SortDropdown = ({ setSortOption }) => {
       
       <ul 
         tabIndex={0} 
-        className="dropdown-content menu bg-gray-100 dark:bg-gray-800 dark:text-white rounded-box shadow-lg w-56 p-2 z-50"
+        className="dropdown-content menu bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-white rounded-box shadow-lg w-56 p-2 z-50"
       >
         <li>
           <button 

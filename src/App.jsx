@@ -14,7 +14,7 @@ import OtpPage from "./pages/OtpPage";
 import SignupPage from "./pages/SignupPage";
 import StudentDashboard from "./pages/StudentDashboard";
 import TutorDashboard from "./pages/TutorDashboard";
-
+import TutorProfilePage from "./pages/TutorProfile";
 const App = () => {
   return (
     <>
@@ -28,6 +28,7 @@ const App = () => {
           <Route path="/account-center" element={<StudentDashboard />} />
           <Route path="/payment-callback" element={<PaymentCallback />} />
           <Route path="/browse" element={<BrowseTutorsPage />} />
+          <Route path="/tutors/:username" element={<TutorProfilePage />} />
         </Routes>
       </Router>
       <div>

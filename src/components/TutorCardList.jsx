@@ -34,7 +34,7 @@ const TutorCardList = ({ tutor }) => {
         </div>
         
         <div className="flex flex-wrap gap-y-1 items-center justify-center sm:justify-start gap-2">
-          <span className="px-2 py-1 md:px-3 md:py-1 bg-primary/10 text-primary-dark dark:text-gray-300 text-xs md:text-sm rounded-full">
+          <span className="px-2 py-1 md:px-3 md:py-1 bg-primary/10 text-gray-700 dark:text-gray-300 text-xs md:text-sm rounded-full">
             {tutor.bio || "Tutor"} 
           </span>
           {/* <span className="hidden sm:inline text-gray-500">•</span> */}

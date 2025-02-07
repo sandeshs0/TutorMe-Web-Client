@@ -79,7 +79,7 @@ const updateTutorProfile = async (profileData) => {
 // Fetch all tutors
 const fetchTutors = async (queryParams) => {
   try {
-    const response = await API.get("/api/tutors", { params: queryParams });
+    const response = await API.get("/api/tutors/", { params: queryParams });
     return response.data; // Return the data from the API
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
@@ -140,6 +140,20 @@ const fetchWalletBalance = async (studentId) => {
     throw error;
   }
 };
+
+const fetchTutor = async (username) => {
+  try {
+    const response = await API.get(`/api/tutors/profile/${username}`);
+    return response.data; // Return tutor data
+  } catch (error) {
+    console.error(
+      "Error fetching tutor data:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 const initiateWalletTransaction = async (studentId, amount, paymentGateway) => {
   try {
     const response = await API.post(`/api/transaction/initiate`, {
@@ -196,6 +210,7 @@ export {
   confirmWalletTransaction,
   fetchAllSubjects,
   fetchStudentProfile,
+  fetchTutor,
   fetchTutorProfile,
   fetchTutors,
   fetchWalletBalance,

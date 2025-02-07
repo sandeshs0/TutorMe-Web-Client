@@ -9,7 +9,7 @@ const PaginatedTutorGrid = ({ itemsPerPage = 1 }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  itemsPerPage = 1;
+  itemsPerPage = 3;
   // Fetch tutors using the API
   const fetchTutors = async (page) => {
     setLoading(true);

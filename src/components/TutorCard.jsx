@@ -1,7 +1,12 @@
 import React from "react";
-import { FaStar, FaRegStar, FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle, FaRegStar, FaStar } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const TutorCardGrid = ({ tutor }) => {
+  const navigate = useNavigate();
+  const handleViewProfile = () => {
+    navigate(`/tutors/${tutor.username}`); // Use the username to navigate to the profile
+  };
   return (
     <div className="group bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out relative overflow-hidden">
       {/* Profile Header Section */}
@@ -14,10 +19,14 @@ const TutorCardGrid = ({ tutor }) => {
             alt={tutor.name}
             className="w-full h-full object-cover"
           />
-          
+
           {/* Online Status */}
           <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-white/90 dark:bg-gray-800/90 px-3 py-1 rounded-full backdrop-blur-sm">
-            <span className={`w-3 h-3 rounded-full ${tutor.isOnline ? "bg-green-500" : "bg-gray-400"}`} />
+            <span
+              className={`w-3 h-3 rounded-full ${
+                tutor.isOnline ? "bg-green-500" : "bg-gray-400"
+              }`}
+            />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               {tutor.isOnline ? "Available Now" : "Offline"}
             </span>
@@ -89,11 +98,11 @@ const TutorCardGrid = ({ tutor }) => {
         )}
 
         {/* Action Button */}
-        <button className="w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-[1.02] shadow-sm hover:shadow-md flex items-center justify-center gap-2">
-          <span>Book Session</span>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-          </svg>
+        <button
+          onClick={handleViewProfile}
+          className="w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-[1.02] shadow-sm hover:shadow-md flex items-center justify-center gap-2"
+        >
+          <span>View Profile</span>
         </button>
       </div>
 

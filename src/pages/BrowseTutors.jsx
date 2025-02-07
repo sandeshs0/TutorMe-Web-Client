@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FaThLarge, FaThList, FaFilter, FaTimes } from "react-icons/fa";
+import { FaFilter, FaThLarge, FaThList, FaTimes } from "react-icons/fa";
+import {CircleChevronLeft, CircleChevronRight} from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import NavbarTwo from "../components/NavbarTwo";
@@ -26,10 +27,16 @@ const BrowseTutorsPage = () => {
   const [viewMode, setViewMode] = useState("grid");
   const [sortOption, setSortOption] = useState("default");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
+
   const subjectsList = [
-    "Math", "Science", "English", "Physics",
-    "Chemistry", "Biology", "Java", "Python"
+    "Math",
+    "Science",
+    "English",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Java",
+    "Python",
   ];
 
   useEffect(() => {
@@ -42,13 +49,17 @@ const BrowseTutorsPage = () => {
         }
         const data = await getTutors(currentPage, 6, searchQuery, filters);
         let sortedTutors = data.tutors;
-        
+
         // Sorting logic
-        if (sortOption === "price-asc") sortedTutors.sort((a, b) => a.hourlyRate - b.hourlyRate);
-        if (sortOption === "price-desc") sortedTutors.sort((a, b) => b.hourlyRate - a.hourlyRate);
-        if (sortOption === "rating") sortedTutors.sort((a, b) => b.rating - a.rating);
-        if (sortOption === "name") sortedTutors.sort((a, b) => a.name.localeCompare(b.name));
-        
+        if (sortOption === "price-asc")
+          sortedTutors.sort((a, b) => a.hourlyRate - b.hourlyRate);
+        if (sortOption === "price-desc")
+          sortedTutors.sort((a, b) => b.hourlyRate - a.hourlyRate);
+        if (sortOption === "rating")
+          sortedTutors.sort((a, b) => b.rating - a.rating);
+        if (sortOption === "name")
+          sortedTutors.sort((a, b) => a.name.localeCompare(b.name));
+
         setTutors(sortedTutors);
         setTotalPages(data.pagination.totalPages);
       } catch (err) {
@@ -61,11 +72,11 @@ const BrowseTutorsPage = () => {
   }, [currentPage, sortOption, searchQuery, filters, user]);
 
   const handleSubjectSelection = (subject) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       subject: prev.subject.includes(subject)
-        ? prev.subject.filter(s => s !== subject)
-        : [...prev.subject, subject]
+        ? prev.subject.filter((s) => s !== subject)
+        : [...prev.subject, subject],
     }));
   };
 
@@ -76,21 +87,29 @@ const BrowseTutorsPage = () => {
       <div className="container mx-auto px-4 sm:px-6 py-8">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Mobile Filters Button */}
-          <button 
+          <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="lg:hidden flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-3 rounded-xl shadow-sm"
           >
             <FaFilter className="text-blue-600 dark:text-blue-400" />
-            <span className="font-medium text-gray-700 dark:text-gray-200">Filters</span>
+            <span className="font-medium text-gray-700 dark:text-gray-200">
+              Filters
+            </span>
           </button>
 
           {/* Filters Sidebar */}
-          <aside className={`lg:block bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 w-full lg:w-80  lg:mt-20
-            ${isDropdownOpen ? 'block' : 'hidden'}`}>
-            
+          <aside
+            className={`lg:block bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 w-full lg:w-80  lg:mt-20
+            ${isDropdownOpen ? "block" : "hidden"}`}
+          >
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Filters</h2>
-              <button onClick={() => setIsDropdownOpen(false)} className="lg:hidden">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Filters
+              </h2>
+              <button
+                onClick={() => setIsDropdownOpen(false)}
+                className="lg:hidden"
+              >
                 <FaTimes className="text-gray-500 dark:text-gray-400 text-xl" />
               </button>
             </div>
@@ -116,7 +135,9 @@ const BrowseTutorsPage = () => {
                 min="0"
                 max="5000"
                 value={filters.priceRange[1]}
-                onChange={(e) => setFilters({...filters, priceRange: [0, e.target.value]})}
+                onChange={(e) =>
+                  setFilters({ ...filters, priceRange: [0, e.target.value] })
+                }
                 className="range range-xs w-full"
               />
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mt-2">
@@ -128,7 +149,8 @@ const BrowseTutorsPage = () => {
             {/* Rating Filter */}
             <div className="mb-8">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Minimum Rating: {filters.rating[0]} <i className="fas fa-star text-yellow-500"></i>
+                Minimum Rating: {filters.rating[0]}{" "}
+                <i className="fas fa-star text-yellow-500"></i>
               </h3>
               <input
                 type="range"
@@ -136,23 +158,27 @@ const BrowseTutorsPage = () => {
                 max="5"
                 step="0.5"
                 value={filters.rating[0]}
-                onChange={(e) => setFilters({...filters, rating: [e.target.value, 5]})}
+                onChange={(e) =>
+                  setFilters({ ...filters, rating: [e.target.value, 5] })
+                }
                 className="range range-xs w-full"
               />
             </div>
 
             {/* Subjects Filter */}
             <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Subjects</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Subjects
+              </h3>
               <div className="grid grid-cols-2 gap-3">
                 {subjectsList.map((subject) => (
                   <button
                     key={subject}
                     onClick={() => handleSubjectSelection(subject)}
                     className={`btn btn-sm ${
-                      filters.subject.includes(subject) 
-                        ? 'btn-primary' 
-                        : 'btn-outline bg-gray-100 dark:bg-gray-700'
+                      filters.subject.includes(subject)
+                        ? "bg-blue-900 text-white dark:bg-blue-900 dark:text-white"
+                        : "btn-outline bg-gray-100 text-gray-700 dark:text-gray-50 dark:bg-gray-700"
                     }`}
                   >
                     {subject}
@@ -164,7 +190,9 @@ const BrowseTutorsPage = () => {
             {/* Selected Subjects */}
             {filters.subject.length > 0 && (
               <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Selected:</h4>
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Selected:
+                </h4>
                 <div className="flex flex-wrap gap-2">
                   {filters.subject.map((subject) => (
                     <span
@@ -172,7 +200,7 @@ const BrowseTutorsPage = () => {
                       className="badge badge-primary badge-lg gap-2 pr-3"
                     >
                       {subject}
-                      <FaTimes 
+                      <FaTimes
                         className="cursor-pointer hover:text-red-200"
                         onClick={() => handleSubjectSelection(subject)}
                       />
@@ -189,24 +217,34 @@ const BrowseTutorsPage = () => {
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 mb-6 shadow-sm">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Browse Tutors</h1>
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    Browse Tutors
+                  </h1>
                   <p className="text-gray-600 dark:text-gray-400 mt-1">
                     {tutors.length} tutors available
                   </p>
                 </div>
-                
+
                 <div className="flex items-center gap-4">
                   <SortDropdown setSortOption={setSortOption} />
                   <div className="flex gap-2 bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
                     <button
                       onClick={() => setViewMode("grid")}
-                      className={`p-3 rounded-xl ${viewMode === "grid" ? 'bg-white dark:bg-gray-600 shadow-sm' : ''}`}
+                      className={`p-3 rounded-xl ${
+                        viewMode === "grid"
+                          ? "bg-white dark:bg-gray-600 shadow-sm"
+                          : ""
+                      }`}
                     >
                       <FaThLarge className="text-xl text-gray-700 dark:text-gray-300" />
                     </button>
                     <button
                       onClick={() => setViewMode("list")}
-                      className={`p-3 rounded-xl ${viewMode === "list" ? 'bg-white dark:bg-gray-600 shadow-sm' : ''}`}
+                      className={`p-3 rounded-xl ${
+                        viewMode === "list"
+                          ? "bg-white dark:bg-gray-600 shadow-sm"
+                          : ""
+                      }`}
                     >
                       <FaThList className="text-xl text-gray-700 dark:text-gray-300" />
                     </button>
@@ -217,29 +255,47 @@ const BrowseTutorsPage = () => {
 
             {/* Content */}
             {loading ? (
-              <div className={viewMode === "grid" 
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                : "flex flex-col gap-6"}>
-                {[...Array(6)].map((_, i) => (
+              <div
+                className={
+                  viewMode === "grid"
+                    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                    : "flex flex-col gap-6"
+                }
+              >
+                {[...Array(6)].map((_, i) =>
                   viewMode === "grid" ? (
                     <Skeleton key={i} height={360} className="rounded-2xl" />
                   ) : (
                     <Skeleton key={i} height={160} className="rounded-2xl" />
                   )
-                ))}
+                )}
               </div>
             ) : error ? (
               <div className="alert alert-error shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 <span>{error}</span>
               </div>
             ) : (
               <>
-                <div className={viewMode === "grid" 
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                  : "flex flex-col gap-6"}>
+                <div
+                  className={
+                    viewMode === "grid"
+                      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                      : "flex flex-col gap-6"
+                  }
+                >
                   {tutors.map((tutor) =>
                     viewMode === "grid" ? (
                       <TutorCardGrid key={tutor.id} tutor={tutor} />
@@ -254,15 +310,19 @@ const BrowseTutorsPage = () => {
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="join-item btn btn-outline px-6 py-2"
+                    className="join-item btn btn-outlined disabled:text-gray-700 px-6 py-2"
                   >
-                    Previous
+                    <CircleChevronLeft/>
                   </button>
                   {Array.from({ length: totalPages }, (_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentPage(index + 1)}
-                      className={`join-item btn ${currentPage === index + 1 ? 'btn-primary' : 'btn-outline'}`}
+                      className={`join-item btn ${
+                        currentPage === index + 1
+                          ? "bg-blue-800 text-white"
+                          : "btn-outline text-gray-700"
+                      }`}
                     >
                       {index + 1}
                     </button>
@@ -270,9 +330,9 @@ const BrowseTutorsPage = () => {
                   <button
                     onClick={() => setCurrentPage(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="join-item btn btn-outline px-6 py-2"
+                    className="join-item text-white btn btn-outlined disabled:text-gray-700 px-6 py-2"
                   >
-                    Next
+                    <CircleChevronRight/>
                   </button>
                 </div>
               </>
