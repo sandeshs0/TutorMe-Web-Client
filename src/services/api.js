@@ -206,6 +206,88 @@ const fetchWalletTransactions = async () => {
   }
 };
 
+// Booking APIs
+export const requestBooking = async (tutorId, date, time, note) => {
+  try {
+    const response = await API.post("/api/bookings/request", {
+      tutorId,
+      date,
+      time,
+      note,
+    });
+    return response.data; // Return success response
+  } catch (error) {
+    console.error(
+      "Error requesting booking:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+/**
+ * Tutor accepts a booking.
+ */
+export const acceptBooking = async (bookingId) => {
+  try {
+    const response = await API.put(`/api/bookings/accept/${bookingId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error accepting booking:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+/**
+ * Tutor declines a booking.
+ */
+export const declineBooking = async (bookingId) => {
+  try {
+    const response = await API.put(`/api/bookings/decline/${bookingId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error declining booking:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+/**
+ * Fetch all bookings for a student.
+ */
+export const getStudentBookings = async () => {
+  try {
+    const response = await API.get("/api/bookings/student");
+    return response.data.bookings;
+  } catch (error) {
+    console.error(
+      "Error fetching student bookings:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+/**
+ * Fetch all bookings for a tutor.
+ */
+export const getTutorBookings = async () => {
+  try {
+    const response = await API.get("/api/bookings/tutor");
+    return response.data.bookings;
+  } catch (error) {
+    console.error(
+      "Error fetching tutor bookings:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 export {
   confirmWalletTransaction,
   fetchAllSubjects,
