@@ -15,7 +15,8 @@ import SignupPage from "./pages/SignupPage";
 import StudentDashboard from "./pages/StudentDashboard";
 import TutorDashboard from "./pages/TutorDashboard";
 import TutorProfilePage from "./pages/TutorProfile";
-import { registerSocket, socket } from "./utils/socket"; // ✅ Import socket instance
+import { registerSocket, socket } from "./utils/socket";
+
 
 const App = () => {
   const { user } = useAuth(); // Get logged-in user

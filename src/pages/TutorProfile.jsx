@@ -1,10 +1,15 @@
 import { CircleChevronLeft, Star } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import NavbarTwo from "../components/NavbarTwo";
 import { useAuth } from "../context/AuthContext";
-import { fetchStudentProfile, fetchTutor, createBooking } from "../services/api";
+import {
+  fetchStudentProfile,
+  fetchTutor,
+  requestBooking,
+} from "../services/api";
 
 const TutorProfilePage = () => {
   const { username } = useParams();
@@ -73,18 +78,28 @@ const TutorProfilePage = () => {
 
   const handleBooking = async () => {
     if (!date || !time) {
-      toast.warning("Please select a date and time.");
+      toast.warning("Please select a date and time.", {
+        position: "bottom-right",
+      });
       return;
     }
 
     setIsSubmitting(true);
     try {
-      // const response = await createBooking(tutor.id, date, time, notes);
-      toast.success("Booking request sent successfully!");
-      // console.log("Booking Response:", response);
+      const response = await requestBooking(tutor.id, date, time, notes);
+      toast.success("Booking request sent successfully!", {
+        position: "bottom-right",
+      });
+      console.log("Booking Response:", response);
+      if (user?.role === "student") {
+        const updatedStudentData = await fetchStudentProfile();
+        setStudentData(updatedStudentData);
+      }
       setIsModalOpen(false); // Close modal on success
     } catch (error) {
-      toast.error(error.response?.data?.message || "Booking failed.");
+      toast.error(error.response?.data?.message || "Booking failed.", {
+        position: "bottom-right",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -108,7 +123,6 @@ const TutorProfilePage = () => {
   return (
     <div className="min-h-screen font-poppins bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
       <NavbarTwo student={studentData} />
-      <ToastContainer />
       <div className="mt-20 container mx-auto px-4 py-8">
         <button
           onClick={() => navigate(-1)}
@@ -204,64 +218,92 @@ const TutorProfilePage = () => {
                   onClick={() => setIsModalOpen(true)}
                   className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white py-3 px-6 rounded-xl transition-colors text-lg font-medium"
                 >
-                  Book a Session
+                  Request a Session
                 </button>
               </div>
             </div>
           </div>
         </div>
         {/* 🔥 Modal for Booking */}
-        {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-[400px] relative">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="absolute top-4 right-4"
-              >
-                <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-              </button>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                Book a Session
-              </h2>
-              <label className="block mb-2 text-gray-600 dark:text-gray-300">
-                Date
+
+        {/* 🔥 Modal for Booking with Tailwind dark: Classes */}
+        <input
+          type="checkbox"
+          id="booking-modal"
+          className="modal-toggle"
+          checked={isModalOpen}
+          readOnly
+        />
+        <div className="modal">
+          <div className="modal-box relative bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100">
+            <label
+              htmlFor="booking-modal"
+              onClick={() => setIsModalOpen(false)}
+              className="btn btn-sm border-none absolute right-2 top-2 bg-red-200 text-red-800 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
+            >
+              ✕
+            </label>
+            <h2 className="text-2xl font-bold mb-4">Send a Session Request</h2>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text text-gray-800 dark:text-gray-300">
+                  Date
+                </span>
               </label>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-md bg-gray-100 dark:bg-gray-700 dark:text-white focus:ring-blue-500"
+                className="input input-bordered w-full bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
               />
+            </div>
 
-              <label className="block mt-4 mb-2 text-gray-600 dark:text-gray-300">
-                Time
+            <div className="form-control mt-4">
+              <label className="label">
+                <span className="label-text text-gray-800 dark:text-gray-300">
+                  Time
+                </span>
               </label>
               <input
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full px-3 py-2 rounded-md bg-gray-100 dark:bg-gray-700 dark:text-white focus:ring-blue-500"
+                className="input input-bordered w-full bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
               />
+            </div>
 
-              <label className="block mt-4 mb-2 text-gray-600 dark:text-gray-300">
-                Notes
+            <div className="form-control mt-4">
+              <label className="label">
+                <span className="label-text text-gray-800 dark:text-gray-300">
+                  Notes
+                </span>
               </label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full px-3 py-2 rounded-md bg-gray-100 dark:bg-gray-700 dark:text-white focus:ring-blue-500"
+                className="textarea textarea-bordered w-full bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
               />
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
+              <strong>Note:</strong> Rs. 30 will be deducted as booking fee from
+              your balance. If the booking request is declined/cancelled, the
+              amount will be refunded.
+            </p>
 
+            <div className="modal-action">
               <button
                 onClick={handleBooking}
-                className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-md"
+                className={`btn bg-blue-800 text-white w-full ${
+                  isSubmitting ? "loading" : ""
+                }`}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Booking..." : "Confirm Booking"}
+                {isSubmitting ? "Processing..." : "Confirm"}
               </button>
             </div>
           </div>
-        )}
+        </div>
 
         <div className="grid lg:grid-cols-2 gap-8 mt-8">
           {/* About Section */}
@@ -315,6 +357,7 @@ const TutorProfilePage = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
