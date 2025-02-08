@@ -24,6 +24,8 @@ const TutorProfilePage = () => {
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false); // New state for login prompt
+
   // Mock reviews data - in production, this would come from an API
   const reviews = [
     {
@@ -75,6 +77,14 @@ const TutorProfilePage = () => {
     };
     fetchData();
   }, [username, user]);
+
+  const handleBookingClick = () => {
+    if (!user) {
+      setShowLoginPrompt(true); // Show login modal if user is not logged in
+    } else {
+      setIsModalOpen(true); // Open booking modal if user is logged in
+    }
+  };
 
   const handleBooking = async () => {
     if (!date || !time) {
@@ -211,11 +221,12 @@ const TutorProfilePage = () => {
                     Hourly Rate
                   </h2>
                   <p className="text-4xl font-bold text-blue-600 dark:text-blue-400 mt-1">
-                    ₹1500<span className="text-lg font-normal">/hr</span>
+                    Rs {tutor?.hourlyRate}
+                    <span className="text-lg font-normal">/hr</span>
                   </p>
                 </div>
                 <button
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={handleBookingClick}
                   className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white py-3 px-6 rounded-xl transition-colors text-lg font-medium"
                 >
                   Request a Session
@@ -224,6 +235,7 @@ const TutorProfilePage = () => {
             </div>
           </div>
         </div>
+
         {/* 🔥 Modal for Booking */}
 
         {/* 🔥 Modal for Booking with Tailwind dark: Classes */}
@@ -304,7 +316,33 @@ const TutorProfilePage = () => {
             </div>
           </div>
         </div>
-
+        {/* 🔥 Login Prompt Modal */}
+        {showLoginPrompt && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-[400px] relative">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Please Sign In First
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                You need to be signed in to request a session.
+              </p>
+              <div className="mt-6 flex justify-end gap-4">
+                <button
+                  onClick={() => setShowLoginPrompt(false)}
+                  className="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-white rounded-md"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => navigate("/login")}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                >
+                  Go to Login
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="grid lg:grid-cols-2 gap-8 mt-8">
           {/* About Section */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-xl p-8">
