@@ -160,8 +160,8 @@ const TutorDashboard = () => {
     switch (currentPage) {
       case "Overview":
         return <OverviewSection tutorData={tutorData} />;
-      case "Classes":
-        return <h1 className="text-2xl font-bold">My Classes Page</h1>;
+      case "Session Requests":
+        return <h1 className="text-2xl font-bold">My Session Request Page</h1>;
       case "Schedule":
         return <h1 className="text-2xl font-bold">Schedule Page</h1>;
       case "Profile":
@@ -196,7 +196,7 @@ const TutorDashboard = () => {
           <ul className="space-y-4 px-4">
             {[
               { name: "Overview", icon: "fas fa-chart-pie" },
-              { name: "Classes", icon: "fas fa-chalkboard-teacher" },
+              { name: "Session Requests", icon: "fas fa-chalkboard-teacher" },
               { name: "Schedule", icon: "fas fa-calendar-alt" },
               { name: "Profile", icon: "fas fa-user" },
             ].map((item) => (
