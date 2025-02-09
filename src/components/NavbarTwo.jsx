@@ -116,8 +116,8 @@ const NavbarTwo = ({ student }) => {
         <div>
           {student && (
             <div className="flex items-center mr-4 space-x-2 bg-green-100 dark:bg-green-900 backdrop-blur-sm px-4 py-2 rounded-xl transition-all hover:bg-white/20">
-              <Wallet className="text-green-800 dark:text-green-300 font-bold" />
-              <span className="font-medium text-green-900 dark:text-green-100">
+              <Wallet className=" text-green-800 dark:text-green-300 font-bold" />
+              <span className="animate-slide-in font-medium text-green-900 dark:text-green-100">
                 Rs. {student?.walletBalance?.toLocaleString() || 0}
               </span>
             </div>

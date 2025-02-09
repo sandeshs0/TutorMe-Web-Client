@@ -1,4 +1,4 @@
-import { CircleChevronLeft, Star } from "lucide-react";
+import { CircleChevronLeft, Star, SquareArrowOutUpRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 // import { toast } from "react-toastify";
@@ -25,6 +25,7 @@ const TutorProfilePage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false); // New state for login prompt
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false); // Confirmation modal state
 
   // Mock reviews data - in production, this would come from an API
   const reviews = [
@@ -106,6 +107,7 @@ const TutorProfilePage = () => {
         setStudentData(updatedStudentData);
       }
       setIsModalOpen(false); // Close modal on success
+      setShowConfirmationModal(true); // Show confirmation modal
     } catch (error) {
       toast.error(error.response?.data?.message || "Booking failed.", {
         position: "bottom-right",
@@ -335,14 +337,69 @@ const TutorProfilePage = () => {
                 </button>
                 <button
                   onClick={() => navigate("/login")}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                  className="flex px-4 py-2 gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
                 >
-                  Go to Login
+                  Go to Login <SquareArrowOutUpRight />
                 </button>
               </div>
             </div>
           </div>
         )}
+
+        {/* 🔥 Confirmation Modal */}
+        {showConfirmationModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-[700px] m-4">
+              {/* Top Section */}
+              <div className="flex items-center justify-center py-6 border-b border-gray-200 dark:border-gray-700">
+                <img
+                  src="https://i.postimg.cc/cJHjgTKP/tickk.png" // Replace with the tick image path
+                  alt="Confirmation Tick"
+                  className="w-20 h-20"
+                />
+              </div>
+
+              {/* Main Content */}
+              <div className="px-6 py-4">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  Session Requested!
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 text-center mb-4">
+                  You have requested a session from{" "}
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {tutor?.name}
+                  </span>
+                  . You’ll be notified once it is accepted by the tutor.
+                </p>
+                <ul className="text-gray-600 dark:text-gray-400">
+                  <li>
+                    <strong>Tutor:</strong> {tutor?.name}
+                  </li>
+                  <li>
+                    <strong>When:</strong> {date} at {time}
+                  </li>
+                  <li>
+                    <strong>Hourly Rate:</strong> ₹1500/hr
+                  </li>
+                  <li>
+                    <strong>Booking Fee:</strong> ₹30 (refundable)
+                  </li>
+                </ul>
+              </div>
+
+              {/* Buttons Section */}
+              <div className="flex items-center justify-end px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                <button
+                  onClick={() => setShowConfirmationModal(false)}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                >
+                  Okay
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="grid lg:grid-cols-2 gap-8 mt-8">
           {/* About Section */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-xl p-8">
