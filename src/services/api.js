@@ -288,6 +288,28 @@ export const getTutorBookings = async () => {
   }
 };
 
+
+// For Notifications:
+// Fetch notifications
+export const fetchNotifications = async () => {
+  try {
+    const response = await API.get("/api/notifications");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    throw error;
+  }
+};
+
+// Mark notifications as read
+export const markNotificationsRead = async () => {
+  try {
+    await API.put("/api/notifications/mark-read");
+  } catch (error) {
+    console.error("Error marking notifications as read:", error);
+    throw error;
+  }
+};
 export {
   confirmWalletTransaction,
   fetchAllSubjects,
