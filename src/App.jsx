@@ -27,28 +27,28 @@ const App = () => {
     }
 
     // Handle real-time booking events
-    if (socket) {
-      socket.on("booking-request", (booking) => {
-        console.log("New Booking Request Received:", booking);
-        alert(`New booking request from student ID: ${booking.studentId}`);
-      });
+    // if (socket) {
+    //   socket.on("booking-request", (booking) => {
+    //     console.log("New Booking Request Received:", booking);
+    //     alert(`New booking request from student ID: ${booking.studentId}`);
+    //   });
 
-      socket.on("booking-accepted", (booking) => {
-        console.log("Booking Accepted:", booking);
-        alert("Your booking was accepted!");
-      });
+    //   socket.on("booking-accepted", (booking) => {
+    //     console.log("Booking Accepted:", booking);
+    //     alert("Your booking was accepted!");
+    //   });
 
-      socket.on("booking-declined", (booking) => {
-        console.log("Booking Declined:", booking);
-        alert("Your booking was declined.");
-      });
+    //   socket.on("booking-declined", (booking) => {
+    //     console.log("Booking Declined:", booking);
+    //     alert("Your booking was declined.");
+    //   });
 
-      return () => {
-        socket.off("booking-request");
-        socket.off("booking-accepted");
-        socket.off("booking-declined");
-      };
-    }
+    //   return () => {
+    //     socket.off("booking-request");
+    //     socket.off("booking-accepted");
+    //     socket.off("booking-declined");
+    //   };
+    // }
   }, [user]);
 
   return (
