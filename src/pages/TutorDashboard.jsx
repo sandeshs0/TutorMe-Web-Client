@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import OverviewSection from "../components/OverViewTutorDashboard";
 import TutorProfile from "../components/TutorMyProfile";
+import SessionRequests from "../components/SessionRequest";
 import TutorProfileDropdown from "../components/TutorProfileDropdown";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -81,16 +82,16 @@ const TutorDashboard = () => {
     //   registerSocket(user.id);
 
     socket.on("booking-request", (booking) => {
-      toast.info("New Booking Request Received", booking, {
-        position: "bottom-left",
-      });
+      // toast.info("New Booking Request Received", booking, {
+        // position: "bottom-left",
+      // });
       getTutorBookings().then(setBookings);
       // fetchUserNotifications();
     });
     socket.on("new-notification", (notification) => {
-      toast.info("New Notification", notification, {
-        position: "bottom-right",
-      });
+      // toast.info("New Notification", notification, {
+        // position: "bottom-right",
+      // });
       // getTutorBookings().then(setBookings);
       fetchUserNotifications();
     });
@@ -160,8 +161,13 @@ const TutorDashboard = () => {
     switch (currentPage) {
       case "Overview":
         return <OverviewSection tutorData={tutorData} />;
-      case "Classes":
-        return <h1 className="text-2xl font-bold">My Classes Page</h1>;
+      case "Session Requests":
+        return <SessionRequests/>
+        // return <h1 className="text-2xl font-bold">My Session Request Page</h1>;
+      case "Chats":
+        return <h1 className="text-2xl font-bold">Chats</h1>;
+      case "Settings":
+        return <h1 className="text-2xl font-bold">Settings</h1>;
       case "Schedule":
         return <h1 className="text-2xl font-bold">Schedule Page</h1>;
       case "Profile":
@@ -196,9 +202,11 @@ const TutorDashboard = () => {
           <ul className="space-y-4 px-4">
             {[
               { name: "Overview", icon: "fas fa-chart-pie" },
-              { name: "Classes", icon: "fas fa-chalkboard-teacher" },
+              { name: "Session Requests", icon: "fas fa-chalkboard-teacher" },
               { name: "Schedule", icon: "fas fa-calendar-alt" },
+              { name: "Chats", icon: "fas fa-comment-dots" },
               { name: "Profile", icon: "fas fa-user" },
+              { name: "Settings", icon: "fas fa-gear" },
             ].map((item) => (
               <li key={item.name}>
                 <button
