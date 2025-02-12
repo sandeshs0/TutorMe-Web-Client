@@ -12,6 +12,7 @@ const SignupPage = () => {
     name: "",
     email: "",
     phone: "",
+    username:"",
     password: "",
     confirmPassword: "",
     bio: "",
@@ -85,6 +86,7 @@ const togglePasswordVisibility = () => {
       email: formData.email,
       phone: formData.phone,
       password: formData.password,
+      username:formData.username,
       role: "student", // Role is fixed to "student" for this form
     };
     try {
@@ -117,6 +119,7 @@ const togglePasswordVisibility = () => {
       email: formData.email,
       phone: formData.phone,
       password: formData.password,
+      username:formData.username,
       role: "tutor",
       bio: formData.bio,
       description: formData.description,
@@ -281,6 +284,24 @@ const handleNextStep = () => {
                       value={formData.name}
                   required
                       placeholder="Enter Your Full Name"
+                      className="w-full mt-1 p-3 border text-black rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="fullname"
+                      className="block text-md text-gray-800 font-semibold"
+                    >
+                      Username
+                    </label>
+                    <input
+                      type="text"
+                      id="username"
+                      name="username"
+                      onChange={handleInputChange}
+                      value={formData.username}
+                  required
+                      placeholder="Choose a username"
                       className="w-full mt-1 p-3 border text-black rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
                   </div>
