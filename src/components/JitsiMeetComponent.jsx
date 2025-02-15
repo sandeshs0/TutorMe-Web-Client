@@ -1,18 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { JitsiMeeting } from "@jitsi/react-sdk";
 import { toast } from "react-toastify";
-import { endSession } from "../services/api"; // Add API call to end session
+import { startSession, endSession } from "../services/api"; // API Calls
 
 const JitsiMeetComponent = ({ sessionRoom, bookingId, onClose, user, isTutor }) => {
+  const [roomName, setRoomName] = useState("");
+
   useEffect(() => {
     toast.info("You have joined the session.", { position: "bottom-right" });
+
+    // ✅ Debugging: Ensure sessionRoom is received properly
+    console.log("🔹 Full Session Room URL:", sessionRoom);
+
+    if (sessionRoom) {
+      const extractedRoomName = sessionRoom.split("/").pop(); // Extract Jitsi room name
+      console.log("✅ Extracted Jitsi Room Name:", extractedRoomName);
+      setRoomName(extractedRoomName);
+    } else {
+      console.error("❌ Session room is undefined or null.");
+    }
 
     return () => {
       toast.info("Session ended.", { position: "bottom-right" });
     };
-  }, []);
+  }, [sessionRoom]);
 
-  // Function to end session (Only Tutor can end it)
+  // ✅ Function to end session (Only Tutor can end it)
   const handleEndSession = async () => {
     if (!isTutor) {
       toast.error("Only tutors can end the session.");
@@ -24,7 +37,7 @@ const JitsiMeetComponent = ({ sessionRoom, bookingId, onClose, user, isTutor }) 
       toast.success("Session has been ended successfully!");
       onClose();
     } catch (error) {
-      console.error("Error ending session:", error);
+      console.error("❌ Error ending session:", error);
       toast.error("Failed to end session.");
     }
   };
@@ -32,20 +45,29 @@ const JitsiMeetComponent = ({ sessionRoom, bookingId, onClose, user, isTutor }) 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
       <div className="w-full h-full flex flex-col items-center justify-center">
-        <JitsiMeeting
-          roomName={sessionRoom}
-          configOverwrite={{
-            startWithAudioMuted: false,
-            disableModeratorIndicator: false,
-            enableEmailInStats: false,
-          }}
-          interfaceConfigOverwrite={{
-            DISABLE_JOIN_LEAVE_NOTIFICATIONS: false,
-          }}
-          userInfo={{
-            displayName: user.name,
-          }}
-        />
+        {/* ✅ Debugging: Show error if roomName is missing */}
+        {roomName ? (
+          <>
+            <JitsiMeeting
+              roomName={roomName}
+              configOverwrite={{
+                startWithAudioMuted: false,
+                disableModeratorIndicator: false,
+                enableEmailInStats: false,
+              }}
+              interfaceConfigOverwrite={{
+                DISABLE_JOIN_LEAVE_NOTIFICATIONS: false,
+              }}
+              userInfo={{
+                displayName: user.name,
+              }}
+            />
+          </>
+        ) : (
+          <p className="text-white text-xl font-bold">
+            ⚠️ Error: Room Name Not Found
+          </p>
+        )}
 
         {/* End Session Button - Only for Tutors */}
         {isTutor && (

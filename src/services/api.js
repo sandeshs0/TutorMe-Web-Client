@@ -310,6 +310,45 @@ export const markNotificationsRead = async () => {
     throw error;
   }
 };
+
+const startSession = async (bookingId) => {
+  try {
+    const response = await API.put(`/api/sessions/start/${bookingId}`,{},{withCredentials:true});
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error starting session:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+const endSession = async (bookingId) => {
+  try {
+    const response = await API.put(`/api/sessions/end/${bookingId}`,{},{withCredentials:true});
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error ending session:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+// ✅ Process Payment After Session Ends
+const processSessionPayment = async (bookingId) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/bookings/payment/${bookingId}`, {}, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    console.error("Error processing session payment:", error);
+    throw error;
+  }
+};
+
+
 export {
   confirmWalletTransaction,
   fetchAllSubjects,
@@ -327,4 +366,8 @@ export {
   updateStudentProfile,
   updateTutorProfile,
   verifyEmail,
+  startSession,
+
+  endSession,
+  processSessionPayment,
 };
