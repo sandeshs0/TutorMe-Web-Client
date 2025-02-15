@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import OverviewSection from "../components/OverViewTutorDashboard";
-import TutorProfile from "../components/TutorMyProfile";
 import SessionRequests from "../components/SessionRequest";
+import TutorProfile from "../components/TutorMyProfile";
 import TutorProfileDropdown from "../components/TutorProfileDropdown";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -83,14 +83,14 @@ const TutorDashboard = () => {
 
     socket.on("booking-request", (booking) => {
       // toast.info("New Booking Request Received", booking, {
-        // position: "bottom-left",
+      // position: "bottom-left",
       // });
       getTutorBookings().then(setBookings);
       // fetchUserNotifications();
     });
     socket.on("new-notification", (notification) => {
       // toast.info("New Notification", notification, {
-        // position: "bottom-right",
+      // position: "bottom-right",
       // });
       // getTutorBookings().then(setBookings);
       fetchUserNotifications();
@@ -162,8 +162,8 @@ const TutorDashboard = () => {
       case "Overview":
         return <OverviewSection tutorData={tutorData} />;
       case "Session Requests":
-        return <SessionRequests/>
-        // return <h1 className="text-2xl font-bold">My Session Request Page</h1>;
+        return <SessionRequests />;
+      // return <h1 className="text-2xl font-bold">My Session Request Page</h1>;
       case "Chats":
         return <h1 className="text-2xl font-bold">Chats</h1>;
       case "Settings":
@@ -178,7 +178,7 @@ const TutorDashboard = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen font-poppins dark:bg-gray-900 dark:text-white bg-gray-100 text-gray-900">
+    <div className="flex flex-col lg:flex-row bg-blue-50 h-screen font-poppins dark:bg-gray-900 dark:text-white text-gray-900">
       {/* Side Drawer */}
       <div
         ref={drawerRef}

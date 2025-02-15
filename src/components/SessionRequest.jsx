@@ -143,7 +143,7 @@ const SessionRequests = () => {
   }, [filteredBookings]);
 
   return (
-<div className="p-4 space-y-6">
+<div className="p-4 space-y-6 ">
   <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Session Requests</h1>
 
   {/* Filters Section */}
@@ -181,17 +181,17 @@ const SessionRequests = () => {
   </div>
 
   {/* Booking Cards */}
-  <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+  <div className="grid grid-cols-1  xl:grid-cols-2 gap-5">
     {filteredBookings.map((booking) => (
       <div
         key={booking._id}
-        className="relative bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700"
+        className="relative dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-300 dark:border-gray-700"
       >
         {/* Status Ribbon */}
         <div className={`absolute -top-3 left-4 px-3 py-1.5 rounded-full text-xs font-medium ${
           booking.status === "accepted" ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' :
-          booking.status === "pending" ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' :
-          'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+          booking.status === "pending" ? 'bg-yellow-400 text-red-800  dark:bg-yellow-400 dark:text-red-800' :
+          'bg-blue-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
         }`}>
           {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
         </div>
