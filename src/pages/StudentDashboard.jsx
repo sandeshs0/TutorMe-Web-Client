@@ -7,7 +7,12 @@ import useSound from "use-sound";
 import lightSound from "../assets/sounds/light.mp3";
 import StudentWallet from "../components/StudentWallet";
 import { useAuth } from "../context/AuthContext";
-import { fetchStudentProfile } from "../services/api";
+import {
+  fetchNotifications,
+  fetchStudentProfile,
+  markNotificationsRead,
+} from "../services/api";
+import { socket } from "../utils/socket";
 
 const StudentDashboard = () => {
   const { user } = useAuth(); // Using AuthContext for user
@@ -22,6 +27,41 @@ const StudentDashboard = () => {
   console.log("Student:", studentData);
   const drawerRef = useRef(null); // Ref for the side drawer
   const [playLight] = useSound(lightSound, { volume: 0.04 });
+  const [notifications, setNotifications] = useState([]); // Notifications state
+  const [unreadCount, setUnreadCount] = useState(0); // Unread notifications count
+  const [showNotifications, setShowNotifications] = useState(false); // Toggle notification container
+
+  useEffect(() => {
+    socket.on("booking-request", (booking) => {
+      // getTutorBookings().then(setBookings);
+      // fetchUserNotifications();
+    });
+    socket.on("new-notification", (notification) => {
+      // toast.info("New Notification", notification, {
+      //   position: "bottom-right",
+      // });
+      // getTutorBookings().then(setBookings);
+
+      fetchUserNotifications();
+    });
+    socket.on("booking-accepted", (booking) => {
+      toast.success(`Your booking was accepted!`);
+      fetchUserNotifications();
+    });
+
+    socket.on("booking-declined", (booking) => {
+      toast.info(`Your booking request was declined.`);
+      fetchUserNotifications();
+    });
+    return () => {
+      // Clean up event listeners on component unmount
+      socket.off("booking-request");
+      socket.off("booking-accepted");
+      socket.off("booking-declined");
+      socket.off("new-notification");
+    };
+  }, [user]);
+
   // Toggle Dark Mode
   const toggleDarkMode = () => {
     const newMode = !darkMode;
@@ -37,6 +77,7 @@ const StudentDashboard = () => {
       setLoading(true);
       setError(null);
       try {
+        fetchUserNotifications(); // Fetch notifications
         if (currentPage === "Overview") {
           const profile = await fetchStudentProfile();
           setStudentData(profile);
@@ -69,6 +110,44 @@ const StudentDashboard = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [drawerOpen]);
+
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case "booking":
+        return "calendar-alt";
+      case "message":
+        return "envelope";
+      case "alert":
+        return "exclamation-circle";
+      default:
+        return "info-circle";
+    }
+  };
+
+  const fetchUserNotifications = async () => {
+    try {
+      const notifications = await fetchNotifications();
+      setNotifications(notifications);
+      const unread = notifications.filter((n) => !n.isRead).length;
+      setUnreadCount(unread);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
+
+  const handleMarkAsRead = async () => {
+    try {
+      await markNotificationsRead();
+      setUnreadCount(0);
+      const updatedNotifications = notifications.map((n) => ({
+        ...n,
+        isRead: true,
+      }));
+      setNotifications(updatedNotifications);
+    } catch (error) {
+      console.error("Error marking notifications as read:", error);
+    }
+  };
 
   // Dynamic rendering based on `currentPage`
   const renderContent = () => {
@@ -164,6 +243,69 @@ const StudentDashboard = () => {
             Welcome Back, {studentData?.name || "Student"}!
           </h1>
           <div className="flex items-center md:space-x-6 space-x-2">
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setShowNotifications(!showNotifications);
+
+                  if (!showNotifications)
+                    setTimeout(() => {
+                      handleMarkAsRead();
+                    }, 2000);
+                }}
+                className="relative p-2 text-xl text-gray-800 dark:text-gray-100"
+              >
+                <i className="fas fa-bell"></i>
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+              {/* Notification Dropdown */}
+
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-80 max-h-96 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 z-50 overflow-y-auto">
+                  <h2 className="font-bold text-lg mb-2">Notifications</h2>
+                  <ul className="space-y-2">
+                    {notifications.length > 0 ? (
+                      notifications.map((notification) => (
+                        <li
+                          key={notification._id}
+                          className={`p-3 rounded-md flex items-start space-x-3 transition-all duration-500 ease-in-out ${
+                            notification.isRead
+                              ? "bg-gray-100 dark:bg-gray-700"
+                              : "bg-blue-100 dark:bg-blue-700 border-l-4 border-blue-600"
+                          }`}
+                        >
+                          <div className="flex-shrink-0">
+                            <i
+                              className={`fas fa-${getNotificationIcon(
+                                notification.type
+                              )} text-xl`}
+                            ></i>
+                          </div>
+                          <div className="flex-grow">
+                            <p className="text-sm font-medium">
+                              {notification.message}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              {new Date(
+                                notification.createdAt
+                              ).toLocaleString()}
+                            </p>
+                          </div>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="text-center text-gray-500 dark:text-gray-400">
+                        No notifications
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              )}
+            </div>
             {/* Dark Mode Toggle */}
             <button
               className="btn btn-md hover:animate-pulse dark:bg-gray-700 bg-slate-200 text-2xl btn-circle btn-ghost"

@@ -61,6 +61,7 @@ const TutorDashboard = () => {
       console.error("Error fetching notifications:", error);
     }
   };
+
   const handleMarkAsRead = async () => {
     try {
       await markNotificationsRead();
@@ -90,9 +91,10 @@ const TutorDashboard = () => {
     });
     socket.on("new-notification", (notification) => {
       // toast.info("New Notification", notification, {
-      // position: "bottom-right",
+      //   position: "bottom-right",
       // });
       // getTutorBookings().then(setBookings);
+
       fetchUserNotifications();
     });
     socket.on("booking-accepted", (booking) => {

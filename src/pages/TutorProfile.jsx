@@ -379,10 +379,10 @@ const TutorProfilePage = () => {
                     <strong>When:</strong> {date} at {time}
                   </li>
                   <li>
-                    <strong>Hourly Rate:</strong> ₹1500/hr
+                    <strong>Hourly Rate:</strong> Rs. {tutor?.hourlyRate}
                   </li>
                   <li>
-                    <strong>Booking Fee:</strong> ₹30 (refundable)
+                    <strong>Booking Fee:</strong> Rs. 30 (refundable)
                   </li>
                 </ul>
               </div>
@@ -391,9 +391,9 @@ const TutorProfilePage = () => {
               <div className="flex items-center justify-end px-6 py-4 border-t border-gray-200 dark:border-gray-700">
                 <button
                   onClick={() => setShowConfirmationModal(false)}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                  className="px-8 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
                 >
-                  Okay
+                  Okay!
                 </button>
               </div>
             </div>
