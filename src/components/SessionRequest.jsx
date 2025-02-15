@@ -15,8 +15,10 @@ import {
   acceptBooking,
   declineBooking,
   getTutorBookings,
+  startSession,
 } from "../services/api";
 import { socket } from "../utils/socket";
+import JitsiMeetComponent from "./JitsiMeetComponent";
 
 const SessionRequests = () => {
   const [bookings, setBookings] = useState([]);
@@ -27,6 +29,8 @@ const SessionRequests = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [timers, setTimers] = useState({});
+  const [activeSession, setActiveSession] = useState(null); // Store active session
+
 
   // Fetch bookings
   useEffect(() => {
@@ -49,6 +53,18 @@ const SessionRequests = () => {
     };
     fetchBookings();
   }, []);
+
+
+   // Handle joining session
+   const handleJoinSession = async (booking) => {
+    try {
+      await startSession(booking._id); // Mark session as "in-progress"
+      setActiveSession(booking); // Open Jitsi session
+    } catch (error) {
+      console.error("Error starting session:", error);
+      toast.error("Failed to join session.");
+    }
+  };
 
   // Filter bookings based on status
   useEffect(() => {
@@ -358,6 +374,7 @@ const SessionRequests = () => {
                         Start Chat
                       </button>
                       <button
+                        onClick={() => handleJoinSession(booking)}
                         disabled={!timers[booking._id]?.sessionReady}
                         className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors ${
                           timers[booking._id]?.sessionReady
@@ -381,6 +398,16 @@ const SessionRequests = () => {
           </div>
         ))}
       </div>
+      
+      {activeSession && (
+        <JitsiMeetComponent
+          sessionRoom={activeSession.roomId}
+          bookingId={activeSession._id}
+          user={user}
+          isTutor={user.role === "tutor"}
+          onClose={() => setActiveSession(null)}
+        />
+      )}
     </div>
   );
 };
