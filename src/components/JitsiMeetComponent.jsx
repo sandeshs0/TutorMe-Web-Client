@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from "react";
 import { JitsiMeeting } from "@jitsi/react-sdk";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { startSession, endSession } from "../services/api"; // API Calls
+import { endSession } from "../services/api"; // API Calls
 
-const JitsiMeetComponent = ({ sessionRoom, bookingId, onClose, user, isTutor }) => {
+const JitsiMeetComponent = ({
+  sessionRoom,
+  bookingId,
+  onClose,
+  user,
+  isTutor,
+}) => {
   const [roomName, setRoomName] = useState("");
+  console.log("🔹 Received sessionRoom prop:", sessionRoom);
 
   useEffect(() => {
     toast.info("You have joined the session.", { position: "bottom-right" });
@@ -44,48 +51,63 @@ const JitsiMeetComponent = ({ sessionRoom, bookingId, onClose, user, isTutor }) 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-      <div className="w-full h-full flex flex-col items-center justify-center">
-        {/* ✅ Debugging: Show error if roomName is missing */}
-        {roomName ? (
-          <>
+      <div className="w-[95vw] h-[95vh] flex flex-col"> {/* Increased to 95% */}
+        {/* Header section with buttons */}
+        <div className="flex justify-between p-4 bg-gray-800">
+          {isTutor && (
+            <button
+              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-md"
+              onClick={handleEndSession}
+            >
+              End Session
+            </button>
+          )}
+          <button
+            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
+
+        {/* Main Jitsi container */}
+        <div className="flex-1 w-full h-full"> {/* This will expand to fill available space */}
+          {roomName ? (
             <JitsiMeeting
               roomName={roomName}
               configOverwrite={{
                 startWithAudioMuted: false,
                 disableModeratorIndicator: false,
                 enableEmailInStats: false,
+                startWithVideoMuted: false,
+                prejoinPageEnabled: false,
+                requireDisplayName: false,
+                filmStripOnly: false,
               }}
               interfaceConfigOverwrite={{
-                DISABLE_JOIN_LEAVE_NOTIFICATIONS: false,
+                DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
+                DEFAULT_BACKGROUND: '#000000',
+                MOBILE_APP_PROMO: false,
+                SHOW_CHROME_EXTENSION_BANNER: false,
+                TOOLBAR_BUTTONS: [
+                  'microphone', 'camera', 'desktop', 'fullscreen',
+                  'hangup', 'profile', 'chat', 'settings'
+                ],
               }}
               userInfo={{
-                displayName: user.name,
+                displayName: user.name || "Guest",
+              }}
+              getIFrameRef={(iframeRef) => {
+                iframeRef.style.height = '100%';
+                iframeRef.style.width = '100%';
               }}
             />
-          </>
-        ) : (
-          <p className="text-white text-xl font-bold">
-            ⚠️ Error: Room Name Not Found
-          </p>
-        )}
-
-        {/* End Session Button - Only for Tutors */}
-        {isTutor && (
-          <button
-            className="mt-4 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-md"
-            onClick={handleEndSession}
-          >
-            End Session
-          </button>
-        )}
-
-        {/* Close Button */}
-        <button
-          className="absolute top-5 right-5 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md"
-          onClick={onClose}
-        >
-          Close
-        </button>
+          ) : (
+            <p className="text-white text-xl font-bold">
+              ⚠️ Error: Room Name Not Found
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

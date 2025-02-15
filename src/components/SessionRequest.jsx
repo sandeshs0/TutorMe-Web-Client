@@ -58,11 +58,23 @@ const SessionRequests = () => {
    // Handle joining session
    const handleJoinSession = async (booking) => {
     try {
-      await startSession(booking._id); // Mark session as "in-progress"
-      setActiveSession(booking); // Open Jitsi session
+      console.log("🔹 Fetching session room for booking:", booking._id);
+      
+      const response = await startSession(booking._id);
+      
+      if (response.success && response.session.roomId) {
+        console.log("✅ Session room URL received:", response.session.roomId);
+        
+        // Set sessionRoom and store the active session
+        setActiveSession({ ...booking, roomId: response.session.roomId });
+        
+      } else {
+        toast.error("Failed to retrieve session room.");
+        console.error("❌ Error: Session room not found in API response", response);
+      }
     } catch (error) {
-      console.error("Error starting session:", error);
-      toast.error("Failed to join session.");
+      console.error("❌ Error starting session:", error);
+      toast.error("Error starting session.");
     }
   };
 
@@ -398,7 +410,7 @@ const SessionRequests = () => {
           </div>
         ))}
       </div>
-      
+
       {activeSession && (
         <JitsiMeetComponent
           sessionRoom={activeSession.roomId}
