@@ -1,7 +1,7 @@
 import { JitsiMeeting } from "@jitsi/react-sdk";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { endSession } from "../services/api"; // API Calls
+import { endSession, getJaaSToken } from "../services/api"; // API Calls
 
 const JitsiMeetComponent = ({
   sessionRoom,
@@ -11,6 +11,8 @@ const JitsiMeetComponent = ({
   isTutor,
 }) => {
   const [roomName, setRoomName] = useState("");
+  const [jwtToken, setJwtToken] = useState("");
+
   console.log("🔹 Received sessionRoom prop:", sessionRoom);
 
   useEffect(() => {
@@ -27,10 +29,22 @@ const JitsiMeetComponent = ({
       console.error("❌ Session room is undefined or null.");
     }
 
+    // Fetch JWT token from the backend
+    const fetchToken = async () => {
+      try {
+        const response = await getJaaSToken(bookingId);
+        setJwtToken(response.token);
+      } catch (error) {
+        console.error("❌ Failed to fetch Jitsi JWT token:", error);
+      }
+    };
+
+    fetchToken();
+
     return () => {
       toast.info("Session ended.", { position: "bottom-right" });
     };
-  }, [sessionRoom]);
+  }, [sessionRoom, bookingId]);
 
   // ✅ Function to end session (Only Tutor can end it)
   const handleEndSession = async () => {
@@ -51,7 +65,9 @@ const JitsiMeetComponent = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-      <div className="w-[95vw] h-[95vh] flex flex-col"> {/* Increased to 95% */}
+      <div className="w-[95vw] h-[95vh] flex flex-col">
+        {" "}
+        {/* Increased to 95% */}
         {/* Header section with buttons */}
         <div className="flex justify-between p-4 bg-gray-800">
           {isTutor && (
@@ -69,42 +85,49 @@ const JitsiMeetComponent = ({
             Close
           </button>
         </div>
-
         {/* Main Jitsi container */}
-        <div className="flex-1 w-full h-full"> {/* This will expand to fill available space */}
-          {roomName ? (
+        <div className="flex-1 w-full h-full">
+          {" "}
+          {/* This will expand to fill available space */}
+          {roomName && jwtToken ? (
             <JitsiMeeting
+              domain="8x8.vc" // JaaS domain
               roomName={roomName}
+              jwt={jwtToken} // Secure JWT authentication
               configOverwrite={{
                 startWithAudioMuted: false,
                 disableModeratorIndicator: false,
                 enableEmailInStats: false,
-                startWithVideoMuted: false,
                 prejoinPageEnabled: false,
                 requireDisplayName: false,
                 filmStripOnly: false,
               }}
               interfaceConfigOverwrite={{
                 DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
-                DEFAULT_BACKGROUND: '#000000',
                 MOBILE_APP_PROMO: false,
                 SHOW_CHROME_EXTENSION_BANNER: false,
                 TOOLBAR_BUTTONS: [
-                  'microphone', 'camera', 'desktop', 'fullscreen',
-                  'hangup', 'profile', 'chat', 'settings'
+                  "microphone",
+                  "camera",
+                  "desktop",
+                  "fullscreen",
+                  "hangup",
+                  "profile",
+                  "chat",
+                  "settings",
                 ],
               }}
               userInfo={{
                 displayName: user.name || "Guest",
               }}
               getIFrameRef={(iframeRef) => {
-                iframeRef.style.height = '100%';
-                iframeRef.style.width = '100%';
+                iframeRef.style.height = "100%";
+                iframeRef.style.width = "100%";
               }}
             />
           ) : (
             <p className="text-white text-xl font-bold">
-              ⚠️ Error: Room Name Not Found
+              ⚠️ Error: Room Name or Token Not Found
             </p>
           )}
         </div>
