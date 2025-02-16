@@ -288,7 +288,6 @@ export const getTutorBookings = async () => {
   }
 };
 
-
 // For Notifications:
 // Fetch notifications
 export const fetchNotifications = async () => {
@@ -313,7 +312,11 @@ export const markNotificationsRead = async () => {
 
 const startSession = async (bookingId) => {
   try {
-    const response = await API.put(`/api/sessions/start/${bookingId}`,{},{withCredentials:true});
+    const response = await API.put(
+      `/api/sessions/start/${bookingId}`,
+      {},
+      { withCredentials: true }
+    );
     return response.data;
   } catch (error) {
     console.error(
@@ -326,7 +329,11 @@ const startSession = async (bookingId) => {
 
 const endSession = async (bookingId) => {
   try {
-    const response = await API.put(`/api/sessions/end/${bookingId}`,{},{withCredentials:true});
+    const response = await API.put(
+      `/api/sessions/end/${bookingId}`,
+      {},
+      { withCredentials: true }
+    );
     return response.data;
   } catch (error) {
     console.error(
@@ -340,7 +347,11 @@ const endSession = async (bookingId) => {
 // ✅ Process Payment After Session Ends
 const processSessionPayment = async (bookingId) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/bookings/payment/${bookingId}`, {}, { withCredentials: true });
+    const response = await API.put(
+      `api/bookings/payment/${bookingId}`,
+      {},
+      { withCredentials: true }
+    );
     return response.data;
   } catch (error) {
     console.error("Error processing session payment:", error);
@@ -348,9 +359,19 @@ const processSessionPayment = async (bookingId) => {
   }
 };
 
+const getJaaSToken = async (bookingId) => {
+  try {
+    const response = await API.get(`/api/sessions/jaas-token/${bookingId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching JaaS token:", error);
+    throw error;
+  }
+};
 
 export {
   confirmWalletTransaction,
+  endSession,
   fetchAllSubjects,
   fetchStudentProfile,
   fetchTutor,
@@ -358,16 +379,15 @@ export {
   fetchTutors,
   fetchWalletBalance,
   fetchWalletTransactions,
+  getJaaSToken,
   getTutors,
   initiateWalletTransaction,
   loginUser,
+  processSessionPayment,
   registerUser,
   resendOtp,
+  startSession,
   updateStudentProfile,
   updateTutorProfile,
   verifyEmail,
-  startSession,
-
-  endSession,
-  processSessionPayment,
 };
