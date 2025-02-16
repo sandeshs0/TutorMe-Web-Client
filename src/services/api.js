@@ -288,7 +288,6 @@ export const getTutorBookings = async () => {
   }
 };
 
-
 // For Notifications:
 // Fetch notifications
 export const fetchNotifications = async () => {
@@ -310,8 +309,69 @@ export const markNotificationsRead = async () => {
     throw error;
   }
 };
+
+const startSession = async (bookingId) => {
+  try {
+    const response = await API.put(
+      `/api/sessions/start/${bookingId}`,
+      {},
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error starting session:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+const endSession = async (bookingId) => {
+  try {
+    const response = await API.put(
+      `/api/sessions/end/${bookingId}`,
+      {},
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error ending session:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+// ✅ Process Payment After Session Ends
+const processSessionPayment = async (bookingId) => {
+  try {
+    const response = await API.put(
+      `api/bookings/payment/${bookingId}`,
+      {},
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error processing session payment:", error);
+    throw error;
+  }
+};
+
+const getJaaSToken = async (bookingId) => {
+  try {
+    const response = await API.get(`/api/sessions/jaas-token/${bookingId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching JaaS token:", error);
+    throw error;
+  }
+};
+
 export {
   confirmWalletTransaction,
+  endSession,
   fetchAllSubjects,
   fetchStudentProfile,
   fetchTutor,
@@ -319,11 +379,14 @@ export {
   fetchTutors,
   fetchWalletBalance,
   fetchWalletTransactions,
+  getJaaSToken,
   getTutors,
   initiateWalletTransaction,
   loginUser,
+  processSessionPayment,
   registerUser,
   resendOtp,
+  startSession,
   updateStudentProfile,
   updateTutorProfile,
   verifyEmail,

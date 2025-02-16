@@ -1,29 +1,36 @@
 import {
-  ChevronDown,
-  Search,
   CheckCircle,
-  MessageSquare,
-  Video,
-  XCircle,
+  ChevronDown,
   Clock,
   FileText,
+  MessageSquare,
+  Search,
+  Video,
+  XCircle,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 import {
   acceptBooking,
   declineBooking,
   getTutorBookings,
+  startSession,
 } from "../services/api";
+import { socket } from "../utils/socket";
+import JitsiMeetComponent from "./JitsiMeetComponent";
 
 const SessionRequests = () => {
   const [bookings, setBookings] = useState([]);
+  const { user } = useAuth(); // Using AuthContext for user
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [filterStatus, setFilterStatus] = useState("pending");
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [timers, setTimers] = useState({});
+  const [activeSession, setActiveSession] = useState(null); // Store active session
+
 
   // Fetch bookings
   useEffect(() => {
@@ -46,6 +53,30 @@ const SessionRequests = () => {
     };
     fetchBookings();
   }, []);
+
+
+   // Handle joining session
+   const handleJoinSession = async (booking) => {
+    try {
+      console.log("🔹 Fetching session room for booking:", booking._id);
+      
+      const response = await startSession(booking._id);
+      
+      if (response.success && response.session.roomId) {
+        console.log("✅ Session room URL received:", response.session.roomId);
+        
+        // Set sessionRoom and store the active session
+        setActiveSession({ ...booking, roomId: response.session.roomId });
+        
+      } else {
+        toast.error("Failed to retrieve session room.");
+        console.error("❌ Error: Session room not found in API response", response);
+      }
+    } catch (error) {
+      console.error("❌ Error starting session:", error);
+      toast.error("Error starting session.");
+    }
+  };
 
   // Filter bookings based on status
   useEffect(() => {
@@ -92,7 +123,16 @@ const SessionRequests = () => {
       console.error(error);
     }
   };
-
+  // const fetchUserNotifications = async () => {
+  //   try {
+  //     const notifications = await fetchNotifications();
+  //     // setNotifications(notifications);
+  //     const unread = notifications.filter((n) => !n.isRead).length;
+  //     setUnreadCount(unread);
+  //   } catch (error) {
+  //     console.error("Error fetching notifications:", error);
+  //   }
+  // };
   // Timer for accepted bookings
   useEffect(() => {
     const updateTimers = () => {
@@ -142,149 +182,245 @@ const SessionRequests = () => {
     return () => clearInterval(interval);
   }, [filteredBookings]);
 
+  // useEffect(() => {
+  //   //registering user with socket
+  //   // if (user?.id) {
+  //   //   registerSocket(user.id);
+
+  //   socket.on("booking-request", (booking) => {
+  //     toast.info("New Booking Request Received", booking, {
+  //       position: "bottom-left",
+  //     });
+  //     // getTutorBookings().then(setBookings);
+  //     // fetchUserNotifications();
+
+  //     const allBookings = getTutorBookings();
+  //     const validBookings = allBookings.filter((b) => b.status !== "declined");
+  //     setBookings(validBookings);
+  //     setFilteredBookings(
+  //       validBookings.filter((b) => b.status === filterStatus)
+  //     );
+  //   });
+  //   socket.on("new-notification", (notification) => {
+  //     // toast.info("New Notification", notification, {
+  //     // position: "bottom-right",
+  //     // });
+  //     // getTutorBookings().then(setBookings);
+  //     // fetchUserNotifications();
+  //   });
+  //   socket.on("booking-accepted", (booking) => {
+  //     toast.success(`Your booking was accepted!`);
+  //     fetchUserNotifications();
+  //   });
+
+  //   socket.on("booking-declined", (booking) => {
+  //     toast.info(`Your booking request was declined.`);
+  //     fetchUserNotifications();
+  //   });
+  //   return () => {
+  //     // Clean up event listeners on component unmount
+  //     socket.off("booking-request");
+  //     socket.off("booking-accepted");
+  //     socket.off("booking-declined");
+  //     socket.off("new-notification");
+  //   };
+  // }, [user]);
+
+  useEffect(() => {
+    const handleNewBooking = async () => {
+      try {
+        const allBookings = await getTutorBookings();
+        const validBookings = allBookings.filter(
+          (b) => b.status !== "declined"
+        );
+        setBookings(validBookings);
+        setFilteredBookings(
+          validBookings.filter((b) => b.status === filterStatus)
+        );
+        // toast.info("New Booking Request Received", {
+        //   position: "bottom-left",
+        // });
+      } catch (error) {
+        console.error(
+          "Error fetching bookings after new booking request:",
+          error
+        );
+      }
+    };
+
+    socket.on("booking-request", handleNewBooking);
+
+    return () => {
+      socket.off("booking-request", handleNewBooking);
+    };
+  }, [filterStatus]);
+
   return (
-<div className="p-4 space-y-6">
-  <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Session Requests</h1>
+    <div className="p-4 space-y-6 ">
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+        Session Requests
+      </h1>
 
-  {/* Filters Section */}
-  <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
-    <div className="relative flex-1 max-w-xl">
-      <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
-      <input
-        type="text"
-        placeholder="Search students..."
-        className="pl-12 pr-4 py-3 w-full rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-    </div>
-
-    <div className="flex gap-3 flex-1 justify-end">
-      <select
-        className="px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
-        value={filterStatus}
-        onChange={(e) => setFilterStatus(e.target.value)}
-      >
-        <option value="all">All Statuses</option>
-        <option value="pending">Pending</option>
-        <option value="accepted">Accepted</option>
-        <option value="completed">Completed</option>
-      </select>
-
-      <button
-        className="px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
-        onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-      >
-        <span>Sort by Date</span>
-        <ChevronDown className={`w-4 h-4 transition-transform ${sortOrder === 'desc' ? 'rotate-180' : ''}`} />
-      </button>
-    </div>
-  </div>
-
-  {/* Booking Cards */}
-  <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-    {filteredBookings.map((booking) => (
-      <div
-        key={booking._id}
-        className="relative bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700"
-      >
-        {/* Status Ribbon */}
-        <div className={`absolute -top-3 left-4 px-3 py-1.5 rounded-full text-xs font-medium ${
-          booking.status === "accepted" ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' :
-          booking.status === "pending" ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' :
-          'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
-        }`}>
-          {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+      {/* Filters Section */}
+      <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
+        <div className="relative flex-1 max-w-xl">
+          <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search students..."
+            className="pl-12 pr-4 py-3 w-full rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
 
-        <div className="p-6 flex gap-5">
-          {/* Profile Image */}
-          <div className="shrink-0 relative">
-            <img
-              src={booking.studentId.profileImage}
-              alt="Student"
-              className="w-14 h-14 rounded-xl border-2 border-white dark:border-gray-800 shadow-sm object-cover"
+        <div className="flex gap-3 flex-1 justify-end">
+          <select
+            className="px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+          >
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="accepted">Accepted</option>
+            <option value="completed">Completed</option>
+          </select>
+
+          <button
+            className="px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
+            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+          >
+            <span>Sort by Date</span>
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                sortOrder === "desc" ? "rotate-180" : ""
+              }`}
             />
-          </div>
-
-          {/* Content */}
-          <div className="flex-1 space-y-4">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-1">
-                {booking.studentId.userId.name}
-              </h2>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                <p className="text-gray-600 dark:text-gray-400">
-                  <span className="font-medium">Date:</span> {new Date(booking.date).toLocaleDateString()}
-                </p>
-                <p className="text-gray-600 dark:text-gray-400">
-                  <span className="font-medium">Time:</span> {booking.startTime}
-                </p>
-              </div>
-            </div>
-
-            {booking.note && (
-              <p className="text-gray-600 dark:text-gray-300 text-sm bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-                {booking.note}
-              </p>
-            )}
-
-            {booking.status === "accepted" && (
-              <div className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 px-3 py-1.5 rounded-md text-sm">
-                <Clock className="w-4 h-4 mr-2" />
-                {timers[booking._id]?.text}
-              </div>
-            )}
-
-            {/* Action Buttons */}
-            <div className="flex flex-wrap gap-3 pt-4">
-              {booking.status === "pending" ? (
-                <>
-                  <button
-                    onClick={() => handleAccept(booking._id)}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors"
-                  >
-                    <CheckCircle className="w-5 h-5" />
-                    Accept Request
-                  </button>
-                  <button
-                    onClick={() => handleDecline(booking._id)}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors"
-                  >
-                    <XCircle className="w-5 h-5" />
-                    Decline
-                  </button>
-                </>
-              ) : booking.status === "accepted" ? (
-                <>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
-                    <MessageSquare className="w-5 h-5" />
-                    Start Chat
-                  </button>
-                  <button
-                    disabled={!timers[booking._id]?.sessionReady}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors ${
-                      timers[booking._id]?.sessionReady 
-                        ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
-                    }`}
-                  >
-                    <Video className="w-5 h-5" />
-                    Join Session
-                  </button>
-                </>
-              ) : (
-                <button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
-                  <FileText className="w-5 h-5" />
-                  View Summary
-                </button>
-              )}
-            </div>
-          </div>
+          </button>
         </div>
       </div>
-    ))}
-  </div>
-</div>
+
+      {/* Booking Cards */}
+      <div className="grid grid-cols-1  xl:grid-cols-2 gap-5">
+        {filteredBookings.map((booking) => (
+          <div
+            key={booking._id}
+            className="relative dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-300 dark:border-gray-700"
+          >
+            {/* Status Ribbon */}
+            <div
+              className={`absolute -top-3 left-4 px-3 py-1.5 rounded-full text-xs font-medium ${
+                booking.status === "accepted"
+                  ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
+                  : booking.status === "pending"
+                  ? "bg-yellow-400 text-red-800  dark:bg-yellow-400 dark:text-red-800"
+                  : "bg-blue-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+              }`}
+            >
+              {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+            </div>
+
+            <div className="p-6 flex gap-5">
+              {/* Profile Image */}
+              <div className="shrink-0 relative">
+                <img
+                  src={booking.studentId.profileImage}
+                  alt="Student"
+                  className="w-14 h-14 rounded-xl border-2 border-white dark:border-gray-800 shadow-sm object-cover"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 space-y-4">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-1">
+                    {booking.studentId.userId.name}
+                  </h2>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                    <p className="text-gray-600 dark:text-gray-400">
+                      <span className="font-medium">Date:</span>{" "}
+                      {new Date(booking.date).toLocaleDateString()}
+                    </p>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      <span className="font-medium">Time:</span>{" "}
+                      {booking.startTime}
+                    </p>
+                  </div>
+                </div>
+
+                {/* {booking.note && ( */}
+                  <p className="text-gray-600 dark:text-gray-300 text-sm bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+                    {booking.note || "No notes provided."}
+                  </p>
+                {/* )} */}
+
+                {booking.status === "accepted" && (
+                  <div className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 px-3 py-1.5 rounded-md text-sm">
+                    <Clock className="w-4 h-4 mr-2" />
+                    {timers[booking._id]?.text}
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-3 pt-4">
+                  {booking.status === "pending" ? (
+                    <>
+                      <button
+                        onClick={() => handleAccept(booking._id)}
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors"
+                      >
+                        <CheckCircle className="w-5 h-5" />
+                        Accept Request
+                      </button>
+                      <button
+                        onClick={() => handleDecline(booking._id)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors"
+                      >
+                        <XCircle className="w-5 h-5" />
+                        Decline
+                      </button>
+                    </>
+                  ) : booking.status === "accepted" ? (
+                    <>
+                      <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
+                        <MessageSquare className="w-5 h-5" />
+                        Start Chat
+                      </button>
+                      <button
+                        onClick={() => handleJoinSession(booking)}
+                        disabled={!timers[booking._id]?.sessionReady}
+                        className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors ${
+                          timers[booking._id]?.sessionReady
+                            ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+                            : "bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
+                        }`}
+                      >
+                        <Video className="w-5 h-5" />
+                        Join Session
+                      </button>
+                    </>
+                  ) : (
+                    <button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
+                      <FileText className="w-5 h-5" />
+                      View Summary
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {activeSession && (
+        <JitsiMeetComponent
+          sessionRoom={activeSession.roomId}
+          bookingId={activeSession._id}
+          user={user}
+          isTutor={user.role === "tutor"}
+          onClose={() => setActiveSession(null)}
+        />
+      )}
+    </div>
   );
 };
 
