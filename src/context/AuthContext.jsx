@@ -8,7 +8,6 @@
 //   const [user, setUser] = useState(null);
 //   const [token, setToken] = useState(null);
 
-
 //   // Load user data from localStorage when the app loads
 //   useEffect(() => {
 //     const storedUser = localStorage.getItem("user");
@@ -39,8 +38,7 @@
 //   return useContext(AuthContext);
 // };
 
-
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 // Create the Auth Context
 const AuthContext = createContext({
@@ -54,6 +52,8 @@ const AuthContext = createContext({
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ Add loading state
+
 
   // Load user and token data from localStorage when the app loads
   useEffect(() => {
@@ -67,9 +67,18 @@ export const AuthProvider = ({ children }) => {
         setToken(storedToken);
       }
     } catch (error) {
-      console.error("Error loading authentication data from localStorage:", error);
+      console.error(
+        "Error loading authentication data from localStorage:",
+        error
+      );
+    } finally{
+      setLoading(false);
     }
   }, []);
+
+  const isLoggedIn = () => user !== null;
+  const isTutor = () => user?.role === "tutor";
+  const isStudent = () => user?.role === "student";
 
   const login = ({ userData, authToken }) => {
     try {
@@ -89,12 +98,15 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setToken(null);
     } catch (error) {
-      console.error("Error clearing authentication data from localStorage:", error);
+      console.error(
+        "Error clearing authentication data from localStorage:",
+        error
+      );
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, logout, isLoggedIn, isTutor, isStudent , loading}}>
       {children}
     </AuthContext.Provider>
   );

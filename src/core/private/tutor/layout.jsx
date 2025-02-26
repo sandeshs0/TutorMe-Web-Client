@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import OverviewSection from "../components/OverViewTutorDashboard";
-import SessionRequests from "../components/SessionRequest";
-import TutorProfile from "../components/TutorMyProfile";
-import TutorProfileDropdown from "../components/TutorProfileDropdown";
-import { useAuth } from "../context/AuthContext";
+import OverviewSection from "../../../components/OverViewTutorDashboard";
+import SessionRequests from "../../../components/SessionRequest";
+import TutorProfile from "../../../components/TutorMyProfile";
+import TutorProfileDropdown from "../../../components/TutorProfileDropdown";
+import { useAuth } from "../../../context/AuthContext";
 import {
   fetchNotifications,
   fetchTutorProfile,
   getTutorBookings,
   markNotificationsRead,
-} from "../services/api";
-import { socket } from "../utils/socket";
+} from "../../../services/api";
+import { socket } from "../../../utils/socket";
 // import {}
 
 const TutorDashboard = () => {
