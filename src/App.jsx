@@ -1,5 +1,5 @@
 import "@theme-toggles/react/css/Horizon.css";
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,10 +13,11 @@ import LoginPage from "./pages/LoginPage";
 import OtpPage from "./pages/OtpPage";
 import SignupPage from "./pages/SignupPage";
 import StudentDashboard from "./pages/StudentDashboard";
-import TutorDashboard from "./pages/TutorDashboard";
+// import TutorDashboard from "./pages/TutorDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import TutorDashboard from "./core/private/tutor/layout";
 import TutorProfilePage from "./pages/TutorProfile";
-import { registerSocket, socket } from "./utils/socket";
-
+import { registerSocket } from "./utils/socket";
 
 const App = () => {
   const { user } = useAuth(); // Get logged-in user
@@ -55,15 +56,43 @@ const App = () => {
     <>
       <Router>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/verify-otp" element={<OtpPage />} />
-          <Route path="/tutor-dashboard" element={<TutorDashboard />} />
-          <Route path="/account-center" element={<StudentDashboard />} />
-          <Route path="/payment-callback" element={<PaymentCallback />} />
           <Route path="/browse" element={<BrowseTutorsPage />} />
           <Route path="/tutors/:username" element={<TutorProfilePage />} />
+          <Route path="/payment-callback" element={<PaymentCallback />} />
+
+          {/* //   Protected Routes for Student 
+          <Route element={<ProtectedRoute requiredRole="student" />}>
+            <Route path="/account-center" element={<StudentDashboard />} />
+          </Route>
+
+          // Protected Routes for Tutor 
+          <Route element={<ProtectedRoute requiredRole="tutor" />}>
+            <Route path="/tutor-dashboard" element={<TutorDashboard />} />
+          </Route> */}
+
+          <Route
+            path="/account-center"
+            element={
+              <ProtectedRoute requiredRole="student">
+                <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Routes for Tutors */}
+          <Route
+            path="/tutor-dashboard"
+            element={
+              <ProtectedRoute requiredRole="tutor">
+                <TutorDashboard />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
       <div>
