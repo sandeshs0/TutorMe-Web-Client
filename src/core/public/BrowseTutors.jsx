@@ -1,14 +1,14 @@
+import { CircleChevronLeft, CircleChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { FaFilter, FaThLarge, FaThList, FaTimes } from "react-icons/fa";
-import {CircleChevronLeft, CircleChevronRight} from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import NavbarTwo from "../components/NavbarTwo";
-import SortDropdown from "../components/SortDropdown";
-import TutorCardGrid from "../components/TutorCard";
-import TutorCardList from "../components/TutorCardList";
-import { useAuth } from "../context/AuthContext";
-import { fetchStudentProfile, getTutors } from "../services/api";
+import NavbarTwo from "../../components/NavbarTwo";
+import SortDropdown from "../../components/SortDropdown";
+import TutorCardGrid from "../../components/TutorCard";
+import TutorCardList from "../../components/TutorCardList";
+import { useAuth } from "../../context/AuthContext";
+import { fetchStudentProfile, getTutors } from "../../services/api";
 
 const BrowseTutorsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -312,7 +312,7 @@ const BrowseTutorsPage = () => {
                     disabled={currentPage === 1}
                     className="join-item btn btn-outlined disabled:text-gray-700 px-6 py-2"
                   >
-                    <CircleChevronLeft/>
+                    <CircleChevronLeft />
                   </button>
                   {Array.from({ length: totalPages }, (_, index) => (
                     <button
@@ -332,7 +332,7 @@ const BrowseTutorsPage = () => {
                     disabled={currentPage === totalPages}
                     className="join-item text-white btn btn-outlined disabled:text-gray-700 px-6 py-2"
                   >
-                    <CircleChevronRight/>
+                    <CircleChevronRight />
                   </button>
                 </div>
               </>

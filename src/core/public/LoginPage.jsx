@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { useAuth } from "../context/AuthContext"; // Import AuthContext
-import { loginUser } from "../services/api";
-import { registerSocket } from "../utils/socket";
+import { useAuth } from "../../context/AuthContext"; // Import AuthContext
+import { loginUser } from "../../services/api";
+import { registerSocket } from "../../utils/socket";
 
 const LoginPage = () => {
   const navigate = useNavigate();

@@ -7,6 +7,9 @@ import {
   Search,
   Video,
   XCircle,
+  CalendarDays,
+  Filter,
+  ArrowUpDown,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -31,7 +34,6 @@ const SessionRequests = () => {
   const [timers, setTimers] = useState({});
   const [activeSession, setActiveSession] = useState(null); // Store active session
 
-
   // Fetch bookings
   useEffect(() => {
     const fetchBookings = async () => {
@@ -54,9 +56,8 @@ const SessionRequests = () => {
     fetchBookings();
   }, []);
 
-
-   // Handle joining session
-   const handleJoinSession = async (booking) => {
+  // Handle joining session
+  const handleJoinSession = async (booking) => {
     try {
       console.log("🔹 Fetching session room for booking:", booking._id);
       
@@ -123,17 +124,7 @@ const SessionRequests = () => {
       console.error(error);
     }
   };
-  // const fetchUserNotifications = async () => {
-  //   try {
-  //     const notifications = await fetchNotifications();
-  //     // setNotifications(notifications);
-  //     const unread = notifications.filter((n) => !n.isRead).length;
-  //     setUnreadCount(unread);
-  //   } catch (error) {
-  //     console.error("Error fetching notifications:", error);
-  //   }
-  // };
-  // Timer for accepted bookings
+
   useEffect(() => {
     const updateTimers = () => {
       const now = new Date();
@@ -182,50 +173,6 @@ const SessionRequests = () => {
     return () => clearInterval(interval);
   }, [filteredBookings]);
 
-  // useEffect(() => {
-  //   //registering user with socket
-  //   // if (user?.id) {
-  //   //   registerSocket(user.id);
-
-  //   socket.on("booking-request", (booking) => {
-  //     toast.info("New Booking Request Received", booking, {
-  //       position: "bottom-left",
-  //     });
-  //     // getTutorBookings().then(setBookings);
-  //     // fetchUserNotifications();
-
-  //     const allBookings = getTutorBookings();
-  //     const validBookings = allBookings.filter((b) => b.status !== "declined");
-  //     setBookings(validBookings);
-  //     setFilteredBookings(
-  //       validBookings.filter((b) => b.status === filterStatus)
-  //     );
-  //   });
-  //   socket.on("new-notification", (notification) => {
-  //     // toast.info("New Notification", notification, {
-  //     // position: "bottom-right",
-  //     // });
-  //     // getTutorBookings().then(setBookings);
-  //     // fetchUserNotifications();
-  //   });
-  //   socket.on("booking-accepted", (booking) => {
-  //     toast.success(`Your booking was accepted!`);
-  //     fetchUserNotifications();
-  //   });
-
-  //   socket.on("booking-declined", (booking) => {
-  //     toast.info(`Your booking request was declined.`);
-  //     fetchUserNotifications();
-  //   });
-  //   return () => {
-  //     // Clean up event listeners on component unmount
-  //     socket.off("booking-request");
-  //     socket.off("booking-accepted");
-  //     socket.off("booking-declined");
-  //     socket.off("new-notification");
-  //   };
-  // }, [user]);
-
   useEffect(() => {
     const handleNewBooking = async () => {
       try {
@@ -237,9 +184,6 @@ const SessionRequests = () => {
         setFilteredBookings(
           validBookings.filter((b) => b.status === filterStatus)
         );
-        // toast.info("New Booking Request Received", {
-        //   position: "bottom-left",
-        // });
       } catch (error) {
         console.error(
           "Error fetching bookings after new booking request:",
@@ -255,162 +199,293 @@ const SessionRequests = () => {
     };
   }, [filterStatus]);
 
-  return (
-    <div className="p-4 space-y-6 ">
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-        Session Requests
-      </h1>
+  // Count for each status
+  const pendingCount = bookings.filter(b => b.status === "pending").length;
+  const acceptedCount = bookings.filter(b => b.status === "accepted").length;
+  const completedCount = bookings.filter(b => b.status === "completed").length;
 
-      {/* Filters Section */}
-      <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
-        <div className="relative flex-1 max-w-xl">
-          <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search students..."
-            className="pl-12 pr-4 py-3 w-full rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+  return (
+    <div className="p-4 space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+              Session Requests
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">
+              Manage your teaching sessions and student requests
+            </p>
+          </div>
+          <div className="mt-4 md:mt-0">
+            <div className="inline-flex items-center px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded-lg">
+              <CalendarDays className="w-4 h-4 mr-2" />
+              <span className="font-medium">Today: {new Date().toLocaleDateString()}</span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex gap-3 flex-1 justify-end">
-          <select
-            className="px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
-            <option value="all">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="accepted">Accepted</option>
-            <option value="completed">Completed</option>
-          </select>
-
+        {/* Filter Pills */}
+        <div className="mb-6 flex flex-wrap gap-3">
           <button
-            className="px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
-            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+            onClick={() => setFilterStatus("all")}
+            className={`px-4 py-2.5 rounded-full font-medium text-sm transition-all ${
+              filterStatus === "all"
+                ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200 shadow-sm"
+                : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
+            }`}
           >
-            <span>Sort by Date</span>
-            <ChevronDown
-              className={`w-4 h-4 transition-transform ${
-                sortOrder === "desc" ? "rotate-180" : ""
-              }`}
-            />
+            All Requests
+            <span className="ml-2 px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full">
+              {bookings.length}
+            </span>
+          </button>
+          
+          <button
+            onClick={() => setFilterStatus("pending")}
+            className={`px-4 py-2.5 rounded-full font-medium text-sm transition-all ${
+              filterStatus === "pending"
+                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 shadow-sm"
+                : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
+            }`}
+          >
+            Pending
+            <span className="ml-2 px-2 py-0.5 bg-yellow-200 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200 text-xs rounded-full">
+              {pendingCount}
+            </span>
+          </button>
+          
+          <button
+            onClick={() => setFilterStatus("accepted")}
+            className={`px-4 py-2.5 rounded-full font-medium text-sm transition-all ${
+              filterStatus === "accepted"
+                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 shadow-sm"
+                : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
+            }`}
+          >
+            Accepted
+            <span className="ml-2 px-2 py-0.5 bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200 text-xs rounded-full">
+              {acceptedCount}
+            </span>
+          </button>
+          
+          <button
+            onClick={() => setFilterStatus("completed")}
+            className={`px-4 py-2.5 rounded-full font-medium text-sm transition-all ${
+              filterStatus === "completed"
+                ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 shadow-sm"
+                : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
+            }`}
+          >
+            Completed
+            <span className="ml-2 px-2 py-0.5 bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-xs rounded-full">
+              {completedCount}
+            </span>
           </button>
         </div>
-      </div>
 
-      {/* Booking Cards */}
-      <div className="grid grid-cols-1  xl:grid-cols-2 gap-5">
-        {filteredBookings.map((booking) => (
-          <div
-            key={booking._id}
-            className="relative dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-300 dark:border-gray-700"
+        {/* Filters & Search Section */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search students..."
+              className="pl-12 pr-4 py-3 w-full rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchTerm}
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+              >
+                <XCircle className="h-5 w-5" />
+              </button>
+            )}
+          </div>
+
+          <button
+            className="px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
+            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
           >
-            {/* Status Ribbon */}
-            <div
-              className={`absolute -top-3 left-4 px-3 py-1.5 rounded-full text-xs font-medium ${
-                booking.status === "accepted"
-                  ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
-                  : booking.status === "pending"
-                  ? "bg-yellow-400 text-red-800  dark:bg-yellow-400 dark:text-red-800"
-                  : "bg-blue-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
-              }`}
-            >
-              {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+            <ArrowUpDown className="w-5 h-5 text-gray-500" />
+            <span>{sortOrder === "asc" ? "Newest First" : "Oldest First"}</span>
+          </button>
+        </div>
+
+        {/* No Results State */}
+        {filteredBookings.length === 0 && !loading && (
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="flex justify-center mb-4">
+              <CalendarDays className="w-12 h-12 text-gray-400" />
             </div>
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+              No {filterStatus === "all" ? "" : filterStatus} requests found
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
+              {filterStatus === "pending" 
+                ? "You have no pending session requests at the moment."
+                : filterStatus === "accepted"
+                ? "You haven't accepted any session requests yet."
+                : filterStatus === "completed"
+                ? "You don't have any completed sessions to display."
+                : "There are no session requests matching your filters."}
+            </p>
+            {filterStatus !== "all" && (
+              <button
+                onClick={() => setFilterStatus("all")}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+              >
+                View All Requests
+              </button>
+            )}
+          </div>
+        )}
 
-            <div className="p-6 flex gap-5">
-              {/* Profile Image */}
-              <div className="shrink-0 relative">
-                <img
-                  src={booking.studentId.profileImage}
-                  alt="Student"
-                  className="w-14 h-14 rounded-xl border-2 border-white dark:border-gray-800 shadow-sm object-cover"
-                />
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 space-y-4">
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-1">
-                    {booking.studentId.userId.name}
-                  </h2>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                    <p className="text-gray-600 dark:text-gray-400">
-                      <span className="font-medium">Date:</span>{" "}
-                      {new Date(booking.date).toLocaleDateString()}
-                    </p>
-                    <p className="text-gray-600 dark:text-gray-400">
-                      <span className="font-medium">Time:</span>{" "}
-                      {booking.startTime}
-                    </p>
-                  </div>
-                </div>
-
-                {/* {booking.note && ( */}
-                  <p className="text-gray-600 dark:text-gray-300 text-sm bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
-                    {booking.note || "No notes provided."}
-                  </p>
-                {/* )} */}
-
-                {booking.status === "accepted" && (
-                  <div className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 px-3 py-1.5 rounded-md text-sm">
-                    <Clock className="w-4 h-4 mr-2" />
-                    {timers[booking._id]?.text}
-                  </div>
-                )}
-
-                {/* Action Buttons */}
-                <div className="flex flex-wrap gap-3 pt-4">
-                  {booking.status === "pending" ? (
-                    <>
-                      <button
-                        onClick={() => handleAccept(booking._id)}
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors"
-                      >
-                        <CheckCircle className="w-5 h-5" />
-                        Accept Request
-                      </button>
-                      <button
-                        onClick={() => handleDecline(booking._id)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors"
-                      >
-                        <XCircle className="w-5 h-5" />
-                        Decline
-                      </button>
-                    </>
-                  ) : booking.status === "accepted" ? (
-                    <>
-                      <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
-                        <MessageSquare className="w-5 h-5" />
-                        Start Chat
-                      </button>
-                      <button
-                        onClick={() => handleJoinSession(booking)}
-                        disabled={!timers[booking._id]?.sessionReady}
-                        className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors ${
-                          timers[booking._id]?.sessionReady
-                            ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                            : "bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                        }`}
-                      >
-                        <Video className="w-5 h-5" />
-                        Join Session
-                      </button>
-                    </>
-                  ) : (
-                    <button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
-                      <FileText className="w-5 h-5" />
-                      View Summary
-                    </button>
-                  )}
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center py-12">
+            <div className="animate-pulse flex space-x-4">
+              <div className="rounded-full bg-gray-200 dark:bg-gray-700 h-12 w-12"></div>
+              <div className="flex-1 space-y-4 py-1">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
                 </div>
               </div>
             </div>
           </div>
-        ))}
+        )}
+
+        {/* Booking Cards */}
+        {!loading && filteredBookings.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {filteredBookings.map((booking) => (
+              <div
+                key={booking._id}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 dark:border-gray-700 overflow-hidden"
+              >
+                {/* Status Ribbon */}
+                <div className={`h-2 w-full ${
+                  booking.status === "accepted"
+                    ? "bg-green-500"
+                    : booking.status === "pending"
+                    ? "bg-yellow-500"
+                    : "bg-blue-500"
+                }`}></div>
+                
+                <div className="p-6">
+                  <div className="flex items-start gap-5">
+                    {/* Profile Image */}
+                    <div className="shrink-0">
+                      <img
+                        src={booking.studentId.profileImage}
+                        alt={booking.studentId.userId.name}
+                        className="w-16 h-16 rounded-xl object-cover border-2 border-white dark:border-gray-800 shadow-sm"
+                      />
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1">
+                      <div className="flex flex-wrap justify-between items-start mb-2">
+                        <div>
+                          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+                            {booking.studentId.userId.name}
+                          </h2>
+                          <div className="inline-flex items-center px-2 py-1 mt-1 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-sm">
+                            <CalendarDays className="w-4 h-4" />
+                            <span>{new Date(booking.date).toLocaleDateString()}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-sm mt-1">
+                            <Clock className="w-4 h-4" />
+                            <span>{booking.startTime}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Note */}
+                      <div className="mt-4 mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-100 dark:border-gray-700">
+                        <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3">
+                          {booking.note || "No notes provided."}
+                        </p>
+                      </div>
+
+                      {/* Session Timer */}
+                      {booking.status === "accepted" && (
+                        <div className="mb-4">
+                          <div className={`flex items-center px-3 py-2 rounded-lg text-sm ${
+                            timers[booking._id]?.sessionReady
+                              ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+                              : "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+                          }`}>
+                            <Clock className="w-4 h-4 mr-2" />
+                            <span className="font-medium">{timers[booking._id]?.text}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action Buttons */}
+                      <div className="flex flex-wrap gap-3 mt-4">
+                        {booking.status === "pending" ? (
+                          <>
+                            <button
+                              onClick={() => handleAccept(booking._id)}
+                              className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                            >
+                              <CheckCircle className="w-5 h-5" />
+                              Accept
+                            </button>
+                            <button
+                              onClick={() => handleDecline(booking._id)}
+                              className="flex-1 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                            >
+                              <XCircle className="w-5 h-5" />
+                              Decline
+                            </button>
+                          </>
+                        ) : booking.status === "accepted" ? (
+                          <>
+                            <button className="flex-1 border border-indigo-200 dark:border-indigo-800 bg-white hover:bg-indigo-50 dark:bg-gray-700 dark:hover:bg-gray-600 text-indigo-600 dark:text-indigo-400 px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                              <MessageSquare className="w-5 h-5" />
+                              Message
+                            </button>
+                            <button
+                              onClick={() => handleJoinSession(booking)}
+                              disabled={!timers[booking._id]?.sessionReady}
+                              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-colors ${
+                                timers[booking._id]?.sessionReady
+                                  ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+                                  : "bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
+                              }`}
+                            >
+                              <Video className="w-5 h-5" />
+                              Join Session
+                            </button>
+                          </>
+                        ) : (
+                          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                            <FileText className="w-5 h-5" />
+                            View Session Details
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
+      {/* Video Session Modal */}
       {activeSession && (
         <JitsiMeetComponent
           sessionRoom={activeSession.roomId}

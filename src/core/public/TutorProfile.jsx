@@ -1,15 +1,15 @@
-import { CircleChevronLeft, Star, SquareArrowOutUpRight } from "lucide-react";
+import { CircleChevronLeft, SquareArrowOutUpRight, Star } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 // import { toast } from "react-toastify";
 import { toast, ToastContainer } from "react-toastify";
-import NavbarTwo from "../components/NavbarTwo";
-import { useAuth } from "../context/AuthContext";
+import NavbarTwo from "../../components/NavbarTwo";
+import { useAuth } from "../../context/AuthContext";
 import {
   fetchStudentProfile,
   fetchTutor,
   requestBooking,
-} from "../services/api";
+} from "../../services/api";
 
 const TutorProfilePage = () => {
   const { username } = useParams();

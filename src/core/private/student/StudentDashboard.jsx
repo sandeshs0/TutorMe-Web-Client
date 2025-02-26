@@ -1,18 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 // import StudentProfile from "../components/StudentProfile";
-import StudentProfileDropdown from "../components/StudentProfileDropdown";
+import StudentProfileDropdown from "../../../components/StudentProfileDropdown";
 // import ProfileDropdown from "../components/ProfileDropdown";
 import useSound from "use-sound";
-import lightSound from "../assets/sounds/light.mp3";
-import StudentWallet from "../components/StudentWallet";
-import { useAuth } from "../context/AuthContext";
+import lightSound from "../../../assets/sounds/light.mp3";
+import StudentWallet from "../../../components/StudentWallet";
+import { useAuth } from "../../../context/AuthContext";
 import {
   fetchNotifications,
   fetchStudentProfile,
   markNotificationsRead,
-} from "../services/api";
-import { socket } from "../utils/socket";
+} from "../../../services/api";
+import { socket } from "../../../utils/socket";
+import StudentBookings from "./pages/BookingRequests";
+import StudentProfile from "./pages/MyProfile";
 
 const StudentDashboard = () => {
   const { user } = useAuth(); // Using AuthContext for user
@@ -159,8 +161,8 @@ const StudentDashboard = () => {
     switch (currentPage) {
       case "Overview":
         return <h1 className="text-2xl font-bold">Student Overview</h1>;
-      case "Sessions":
-        return <h1 className="text-2xl font-bold">Sessions</h1>;
+      case "Session Requests":
+        return <StudentBookings />;
       case "Statement":
         return <h1 className="text-2xl font-bold">Statement</h1>;
       case "Browse Tutors":
@@ -168,8 +170,9 @@ const StudentDashboard = () => {
       case "Wallet":
         return <StudentWallet studentData={studentData} />;
       case "Profile":
-        // return <StudentProfile studentData={studentData} />;
-        return <h1 className="text-2xl font-bold">Profile</h1>;
+        return <StudentProfile />;
+      // return <StudentProfile studentData={studentData} />;
+      // return <h1 className="text-2xl font-bold">Profile</h1>;
 
       default:
         return <h1 className="text-2xl font-bold">Welcome!</h1>;
@@ -201,15 +204,15 @@ const StudentDashboard = () => {
           <ul className="space-y-4 px-4">
             {[
               { name: "Overview", icon: "fas fa-home" },
-              { name: "Sessions", icon: "fas fa-video" },
+              { name: "Session Requests", icon: "fas fa-file-circle-plus" },
               { name: "Browse Tutors", icon: "fas fa-globe" },
+              { name: "Wallet", icon: "fas fa-wallet" },
               { name: "Statement", icon: "fas fa-chart-line" },
               { name: "Profile", icon: "fas fa-user" },
-              { name: "Wallet", icon: "fas fa-wallet" },
             ].map((item) => (
               <li key={item.name}>
                 <button
-                  className={`w-full flex items-center px-4 py-2 rounded-md transition ${
+                  className={`w-full flex items-center px-4 py-3 rounded-md transition ${
                     currentPage === item.name
                       ? "bg-[#0961f5] text-white font-semibold"
                       : "dark:hover:bg-gray-700 hover:bg-gray-400 hover:text-white"

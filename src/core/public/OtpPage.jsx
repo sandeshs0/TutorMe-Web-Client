@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { verifyEmail, resendOtp } from "../services/api";
+import { useLocation, useNavigate } from "react-router-dom";
+import { resendOtp, verifyEmail } from "../../services/api";
 
 const OtpPage = () => {
   const location = useLocation();
@@ -95,7 +95,9 @@ const OtpPage = () => {
         </div>
 
         {error && <p className="text-red-500 text-center mb-2">{error}</p>}
-        {success && <p className="text-green-500 text-center mb-2">{success}</p>}
+        {success && (
+          <p className="text-green-500 text-center mb-2">{success}</p>
+        )}
 
         <button
           onClick={handleVerifyOtp}

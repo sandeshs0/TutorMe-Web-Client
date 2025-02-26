@@ -7,16 +7,16 @@ import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import PaymentCallback from "./components/PaymentCallback";
 import { useAuth } from "./context/AuthContext";
-import BrowseTutorsPage from "./pages/BrowseTutors";
-import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import OtpPage from "./pages/OtpPage";
-import SignupPage from "./pages/SignupPage";
-import StudentDashboard from "./pages/StudentDashboard";
+import StudentDashboard from "./core/private/student/StudentDashboard";
+import BrowseTutorsPage from "./core/public/BrowseTutors";
+import HomePage from "./core/public/HomePage";
+import LoginPage from "./core/public/LoginPage";
+import OtpPage from "./core/public/OtpPage";
+import SignupPage from "./core/public/SignupPage";
 // import TutorDashboard from "./pages/TutorDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TutorDashboard from "./core/private/tutor/layout";
-import TutorProfilePage from "./pages/TutorProfile";
+import TutorProfilePage from "./core/public/TutorProfile";
 import { registerSocket } from "./utils/socket";
 
 const App = () => {

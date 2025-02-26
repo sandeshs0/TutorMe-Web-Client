@@ -115,6 +115,18 @@ const fetchStudentProfile = async () => {
   }
 };
 
+const fetchStudentBookings = async () => {
+  try {
+    const response = await API.get("/api/student/bookings");
+    return response.data.bookings; // Return the list of bookings
+  } catch (error) {
+    throw error.response ? error.response.data : { message: "Network error" };
+  }
+};
+
+export default fetchStudentBookings;
+
+
 // Update student profile
 const updateStudentProfile = async (profileData) => {
   try {

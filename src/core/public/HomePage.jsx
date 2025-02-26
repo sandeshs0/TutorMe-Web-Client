@@ -34,14 +34,13 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
-import HeroSection from "../components/HeroSection";
-import Navbar from "../components/Navbar";
-import PopularTutors from "../components/PopularTutors";
-import SearchSection from "../components/SearchBar";
-import { fetchTutors } from "../services/api"; // Import API function
-import PaginatedTutors from "../components/PaginatedTutors";
-import tutorsRandom from "../test_data/tutor";
+import Footer from "../../components/Footer";
+import HeroSection from "../../components/HeroSection";
+import Navbar from "../../components/Navbar";
+import PaginatedTutors from "../../components/PaginatedTutors";
+import PopularTutors from "../../components/PopularTutors";
+import SearchSection from "../../components/SearchBar";
+import { fetchTutors } from "../../services/api"; // Import API function
 
 const HomePage = () => {
   const navigate = useNavigate();
