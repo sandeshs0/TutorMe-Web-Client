@@ -10,7 +10,7 @@ const SortDropdown = ({ setSortOption }) => {
   };
 
   return (
-    <div id="sort-dropdown" iclassName="dropdown dropdown-start relative font-sans">
+    <div id="sort-dropdown" className="dropdown dropdown-start relative font-sans">
       <button 
         tabIndex={0} 
         role="button" 

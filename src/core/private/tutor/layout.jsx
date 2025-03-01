@@ -12,6 +12,7 @@ import {
   markNotificationsRead,
 } from "../../../services/api";
 import { socket } from "../../../utils/socket";
+import Statement from "./dashboard/Statement";
 // import {}
 
 const TutorDashboard = () => {
@@ -166,8 +167,8 @@ const TutorDashboard = () => {
       case "Session Requests":
         return <SessionRequests />;
       // return <h1 className="text-2xl font-bold">My Session Request Page</h1>;
-      case "Chats":
-        return <h1 className="text-2xl font-bold">Chats</h1>;
+      case "Statement":
+        return <Statement/>;
       case "Settings":
         return <h1 className="text-2xl font-bold">Settings</h1>;
       case "Schedule":
@@ -206,7 +207,8 @@ const TutorDashboard = () => {
               { name: "Overview", icon: "fas fa-chart-pie" },
               { name: "Session Requests", icon: "fas fa-chalkboard-teacher" },
               { name: "Schedule", icon: "fas fa-calendar-alt" },
-              { name: "Chats", icon: "fas fa-comment-dots" },
+              // { name: "Chats", icon: "fas fa-comment-dots" },
+              { name: "Statement", icon: "fas fa-chart-simple" },
               { name: "Profile", icon: "fas fa-user" },
               { name: "Settings", icon: "fas fa-gear" },
             ].map((item) => (
