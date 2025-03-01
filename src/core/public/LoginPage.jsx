@@ -115,7 +115,7 @@ const LoginPage = () => {
                   Email
                 </label>
                 <input
-                  type="email"
+                  // type="email"
                   id="email"
                   name="email"
                   placeholder="Enter your email"
@@ -124,7 +124,9 @@ const LoginPage = () => {
                   onChange={handleInputChange}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email}</p>
+                  <p id="email-error" className="text-red-500 text-sm">
+                    {errors.email}
+                  </p>
                 )}
               </div>
 
@@ -147,25 +149,25 @@ const LoginPage = () => {
                 />
                 <button
                   type="button"
-              
                   className="absolute top-9 right-3 text-gray-600 hover:text-gray-800 focus:outline-none"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label="Toggle Password Visibility"
                 >
                   {showPassword ? (
-                    <i className="fas fa-eye-slash"></i> // Eye-slash icon for "hide"
+                    <i className="fas fa-eye-slash"></i> 
                   ) : (
-                    <i className="fas fa-eye"></i> // Eye icon for "show"
+                    <i className="fas fa-eye"></i> 
                   )}
                 </button>
                 {errors.password && (
-                  <p className="text-red-500 text-sm">{errors.password}</p>
+                  <p id="password-error" className="text-red-500 text-sm">
+                    {errors.password}
+                  </p>
                 )}
               </div>
               {errors.general && (
-                <p className="text-red-500 text-sm">{errors.general}</p>
+                <p id="general-error" className="text-red-500 text-sm">{errors.general}</p>
               )}
-              {/* Remember Me and Forgot Password */}
               <div className="flex items-center justify-between text-sm lg:text-md font-poppins">
                 <div className="flex items-center">
                   <input
@@ -181,8 +183,6 @@ const LoginPage = () => {
                   Forgot password?
                 </a>
               </div>
-
-              {/* Sign In Button */}
               <button
                 type="submit"
                 id="login-button"

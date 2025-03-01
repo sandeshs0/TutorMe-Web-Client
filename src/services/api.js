@@ -126,7 +126,6 @@ const fetchStudentBookings = async () => {
 
 export default fetchStudentBookings;
 
-
 // Update student profile
 const updateStudentProfile = async (profileData) => {
   try {
@@ -284,6 +283,23 @@ export const getStudentBookings = async () => {
   }
 };
 
+const fetchTutorSessions = async () => {
+  try {
+    const response = await API.get("/api/sessions/tutor");
+    return response.data.sessions; // Return the array of sessions
+  } catch (error) {
+    throw error.response ? error.response.data : { message: "Network error" };
+  }
+};
+const fetchStudentSessions = async () => {
+  try {
+    const response = await API.get("/api/sessions/student");
+    return response.data.sessions; // Return the array of sessions
+  } catch (error) {
+    throw error.response ? error.response.data : { message: "Network error" };
+  }
+};
+
 /**
  * Fetch all bookings for a tutor.
  */
@@ -386,9 +402,11 @@ export {
   endSession,
   fetchAllSubjects,
   fetchStudentProfile,
+  fetchStudentSessions,
   fetchTutor,
   fetchTutorProfile,
   fetchTutors,
+  fetchTutorSessions,
   fetchWalletBalance,
   fetchWalletTransactions,
   getJaaSToken,
