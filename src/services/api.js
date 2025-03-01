@@ -96,14 +96,42 @@ const fetchAllSubjects = async () => {
 };
 
 // Fetch paginated tutors
-const getTutors = async (page = 1, limit = 1) => {
+// const getTutors = async (page = 1, limit = 1) => {
+//   try {
+//     const response = await API.get(`/api/tutors?page=${page}&limit=${limit}`);
+//     return response.data; // Return tutors and pagination info
+//   } catch (error) {
+//     throw error.response ? error.response.data : { message: "Network error" };
+//   }
+// };
+
+ const getTutors = async (page, limit, searchQuery, filters, sortOption) => {
   try {
-    const response = await API.get(`/api/tutors?page=${page}&limit=${limit}`);
-    return response.data; // Return tutors and pagination info
+    const params = new URLSearchParams({
+      page,
+      limit,
+      search: searchQuery,
+      minHourlyRate: filters.priceRange[0],
+      maxHourlyRate: filters.priceRange[1],
+      minRating: filters.rating[0],
+      maxRating: filters.rating[1],
+      sortBy: sortOption.split("-")[0],
+      sortOrder: sortOption.includes("desc") ? "desc" : "asc",
+    });
+
+    // Add subjects only if selected
+    if (filters.subject.length > 0) {
+      params.append("subject", filters.subject.join(","));
+    }
+
+    const response = await API.get(`/api/tutors?${params.toString()}`);
+    return response.data;
   } catch (error) {
-    throw error.response ? error.response.data : { message: "Network error" };
+    console.error("Error fetching tutors:", error);
+    throw new Error("Failed to fetch tutors");
   }
 };
+
 
 // Fetch student profile (Authenticated student)
 const fetchStudentProfile = async () => {
@@ -410,6 +438,20 @@ const getJaaSToken = async (bookingId) => {
     throw error;
   }
 };
+
+export const getTutorEarnings = async () => {
+  try {
+    const response = await API.get(`/api/earning/`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching tutor earnings:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 
 export {
   confirmWalletTransaction,
