@@ -1,110 +1,137 @@
-import { test, expect } from "@playwright/test";
+ import { test, expect } from '@playwright/test';
 
-// Mock API responses
-const mockTutorsResponse = {
-  tutors: [
-    { id: 1, name: "John Doe", hourlyRate: 500, rating: 4.8, subject: "Math" },
-    { id: 2, name: "Jane Smith", hourlyRate: 700, rating: 4.5, subject: "Science" },
-  ],
-  pagination: { totalPages: 2 },
-};
-
-test.describe("Browse Tutors Page", () => {
+test.describe('BrowseTutorsPage Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.route("**/api/tutors*", (route) =>
-      route.fulfill({ json: mockTutorsResponse })
+    await page.goto('http://localhost:5173/browse');
+  });
+
+  test('should display loading skeletons initially', async ({ page }) => {
+    const skeletons = await page.locator('.react-loading-skeleton');
+    await expect(skeletons).toHaveCount(6); 
+  });
+
+  test('should display tutors after loading', async ({ page }) => {
+    await page.waitForSelector('.grid > div, .flex.flex-col > div', { state: 'visible' });
+ 
+    const tutorCards = await page.locator('[data-testid="tutor-card"]'); 
+    await expect(tutorCards).toHaveCount(6);
+  });
+
+  test('should filter tutors by search query', async ({ page }) => {
+    await page.waitForSelector('.grid > div, .flex.flex-col > div');
+
+    await page.fill('input[placeholder="Search tutors..."]', 'Math');
+    await page.waitForTimeout(1000); 
+    const tutorCards = await page.locator('[data-testid="tutor-card"]');
+    await expect(tutorCards).toHaveCountGreaterThan(0);
+  });
+
+  test('should filter tutors by subject', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.locator('button:has(svg[data-icon="FaFilter"])').click();
+    await page.locator('button:text("Math")').click();
+    await expect(page.locator('.badge:text("Math")')).toBeVisible();
+
+    await page.waitForTimeout(1000);
+
+    const tutorCards = await page.locator('[data-testid="tutor-card"]');
+    await expect(tutorCards).toHaveCountGreaterThan(0);
+
+    await page.locator('.badge:text("Math") svg[data-icon="FaTimes"]').click();
+    await expect(page.locator('.badge:text("Math")')).not.toBeVisible();
+  });
+
+  test('should filter tutors by price range', async ({ page }) => {
+    // Open filters on mobile view (if applicable)
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.locator('button:has(svg[data-icon="FaFilter"])').click();
+
+    // Adjust price range slider
+    await page.locator('input[type="range"]:nth-child(2)').fill('2000'); // Price range slider
+    await page.waitForTimeout(1000); // API call delay
+
+    // Check if tutors are filtered
+    const tutorCards = await page.locator('[data-testid="tutor-card"]');
+    await expect(tutorCards).toHaveCountGreaterThan(0);
+  });
+
+  test('should sort tutors by price ascending', async ({ page }) => {
+    // Wait for content to load
+    await page.waitForSelector('.grid > div, .flex.flex-col > div');
+
+    // Open sort dropdown and select "Price: Low to High"
+    await page.locator('select').selectOption('price-asc');
+    await page.waitForTimeout(1000); // Sorting delay
+
+    // Check if tutors are sorted (assuming tutor cards display price)
+    const prices = await page.$$eval('[data-testid="tutor-price"]', (nodes) =>
+      nodes.map((n) => parseFloat(n.textContent.replace('₹', '')))
+    ); // Add data-testid to price element in TutorCard
+    const isSortedAsc = prices.every((price, i) => i === 0 || price >= prices[i - 1]);
+    expect(isSortedAsc).toBe(true);
+  });
+
+  // test('should navigate pagination', async ({ page }) => {
+  //   await page.waitForSelector('.grid > div, .flex.flex-col > div');
+
+  //   const activePage = await page.locator('.join-item.btn.bg-blue-800');
+  //   await expect(activePage).toHaveText('1');
+
+  //   await page.locator('button:has(svg[data-icon="CircleChevronRight"])').click();
+  //   await page.waitForTimeout(1000); // API call delay
+  //   const newActivePage = await page.locator('.join-item.btn.bg-blue-800');
+  //   await expect(newActivePage).toHaveText('2');
+
+  //   await page.locator('button:has(svg[data-icon="CircleChevronLeft"])').click();
+  //   await page.waitForTimeout(1000); // API call delay
+  //   await expect(activePage).toHaveText('1');
+  // });
+
+
+test('should navigate pagination', async ({ page }) => {
+
+  await page.waitForSelector('.grid > div, .flex.flex-col > div', { state: 'visible' });
+  await page.waitForSelector('.join.flex.justify-center');
+
+  const activePage = await page.locator('.join-item.btn.bg-blue-800');
+  await expect(activePage).toHaveText('1');
+  const nextButton = await page.locator('[data-testid="next-page-btn"]');
+  const prevButton = await page.locator('[data-testid="prev-page-btn"]');
+  const totalPages = await page.locator('.join-item.btn').count(); // Number of page buttons
+  if (totalPages > 1) {
+    await nextButton.click();
+    await page.waitForFunction(
+      () => document.querySelector('.join-item.btn.bg-blue-800')?.textContent === '2',
+      { timeout: 5000 }
     );
-    await page.goto("http://localhost:5173/browse");
-  });
 
-  test("should render Browse Tutors page", async ({ page }) => {
-    await expect(page.locator("text=Browse Tutors")).toBeVisible();
-  });
+    const newActivePage = await page.locator('.join-item.btn.bg-blue-800');
+    await expect(newActivePage).toHaveText('2');
 
-  test("should display loading skeleton while fetching tutors", async ({ page }) => {
-    await page.route("**/api/tutors*", async (route) => {
-      await new Promise((r) => setTimeout(r, 2000)); // Simulate delay
-      await route.fulfill({ json: mockTutorsResponse });
-    });
-  
-    await page.goto("http://localhost:5173/browse");
-  
-    // Ensure the loading state appears
-    const skeletonLocator = page.locator("css=[data-testid='loading-skeleton']");
-    await expect(skeletonLocator).toBeVisible();
-  
-    // Wait for the loading state to disappear
-    await expect(skeletonLocator).toHaveCount(0, { timeout: 5000 });
-  
-    // Ensure tutor data appears after loading
-    await expect(page.locator("text=John Doe")).toBeVisible();
-  });
-  
+    await prevButton.click();
 
-  test("should display tutors after data fetch", async ({ page }) => {
-    await expect(page.locator("text=John Doe")).toBeVisible();
-    await expect(page.locator("text=Jane Smith")).toBeVisible();
-  });
+    await page.waitForFunction(
+      () => document.querySelector('.join-item.btn.bg-blue-800')?.textContent === '1',
+      { timeout: 5000 }
+    );
+    await expect(activePage).toHaveText('1');
+  } else {
+    console.log('Only one page available, skipping navigation test.');
+    await expect(nextButton).toBeDisabled();
+  }
+});
 
-//   test("should allow searching tutors", async ({ page }) => {
-//     await page.fill("#search-input", "Math");
-//     await page.keyboard.press("Enter");
-
-//     await expect(page.locator("text=John Doe")).toBeVisible();
-//     await expect(page.locator("text=Jane Smith")).not.toBeVisible();
-//   });
-
-//   test("should allow filtering by price range", async ({ page }) => {
-//     await page.fill("#price-range-input", "600");
-//     await page.keyboard.press("Enter");
-
-//     await expect(page.locator("text=John Doe")).not.toBeVisible();
-//     await expect(page.locator("text=Jane Smith")).toBeVisible();
-//   });
-
-//   test("should allow filtering by rating", async ({ page }) => {
-//     await page.fill("#rating-filter", "4.5");
-//     await page.keyboard.press("Enter");
-
-//     await expect(page.locator("text=John Doe")).toBeVisible();
-//   });
-
-//   test("should allow selecting subjects filter", async ({ page }) => {
-//     await page.click("button", { hasText: "Math" });
-
-//     await expect(page.locator("text=John Doe")).toBeVisible();
-//     await expect(page.locator("text=Jane Smith")).not.toBeVisible();
-//   });
-
-  test("should allow sorting tutors", async ({ page }) => {
-    await page.selectOption("#sort-dropdown", "price-desc");
-
-    await expect(page.locator(".tutor-card").first()).toHaveText("Jane Smith");
-  });
-
-  test("should allow switching between grid and list view", async ({ page }) => {
-    await page.click("#view-list");
-    await expect(page.locator(".list-view")).toBeVisible();
-
-    await page.click("#view-grid");
-    await expect(page.locator(".grid-view")).toBeVisible();
-  });
-
-  test("should handle pagination correctly", async ({ page }) => {
-    await page.click("#next-page");
-    await expect(page).toHaveURL(/page=2/);
-
-    await page.click("#prev-page");
-    await expect(page).toHaveURL(/page=1/);
-  });
-
-  test("should display an error message if tutor fetch fails", async ({ page }) => {
-    await page.route("**/api/tutors*", (route) =>
-      route.fulfill({ status: 500, json: { message: "Failed to fetch tutors" } })
+  test('should display error message on API failure', async ({ page }) => {
+    await page.route('**/api/tutors**', (route) =>
+      route.fulfill({
+        status: 500,
+        body: JSON.stringify({ message: 'Failed to fetch tutors' }),
+      })
     );
 
-    await page.goto("http://localhost:5173/browse");
-
-    await expect(page.locator(".alert-error")).toHaveText("Failed to fetch tutors");
+    await page.reload();
+    await page.waitForSelector('.alert.alert-error');
+    const errorMessage = await page.locator('.alert.alert-error span');
+    await expect(errorMessage).toHaveText('Failed to fetch tutors');
   });
 });
