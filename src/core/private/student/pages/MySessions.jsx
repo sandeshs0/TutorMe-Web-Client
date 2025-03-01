@@ -14,7 +14,9 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import JitsiMeetComponent from "../../../../components/JitsiMeetComponent";
 import { useAuth } from "../../../../context/AuthContext";
-import { fetchStudentSessions } from "../../../../services/api";
+import { fetchStudentSessions , getSessionRoom} from "../../../../services/api";
+import {socket} from "../../../../utils/socket";
+
 const StudentSessions = () => {
   const [sessions, setSessions] = useState([]);
   const [filteredSessions, setFilteredSessions] = useState([]);
@@ -42,6 +44,12 @@ const StudentSessions = () => {
     };
 
     loadSessions();
+    socket.on("session-started", (data) => {
+      setSessions((prev) =>
+        prev.map((s) => (s.bookingId === data.bookingId ? { ...s, status: "in-progress", roomId: data.roomId } : s))
+      );
+    });
+    return () => socket.off("session-started");
   }, []);
 
   // Filter and sort sessions when criteria change
@@ -92,8 +100,18 @@ const StudentSessions = () => {
   };
 
   // Join session
-  const handleJoinSession = (session) => {
-    setActiveSession(session);
+  const handleJoinSession = async (session) => {
+    try {
+      const roomData = await getSessionRoom(session.bookingId);
+      if (roomData.success) {
+        setActiveSession({ ...session, roomId: roomData.roomId });
+      } else {
+        toast.error("Failed to join session.");
+      }
+    } catch (error) {
+      console.error("Error joining session:", error);
+      toast.error("Failed to join session. Please try again.");
+    }
   };
 
   // Get status badge style

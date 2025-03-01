@@ -504,7 +504,7 @@ const SessionRequests = () => {
           sessionRoom={activeSession.roomId}
           bookingId={activeSession._id}
           user={user}
-          isTutor={user.role === "tutor"}
+          isTutor={true}
           onClose={() => setActiveSession(null)}
         />
       )}

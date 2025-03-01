@@ -8,19 +8,15 @@ const TutorCardGrid = ({ tutor }) => {
     navigate(`/tutors/${tutor.username}`); // Use the username to navigate to the profile
   };
   return (
-    <div className="group bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out relative overflow-hidden">
-      {/* Profile Header Section */}
+    <div data-testid="tutor-card" className="group bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out relative overflow-hidden">
       <div className="relative mb-6">
         <div className="relative w-full h-48 rounded-xl overflow-hidden">
-          {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 to-transparent" />
           <img
             src={tutor.profileImage || "https://via.placeholder.com/400x200"}
             alt={tutor.name}
             className="w-full h-full object-cover"
           />
-
-          {/* Online Status */}
           <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-white/90 dark:bg-gray-800/90 px-3 py-1 rounded-full backdrop-blur-sm">
             <span
               className={`w-3 h-3 rounded-full ${
