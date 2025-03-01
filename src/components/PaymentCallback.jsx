@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { confirmWalletTransaction } from "../services/api";
 
 const PaymentCallback = () => {

@@ -3,7 +3,7 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 import { TiCamera } from "react-icons/ti";
 import "react-image-crop/dist/ReactCrop.css";
 import TagsField from "react-tagaroo";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
 import {
   fetchAllSubjects,

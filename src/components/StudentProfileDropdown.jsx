@@ -1,13 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
 
 const StudentProfileDropdown = ({ userName, userAvatar }) => {
   const { logout } = useAuth(); // Use AuthContext for logout
   const navigate = useNavigate();
   console.log("User Avatar: ", userAvatar);
-
 
   const handleLogout = () => {
     logout(); // Clear user data and navigate

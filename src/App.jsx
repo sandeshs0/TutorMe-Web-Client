@@ -1,8 +1,8 @@
 import "@theme-toggles/react/css/Horizon.css";
 import React, { useEffect } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import { ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import PaymentCallback from "./components/PaymentCallback";
@@ -18,6 +18,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import TutorDashboard from "./core/private/tutor/layout";
 import TutorProfilePage from "./core/public/TutorProfile";
 import { registerSocket } from "./utils/socket";
+import {Toaster} from "sonner";
 
 const App = () => {
   const { user } = useAuth(); // Get logged-in user
@@ -95,8 +96,12 @@ const App = () => {
           />
         </Routes>
       </Router>
-      <div>
+      {/* <div>
         <ToastContainer position="top-right" autoClose={3000} />
+      </div> */}
+      <div>
+      <Toaster position="top-center" richColors />
+      {/* Your app content */}
       </div>
     </>
   );

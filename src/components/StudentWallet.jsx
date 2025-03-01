@@ -3,13 +3,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Tablicious from "react-tablicious";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useDarkMode } from "../hooks/useDarkMode";
 import {
   fetchWalletTransactions,
   initiateWalletTransaction,
 } from "../services/api";
-import { GiWallet } from "react-icons/gi";
 const SortButton = ({ active, ascending, onClick }) => (
   <button
     onClick={onClick}
@@ -491,8 +490,8 @@ const WalletPage = ({ studentData }) => {
           onClick={() => document.getElementById("payment_modal").showModal()}
           className="px-6 py-3 bg-white text-blue-600 hover:bg-blue-50 transition-all duration-200 rounded-lg shadow-md hover:shadow-lg font-semibold"
         >
-<i className="fas fa-wallet mr-2"></i>
-Load Balance
+          <i className="fas fa-wallet mr-2"></i>
+          Load Balance
         </button>
       </div>
 

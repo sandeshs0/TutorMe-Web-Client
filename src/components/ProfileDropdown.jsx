@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
 
 const ProfileDropdown = ({ userName, userAvatar }) => {
@@ -93,13 +93,13 @@ const ProfileDropdown = ({ userName, userAvatar }) => {
             className="block px-4 py-2 text-gray-900 dark:text-white hover:bg-blue-100 dark:hover:bg-gray-600 rounded-md"
           >
             Switch Mode
-              {darkMode ? (
-                <>
-                  <i className="fas fa-sun text-yellow-400 ml-2"></i>
-                </>
-              ) : (
-                <i className="fas fa-moon text-blue-900 ml-2"></i>
-              )}
+            {darkMode ? (
+              <>
+                <i className="fas fa-sun text-yellow-400 ml-2"></i>
+              </>
+            ) : (
+              <i className="fas fa-moon text-blue-900 ml-2"></i>
+            )}
           </div>
         </li>
         <li>

@@ -1,18 +1,16 @@
 import {
+  ArrowUpDown,
+  CalendarDays,
   CheckCircle,
-  ChevronDown,
   Clock,
   FileText,
   MessageSquare,
   Search,
   Video,
   XCircle,
-  CalendarDays,
-  Filter,
-  ArrowUpDown,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
 import {
   acceptBooking,
@@ -60,18 +58,20 @@ const SessionRequests = () => {
   const handleJoinSession = async (booking) => {
     try {
       console.log("🔹 Fetching session room for booking:", booking._id);
-      
+
       const response = await startSession(booking._id);
-      
+
       if (response.success && response.session.roomId) {
         console.log("✅ Session room URL received:", response.session.roomId);
-        
+
         // Set sessionRoom and store the active session
         setActiveSession({ ...booking, roomId: response.session.roomId });
-        
       } else {
         toast.error("Failed to retrieve session room.");
-        console.error("❌ Error: Session room not found in API response", response);
+        console.error(
+          "❌ Error: Session room not found in API response",
+          response
+        );
       }
     } catch (error) {
       console.error("❌ Error starting session:", error);
@@ -200,9 +200,11 @@ const SessionRequests = () => {
   }, [filterStatus]);
 
   // Count for each status
-  const pendingCount = bookings.filter(b => b.status === "pending").length;
-  const acceptedCount = bookings.filter(b => b.status === "accepted").length;
-  const completedCount = bookings.filter(b => b.status === "completed").length;
+  const pendingCount = bookings.filter((b) => b.status === "pending").length;
+  const acceptedCount = bookings.filter((b) => b.status === "accepted").length;
+  const completedCount = bookings.filter(
+    (b) => b.status === "completed"
+  ).length;
 
   return (
     <div className="p-4 space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
@@ -220,7 +222,9 @@ const SessionRequests = () => {
           <div className="mt-4 md:mt-0">
             <div className="inline-flex items-center px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded-lg">
               <CalendarDays className="w-4 h-4 mr-2" />
-              <span className="font-medium">Today: {new Date().toLocaleDateString()}</span>
+              <span className="font-medium">
+                Today: {new Date().toLocaleDateString()}
+              </span>
             </div>
           </div>
         </div>
@@ -240,7 +244,7 @@ const SessionRequests = () => {
               {bookings.length}
             </span>
           </button>
-          
+
           <button
             onClick={() => setFilterStatus("pending")}
             className={`px-4 py-2.5 rounded-full font-medium text-sm transition-all ${
@@ -254,7 +258,7 @@ const SessionRequests = () => {
               {pendingCount}
             </span>
           </button>
-          
+
           <button
             onClick={() => setFilterStatus("accepted")}
             className={`px-4 py-2.5 rounded-full font-medium text-sm transition-all ${
@@ -268,7 +272,7 @@ const SessionRequests = () => {
               {acceptedCount}
             </span>
           </button>
-          
+
           <button
             onClick={() => setFilterStatus("completed")}
             className={`px-4 py-2.5 rounded-full font-medium text-sm transition-all ${
@@ -324,7 +328,7 @@ const SessionRequests = () => {
               No {filterStatus === "all" ? "" : filterStatus} requests found
             </h3>
             <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
-              {filterStatus === "pending" 
+              {filterStatus === "pending"
                 ? "You have no pending session requests at the moment."
                 : filterStatus === "accepted"
                 ? "You haven't accepted any session requests yet."
@@ -368,14 +372,16 @@ const SessionRequests = () => {
                 className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 dark:border-gray-700 overflow-hidden"
               >
                 {/* Status Ribbon */}
-                <div className={`h-2 w-full ${
-                  booking.status === "accepted"
-                    ? "bg-green-500"
-                    : booking.status === "pending"
-                    ? "bg-yellow-500"
-                    : "bg-blue-500"
-                }`}></div>
-                
+                <div
+                  className={`h-2 w-full ${
+                    booking.status === "accepted"
+                      ? "bg-green-500"
+                      : booking.status === "pending"
+                      ? "bg-yellow-500"
+                      : "bg-blue-500"
+                  }`}
+                ></div>
+
                 <div className="p-6">
                   <div className="flex items-start gap-5">
                     {/* Profile Image */}
@@ -395,13 +401,16 @@ const SessionRequests = () => {
                             {booking.studentId.userId.name}
                           </h2>
                           <div className="inline-flex items-center px-2 py-1 mt-1 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                            {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                            {booking.status.charAt(0).toUpperCase() +
+                              booking.status.slice(1)}
                           </div>
                         </div>
                         <div className="flex flex-col items-end">
                           <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-sm">
                             <CalendarDays className="w-4 h-4" />
-                            <span>{new Date(booking.date).toLocaleDateString()}</span>
+                            <span>
+                              {new Date(booking.date).toLocaleDateString()}
+                            </span>
                           </div>
                           <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-sm mt-1">
                             <Clock className="w-4 h-4" />
@@ -420,13 +429,17 @@ const SessionRequests = () => {
                       {/* Session Timer */}
                       {booking.status === "accepted" && (
                         <div className="mb-4">
-                          <div className={`flex items-center px-3 py-2 rounded-lg text-sm ${
-                            timers[booking._id]?.sessionReady
-                              ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
-                              : "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
-                          }`}>
+                          <div
+                            className={`flex items-center px-3 py-2 rounded-lg text-sm ${
+                              timers[booking._id]?.sessionReady
+                                ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+                                : "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+                            }`}
+                          >
                             <Clock className="w-4 h-4 mr-2" />
-                            <span className="font-medium">{timers[booking._id]?.text}</span>
+                            <span className="font-medium">
+                              {timers[booking._id]?.text}
+                            </span>
                           </div>
                         </div>
                       )}

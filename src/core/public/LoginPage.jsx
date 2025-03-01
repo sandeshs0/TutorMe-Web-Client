@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import * as yup from "yup";
 import { useAuth } from "../../context/AuthContext"; // Import AuthContext
 import { loginUser } from "../../services/api";
@@ -147,6 +147,7 @@ const LoginPage = () => {
                 />
                 <button
                   type="button"
+              
                   className="absolute top-9 right-3 text-gray-600 hover:text-gray-800 focus:outline-none"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label="Toggle Password Visibility"
@@ -184,6 +185,7 @@ const LoginPage = () => {
               {/* Sign In Button */}
               <button
                 type="submit"
+                id="login-button"
                 className="btn w-full bg-blue-500 text-white py-3 text-xl font-poppins rounded-lg shadow-md hover:bg-blue-600 focus:outline-none "
                 disabled={isSubmitting}
               >

@@ -1,7 +1,7 @@
 import { CircleChevronLeft, SquareArrowOutUpRight, Star } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-// import { toast } from "react-toastify";
+// import { toast } from "sonner";
 import { toast, ToastContainer } from "react-toastify";
 import NavbarTwo from "../../components/NavbarTwo";
 import { useAuth } from "../../context/AuthContext";

@@ -1,6 +1,6 @@
 import { JitsiMeeting } from "@jitsi/react-sdk";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { endSession, getJaaSToken } from "../services/api"; // API Calls
 
 const JitsiMeetComponent = ({

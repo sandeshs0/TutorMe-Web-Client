@@ -15,6 +15,7 @@ import {
 import { socket } from "../../../utils/socket";
 import StudentBookings from "./pages/BookingRequests";
 import StudentProfile from "./pages/MyProfile";
+import StudentSessions from "./pages/MySessions";
 
 const StudentDashboard = () => {
   const { user } = useAuth(); // Using AuthContext for user
@@ -160,7 +161,8 @@ const StudentDashboard = () => {
     }
     switch (currentPage) {
       case "Overview":
-        return <h1 className="text-2xl font-bold">Student Overview</h1>;
+        // return <h1 className="text-2xl font-bold">Student Overview</h1>;
+        return <StudentSessions />;
       case "Session Requests":
         return <StudentBookings />;
       case "Statement":

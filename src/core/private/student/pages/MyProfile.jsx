@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 // import { useAuth } from "../context/AuthContext";
 import Modal from "../../../../components/Modal";
 import { fetchStudentProfile } from "../../../../services/api";
