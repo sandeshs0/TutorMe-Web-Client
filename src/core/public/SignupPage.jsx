@@ -279,7 +279,7 @@ const SignupPage = () => {
                       name="name"
                       onChange={handleInputChange}
                       value={formData.name}
-                      required
+                      
                       placeholder="Enter Your Full Name"
                       className="w-full mt-1 p-3 border text-black rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -297,7 +297,7 @@ const SignupPage = () => {
                       name="username"
                       onChange={handleInputChange}
                       value={formData.username}
-                      required
+                      
                       placeholder="Choose a username"
                       className="w-full mt-1 p-3 border text-black rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -311,12 +311,11 @@ const SignupPage = () => {
                       Email
                     </label>
                     <input
-                      type="email"
                       id="email"
                       name="email"
                       onChange={handleInputChange}
                       value={formData.email}
-                      required
+                      
                       placeholder="Enter Your Email"
                       className="w-full mt-1 p-3 text-black border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -335,7 +334,7 @@ const SignupPage = () => {
                       name="phone"
                       onChange={handleInputChange}
                       value={formData.phone}
-                      required
+                      
                       placeholder="98XXXXXXXX"
                       className="w-full text-black mt-1 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -354,7 +353,7 @@ const SignupPage = () => {
                       name="password"
                       onChange={handleInputChange}
                       value={formData.password}
-                      required
+                      
                       placeholder="***************"
                       className="w-full text-black mt-1 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -374,14 +373,14 @@ const SignupPage = () => {
                       name="confirmPassword"
                       onChange={handleInputChange}
                       value={formData.confirmPassword}
-                      required
                       className="w-full text-black mt-1 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
                   </div>
-                  {error && <p className="text-red-500">{error}</p>}
+                  {error && <p id="signup-error" className="text-red-500">{error}</p>}
                   {success && <p className="text-green-500">{success}</p>}
                   <button
                     type="submit"
+                    id="signup-button"
                     className="w-full bg-blue-500 text-xl text-white py-3 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200"
                     disabled={isSubmitting}
                   >
@@ -511,6 +510,29 @@ const SignupPage = () => {
                             {errors.phone && (
                               <p className="text-red-500 text-sm">
                                 {errors.phone}
+                              </p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-600">
+                              Username
+                            </label>
+                            <input
+                              type="text"
+                              id="username"
+                              placeholder="coolguy123"
+                              name="username"
+                              className={`w-full mt-2 p-3 border ${
+                                errors.username
+                                  ? "border-red-500"
+                                  : "border-gray-300"
+                              } rounded-lg shadow-sm focus:ring focus:ring-blue-200`}
+                              value={formData.username}
+                              onChange={handleInputChange} // Pass the event object directly
+                            />
+                            {errors.username && (
+                              <p className="text-red-500 text-sm">
+                                {errors.username}
                               </p>
                             )}
                           </div>
@@ -686,7 +708,7 @@ const SignupPage = () => {
                               </span>
                             </div>
                             {errors.password && (
-                              <p className="text-red-500 text-sm mt-2">
+                              <p id="error-bar" className="text-red-500 text-sm mt-2">
                                 {errors.password}
                               </p>
                             )}
@@ -694,6 +716,7 @@ const SignupPage = () => {
                             <div className="mt-2">
                               <div className="h-2 w-full bg-gray-200 rounded">
                                 <div
+                                // id="password-strength-bar"
                                   className={`h-full rounded transition-all ${
                                     passwordStrength === "Too weak"
                                       ? "bg-red-500 w-1/4"
@@ -706,6 +729,7 @@ const SignupPage = () => {
                                 ></div>
                               </div>
                               <p
+                                // id="password-strength-bar"
                                 className={`mt-1 text-sm font-medium ${
                                   passwordStrength === "Too weak"
                                     ? "text-red-500"
@@ -883,6 +907,7 @@ const SignupPage = () => {
                       {currentStep === 3 && (
                         <button
                           type="button"
+                          id="signup-button"
                           onClick={handleTutorSignup}
                           className="bg-blue-700 text-white px-6 py-2 rounded-lg shadow hover:bg-green-600"
                           disabled={isSubmitting}
