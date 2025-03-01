@@ -212,7 +212,7 @@ const TutorDashboard = () => {
             ].map((item) => (
               <li key={item.name}>
                 <button
-                  className={`w-full flex items-center px-4 py-2 rounded-md transition ${
+                  className={`w-full flex items-center px-4 py-3 rounded-md transition ${
                     currentPage === item.name
                       ? "bg-[#0961f5] text-white font-semibold"
                       : "dark:hover:bg-gray-700 hover:bg-gray-400 hover:text-white"

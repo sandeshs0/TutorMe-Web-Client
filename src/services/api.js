@@ -267,6 +267,20 @@ export const declineBooking = async (bookingId) => {
   }
 };
 
+export const getSessionRoom = async (bookingId) => {
+  try {
+    const response = await API.get(`/api/sessions/room/${bookingId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching session room:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+
 /**
  * Fetch all bookings for a student.
  */
