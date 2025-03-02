@@ -149,7 +149,7 @@ const TutorProfile = () => {
   }
 
   return (
-    <div className="animate-slide-in max-w-5xl mx-auto mt-6 p-6 bg-gray-100 dark:bg-gray-800 dark:text-white shadow-md rounded-lg font-poppins space-y-8">
+    <div data-testid="tutor-profile-container" className="animate-slide-in max-w-5xl mx-auto mt-6 p-6 bg-gray-100 dark:bg-gray-800 dark:text-white shadow-md rounded-lg font-poppins space-y-8">
       {/* Modal for file upload */}
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>

@@ -102,24 +102,6 @@ const OverviewSection = ({ tutorData }) => {
     { name: "Other", value: 12 },
   ];
 
-  const weeklySessionsData = [
-    { day: "Mon", sessions: 3 },
-    { day: "Tue", sessions: 5 },
-    { day: "Wed", sessions: 2 },
-    { day: "Thu", sessions: 6 },
-    { day: "Fri", sessions: 4 },
-    { day: "Sat", sessions: 1 },
-    { day: "Sun", sessions: 0 },
-  ];
-
-  const ratingsData = [
-    { rating: "5★", count: 32 },
-    { rating: "4★", count: 8 },
-    { rating: "3★", count: 2 },
-    { rating: "2★", count: 0 },
-    { rating: "1★", count: 0 },
-  ];
-
   const COLORS = ["#4F46E5", "#06B6D4", "#10B981", "#6366F1"];
 
   if (loading || !tutorData) {
@@ -175,7 +157,7 @@ const OverviewSection = ({ tutorData }) => {
             {/* Total Sessions Card */}
             <div className="relative bg-indigo-100 dark:bg-indigo-900 rounded-xl shadow-md border border-indigo-300 dark:border-indigo-700 p-6 flex flex-col items-center hover:shadow-lg transition-shadow duration-300 overflow-hidden">
               {/* Wave Pattern */}
-              <div className="absolute bottom-0 inset-0 z-0 opacity-20">
+              <div className="absolute hidden bottom-0 inset-0 z-0 opacity-20">
                 <svg
                   className="w-full h-full"
                   xmlns="http://www.w3.org/2000/svg"
@@ -202,7 +184,7 @@ const OverviewSection = ({ tutorData }) => {
             {/* Minutes Tutored Card */}
             <div className="relative bg-teal-100 dark:bg-teal-900 rounded-xl shadow-md border border-teal-300 dark:border-teal-700 p-6 flex flex-col items-center hover:shadow-lg transition-shadow duration-300 overflow-hidden">
               {/* Wave Pattern */}
-              <div className="absolute inset-0 z-0 opacity-20">
+              <div className="absolute hidden inset-0 z-0 opacity-20">
                 <svg
                   className="w-full h-full"
                   xmlns="http://www.w3.org/2000/svg"

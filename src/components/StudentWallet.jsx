@@ -481,7 +481,7 @@ const WalletPage = ({ studentData }) => {
                 highlightColor={darkMode ? "#4b5563" : "#f3f4f6"}
               />
             ) : (
-              `Rs. ${walletBalance}`
+              `Rs. ${walletBalance.toFixed(2)}`
             )}
           </p>
         </div>

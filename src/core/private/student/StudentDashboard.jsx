@@ -36,14 +36,9 @@ const StudentDashboard = () => {
 
   useEffect(() => {
     socket.on("booking-request", (booking) => {
-      // getTutorBookings().then(setBookings);
-      // fetchUserNotifications();
+  
     });
     socket.on("new-notification", (notification) => {
-      // toast.info("New Notification", notification, {
-      //   position: "bottom-right",
-      // });
-      // getTutorBookings().then(setBookings);
 
       fetchUserNotifications();
     });
@@ -173,9 +168,6 @@ const StudentDashboard = () => {
         return <StudentWallet studentData={studentData} />;
       case "Profile":
         return <StudentProfile />;
-      // return <StudentProfile studentData={studentData} />;
-      // return <h1 className="text-2xl font-bold">Profile</h1>;
-
       default:
         return <h1 className="text-2xl font-bold">Welcome!</h1>;
     }
@@ -267,7 +259,6 @@ const StudentDashboard = () => {
                   </span>
                 )}
               </button>
-              {/* Notification Dropdown */}
 
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-80 max-h-96 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 z-50 overflow-y-auto">
