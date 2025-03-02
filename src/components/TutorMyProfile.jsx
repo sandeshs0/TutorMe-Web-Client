@@ -14,16 +14,16 @@ import Modal from "./Modal";
 import SubjectsInput from "./SubjectField";
 
 const TutorProfile = () => {
-  const { user } = useAuth(); // Access user context
-  const [profile, setProfile] = useState(null); // Profile data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
-  const [isEditing, setIsEditing] = useState(false); // Edit mode state
-  const [formData, setFormData] = useState({}); // Form data for updates
-  const [selectedFile, setSelectedFile] = useState(null); // Profile image file
-  const [allSubjects, setAllSubjects] = useState([]); // List of all available subjects
-  const [showModal, setShowModal] = useState(false); // Modal visibility state
-  const [isSubmitting, setIsSubmitting] = useState(false); // New loading state
+  const { user } = useAuth(); 
+  const [profile, setProfile] = useState(null); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+  const [isEditing, setIsEditing] = useState(false); 
+  const [formData, setFormData] = useState({}); 
+  const [selectedFile, setSelectedFile] = useState(null); 
+  const [allSubjects, setAllSubjects] = useState([]); 
+  const [showModal, setShowModal] = useState(false); 
+  const [isSubmitting, setIsSubmitting] = useState(false); 
   const [tags, setTags] = useState([]);
 
   useEffect(() => {
@@ -33,13 +33,13 @@ const TutorProfile = () => {
     try {
       const profileData = await fetchTutorProfile();
       setProfile(profileData);
-      console.log("Profile Data:", profileData); // Log response to confirm structure
+      console.log("Profile Data:", profileData); 
 
       setFormData({
         bio: profileData.bio,
         description: profileData.description,
         hourlyRate: profileData.hourlyRate,
-        subjects: profileData.subjects.map((subject) => subject), // Store subject IDs
+        subjects: profileData.subjects.map((subject) => subject), 
       });
       console.log(formData.hourlyRate);
       const subjects = await fetchAllSubjects();
@@ -83,13 +83,13 @@ const TutorProfile = () => {
       new Promise(async (resolve, reject) => {
         try {
           await updateTutorProfile(formData);
-          fetchData(); // Refresh data after the update
-          setShowModal(false); // Close modal
-          resolve(); // Resolve the promise for success toast
+          fetchData(); 
+          setShowModal(false); 
+          resolve(); 
         } catch (error) {
-          reject(error); // Reject the promise for error toast
+          reject(error); 
         } finally {
-          setIsSubmitting(false); // Reset loading state
+          setIsSubmitting(false); 
         }
       }),
       {
@@ -101,34 +101,25 @@ const TutorProfile = () => {
   };
 
   const handleSubmit = async (e) => {
-    // console.log("Handle submit fn, Form Data", formData);
     e.preventDefault();
-    // const formDataToSend = new FormData();
-    // formDataToSend.append("bio", formData.bio || "");
-    // formDataToSend.append("description", formData.description || "");
-    // formDataToSend.append("hourlyRate", formData.hourlyRate || 0);
-    // formDataToSend.append("subjects", JSON.stringify(formData.subjects));
-    // if (profileImage) {
-    //   formDataToSend.append("profileImage", profileImage);
-    // }
 
     const payload = {
       bio: formData.bio || "",
       description: formData.description || "",
       hourlyRate: formData.hourlyRate || 0,
-      subjects: formData.subjects, // Send subjects as an array
+      subjects: formData.subjects, 
     };
     toast.promise(
       new Promise(async (resolve, reject) => {
         try {
           await updateTutorProfile(payload);
-          fetchData(); // Refresh data after the update
-          setIsEditing(false); // Exit editing mode
-          resolve(); // Resolve the promise for success toast
+          fetchData(); 
+          setIsEditing(false); 
+          resolve(); 
         } catch (error) {
-          reject(error); // Reject the promise for error toast
+          reject(error); 
         } finally {
-          setIsSubmitting(false); // Reset loading state
+          setIsSubmitting(false); 
         }
       }),
       {
@@ -150,18 +141,15 @@ const TutorProfile = () => {
 
   return (
     <div data-testid="tutor-profile-container" className="animate-slide-in max-w-5xl mx-auto mt-6 p-6 bg-gray-100 dark:bg-gray-800 dark:text-white shadow-md rounded-lg font-poppins space-y-8">
-      {/* Modal for file upload */}
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>
           <div className="flex flex-col w-full max-w-md bg-white dark:bg-gray-800 rounded-lg">
-            {/* Modal Title */}
             <div className="pb-2 mb-4 border-b border-gray-300 dark:border-gray-600">
               <h2 className="text-lg font-bold text-gray-800 dark:text-white text-center">
                 Update Profile Picture
               </h2>
             </div>
 
-            {/* Modal Content */}
             <div className=" flex flex-col items-center space-y-6 mb-6 ">
               {selectedFile ? (
                 <div className="w-40 h-40 rounded-full overflow-hidden border">
@@ -185,7 +173,6 @@ const TutorProfile = () => {
               />
             </div>
 
-            {/* Modal Buttons */}
             <div className="pt-4 border-t border-gray-300 dark:border-gray-600 flex justify-end space-x-8">
               <button
                 className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
@@ -218,18 +205,7 @@ const TutorProfile = () => {
 
       {isEditing ? (
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Personal Details */}
-          {/* <div className="space-y-2">
-            <label className="block text-sm font-semibold">
-              Profile Picture
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded dark:bg-gray-700 dark:text-white"
-            />
-          </div> */}
+          
           <div className="space-y-2">
             <label className="block text-sm font-semibold">Name</label>
             <input
@@ -255,7 +231,6 @@ const TutorProfile = () => {
             />
           </div>
 
-          {/* About */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold">Bio</label>
             <textarea
@@ -287,7 +262,6 @@ const TutorProfile = () => {
             />
           </div>
 
-          {/* Subjects */}
           <SubjectsInput
             formData={formData}
             setFormData={setFormData}
@@ -397,9 +371,7 @@ const TutorProfile = () => {
             </div>
           </section>
 
-          {/* Rating & Financial Details */}
           <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Rating */}
             <div className="flex flex-col items-center justify-center bg-white dark:bg-gray-700 p-4 rounded-lg shadow">
               <h3 className="font-semibold text-gray-600 dark:text-white">
                 Rating
@@ -416,7 +388,6 @@ const TutorProfile = () => {
               </div>
             </div>
 
-            {/* Hourly Rate */}
             <div className="flex flex-col items-center justify-center bg-white dark:bg-gray-700 p-4 rounded-lg shadow">
               <h3 className="font-semibold text-gray-600 dark:text-white">
                 Hourly Rate
@@ -426,7 +397,6 @@ const TutorProfile = () => {
               </p>
             </div>
 
-            {/* Wallet Balance */}
             <div className="flex flex-col items-center justify-center bg-white dark:bg-gray-700 p-4 rounded-lg shadow">
               <h3 className="font-semibold text-gray-600 dark:text-white">
                 Wallet Balance
@@ -437,7 +407,6 @@ const TutorProfile = () => {
             </div>
           </section>
 
-          {/* Edit Profile Button */}
           <div className="flex justify-center">
             <button
               className="btn btn-primary dark:bg-blue-600 dark:text-gray-100 btn-wide"

@@ -6,11 +6,11 @@ import { confirmWalletTransaction } from "../services/api";
 const PaymentCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const hasRun = useRef(false); // Track if function has run
+  const hasRun = useRef(false); 
 
   useEffect(() => {
     const handlePaymentVerification = async () => {
-      if (hasRun.current) return; // Prevent duplicate execution
+      if (hasRun.current) return; 
       hasRun.current = true;
 
       const pidx = searchParams.get("pidx");
@@ -45,7 +45,7 @@ const PaymentCallback = () => {
         toast.error("Payment failed or incomplete.");
       }
 
-      navigate("/account-center"); // Redirect back to the wallet page
+      navigate("/account-center"); 
     };
 
     handlePaymentVerification();

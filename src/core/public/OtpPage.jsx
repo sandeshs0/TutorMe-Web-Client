@@ -16,7 +16,6 @@ const OtpPage = () => {
     return <p>Error: Email not provided. Please restart the signup process.</p>;
   }
 
-  // Handle OTP input
   const handleOtpChange = (element, index) => {
     if (isNaN(element.value)) return;
 
@@ -24,7 +23,6 @@ const OtpPage = () => {
     newOtp[index] = element.value;
     setOtp(newOtp);
 
-    // Focus next input
     if (element.nextSibling) {
       element.nextSibling.focus();
     }
@@ -33,7 +31,7 @@ const OtpPage = () => {
   const handleVerifyOtp = async () => {
     setError("");
     setSuccess("");
-    const otpValue = otp.join(""); // Combine the digits into a single string
+    const otpValue = otp.join("");
 
     try {
       const response = await verifyEmail({ email, otp: otpValue });
@@ -88,7 +86,7 @@ const OtpPage = () => {
               maxLength="1"
               value={data}
               onChange={(e) => handleOtpChange(e.target, index)}
-              onFocus={(e) => e.target.select()} // Auto-select on focus
+              onFocus={(e) => e.target.select()} 
               className="w-12 h-14 text-gray-950 font-extrabold text-center hover:border bg-blue-50 text-xl  rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
             />
           ))}

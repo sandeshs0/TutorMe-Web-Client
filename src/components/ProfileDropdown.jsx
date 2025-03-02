@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
 
 const ProfileDropdown = ({ userName, userAvatar }) => {
-  const { logout } = useAuth(); // Use AuthContext for logout
+  const { logout } = useAuth(); 
   const navigate = useNavigate();
   const { user } = useAuth();
   const [darkMode, setDarkMode] = useState(
@@ -19,13 +19,13 @@ const ProfileDropdown = ({ userName, userAvatar }) => {
   };
 
   const handleLogout = () => {
-    logout(); // Clear user data and navigate
+    logout(); 
     toast.info("Logout successful", { position: "bottom-right" });
     navigate("/");
   };
 
   const generateInitialsAvatar = (name) => {
-    const firstLetter = name?.charAt(0)?.toUpperCase() || "?"; // Get the first letter of the first name
+    const firstLetter = name?.charAt(0)?.toUpperCase() || "?"; 
     return (
       <div className="w-8 h-8 flex font-sans items-center justify-center rounded-full bg-purple-500 text-white mr-2">
         {firstLetter}
@@ -35,7 +35,6 @@ const ProfileDropdown = ({ userName, userAvatar }) => {
 
   return (
     <div className="dropdown dropdown-end dropdown-hover relative inline-block">
-      {/* Profile Button */}
       <button
         tabIndex={0}
         className="flex items-center px-3 py-2 bg-blue-900 dark:bg-gray-800 text-white font-medium rounded-full hover:bg-blue-900 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:focus:ring-gray-500"

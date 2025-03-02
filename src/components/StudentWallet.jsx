@@ -73,7 +73,6 @@ const CustomTable = ({ data, columns, pageSize = 5 }) => {
     direction: "asc",
   });
 
-  // Sorting logic
   const handleSort = (field) => {
     setSortConfig((prevSort) => ({
       field,
@@ -84,7 +83,6 @@ const CustomTable = ({ data, columns, pageSize = 5 }) => {
     }));
   };
 
-  // Filter and sort data
   const filteredAndSortedData = useMemo(() => {
     let processedData = [...data];
 
@@ -103,7 +101,6 @@ const CustomTable = ({ data, columns, pageSize = 5 }) => {
         const aValue = a[sortConfig.field];
         const bValue = b[sortConfig.field];
 
-        // Handle numeric values (including those with "Rs. " prefix)
         const aNum = parseFloat(aValue.toString().replace(/[^0-9.-]+/g, ""));
         const bNum = parseFloat(bValue.toString().replace(/[^0-9.-]+/g, ""));
 
@@ -111,7 +108,6 @@ const CustomTable = ({ data, columns, pageSize = 5 }) => {
           return sortConfig.direction === "asc" ? aNum - bNum : bNum - aNum;
         }
 
-        // Handle string values
         return sortConfig.direction === "asc"
           ? aValue.toString().localeCompare(bValue.toString())
           : bValue.toString().localeCompare(aValue.toString());
@@ -231,66 +227,10 @@ const WalletPage = ({ studentData }) => {
   const [transactions, setTransactions] = useState([]);
   const { darkMode } = useDarkMode(); // Add this line
 
-  const deductionData = [
-    {
-      sn: 1,
-      date: "2025-01-01",
-      tutor: "John Doe",
-      duration: "2 hrs",
-      rate: "Rs. 1000",
-      deductedAmount: "Rs. 2000",
-    },
-    {
-      sn: 2,
-      date: "2025-01-05",
-      tutor: "Jane Smith",
-      duration: "1 hr",
-      rate: "Rs. 1500",
-      deductedAmount: "Rs. 1500",
-    },
-    {
-      sn: 3,
-      date: "2025-01-10",
-      tutor: "Mike Johnson",
-      duration: "3 hrs",
-      rate: "Rs. 800",
-      deductedAmount: "Rs. 2400",
-    },
-  ];
 
-  //   const transactionResponse = await fetchWalletTransactions(studentData.id);
-  //   console.log("Balance Load Data:", transactionResponse);
-  // const balanceLoadData = transactionResponse.transactions;
-  // console.log
-  // const balanceLoadData = [
-  //   {
-  //     sn: 1,
-  //     date: "2024-12-30",
-  //     method: "Credit Card",
-  //     amount: "Rs. 3000",
-  //   },
-  //   {
-  //     sn: 2,
-  //     date: "2025-01-02",
-  //     method: "PayPal",
-  //     amount: "Rs. 2000",
-  //   },
-  //   {
-  //     sn: 3,
-  //     date: "2025-01-15",
-  //     method: "Bank Transfer",
-  //     amount: "Rs. 5000",
-  //   },
-  // ];
 
-  const deductionColumns = [
-    { headerName: "SN", field: "sn" },
-    { headerName: "Date", field: "date" },
-    { headerName: "Tutor", field: "tutor" },
-    { headerName: "Duration", field: "duration" },
-    { headerName: "Rate (Per Hour)", field: "rate" },
-    { headerName: "Deducted Amount", field: "deductedAmount" },
-  ];
+
+
 
   const balanceLoadColumns = [
     { headerName: "SN", field: "sn" },
@@ -301,7 +241,7 @@ const WalletPage = ({ studentData }) => {
 
   useEffect(() => {
     const loadTransactions = async () => {
-      setLoading(true); // Set loading to true
+      setLoading(true); 
       setTimeout(async () => {
         try {
           // if (!studentData.id) return; // Prevent API call if student ID is not available
@@ -343,59 +283,21 @@ const WalletPage = ({ studentData }) => {
 
       // Step 1: Initiate transaction on the backend
       const initiateResponse = await initiateWalletTransaction(
-        studentData.id, // Replace with student ID from props
+        studentData.id, 
         amount,
         paymentGateway
       );
 
       const { transactionId, payment_url, pidx } = initiateResponse;
       localStorage.setItem("transactionID", transactionId);
-      // Step 2: Configure Khalti Checkout with the payment details
-      // const checkout = new KhaltiCheckout({
-      //   ...khaltiConfig,
-      //   eventHandler: {
-      //     onSuccess: async (payload) => {
-      //       try {
-      //         console.log("Khalti Payment Success:", payload);
-
-      //         // Step 3: Verify the transaction with the backend
-      //         const verifyResponse = await confirmWalletTransaction(
-      //           transactionId,
-      //           pidx // Using pidx to verify the transaction
-      //         );
-
-      //         if (verifyResponse.success) {
-      //           // Update wallet balance in UI
-      //           setWalletBalance(walletBalance + amount);
-      //           toast.success("Wallet loaded successfully!");
-      //         } else {
-      //           toast.error("Transaction verification failed.");
-      //         }
-      //       } catch (err) {
-      //         console.error("Error verifying transaction:", err.message);
-      //         toast.error("Failed to verify transaction.");
-      //       }
-      //     },
-      //     onError: (error) => {
-      //       console.error("Khalti Payment Error:", error);
-      //       toast.error("Payment failed. Please try again.");
-      //     },
-      //     onClose: () => {
-      //       console.log("Khalti Payment Widget Closed.");
-      //     },
-      //   },
-      // });
+     
       if (payment_url) {
-        // Step 2: Redirect the user to the payment URL provided by Khalti
         window.location.href = payment_url;
 
-        // Optionally, you can add a loading indicator while waiting for the user to complete the payment
       } else {
         toast.error("Failed to get payment URL. Please try again.");
       }
 
-      // Step 4: Open Khalti checkout widget
-      // checkout.show({ amount: amount * 100 }); // Amount in paisa
     } catch (err) {
       console.error("Error initiating wallet transaction:", err.message);
       toast.error("Failed to initiate wallet transaction.");
@@ -406,15 +308,12 @@ const WalletPage = ({ studentData }) => {
 
   return (
     <div className="p-6 space-y-8 font-poppins min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-      {/* Payment Modal */}
       <dialog id="payment_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box bg-white dark:bg-gray-800 shadow-xl relative">
-          {/* Modal Title */}
           <h3 className="font-bold text-2xl text-gray-900 dark:text-gray-100 mb-6">
             Enter Amount
           </h3>
 
-          {/* Input Field */}
           <input
             type="number"
             placeholder="Enter amount"
@@ -423,47 +322,41 @@ const WalletPage = ({ studentData }) => {
             className="w-full px-4 py-3 text-lg text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
           />
 
-          {/* Validation Error Message */}
           {amount <= 50 && (
             <p className="text-red-500 text-sm mt-2">
               Amount must be greater than 50.
             </p>
           )}
 
-          {/* Modal Actions */}
           <div className="modal-action mt-8">
-            {/* Close Button */}
             <form method="dialog">
               <button className="btn btn-ghost text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
                 Close
               </button>
             </form>
 
-            {/* Pay with Khalti Button */}
             <button
               onClick={handleLoadBalance}
-              disabled={amount <= 50} // Disable button if amount is invalid
+              disabled={amount <= 50} 
               className="btn bg-purple-800 hover:bg-purple-800 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:bg-purple-500 disabled:text-white disabled:cursor-not-allowed"
             >
               Pay with Khalti
             </button>
           </div>
 
-          {/* Khalti Logo at Bottom Left */}
           <div className="absolute bottom-2 left-4 flex items-center space-x-2">
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Payment Partner:
             </span>
             <img
-              src="https://encdn.ratopati.com/media/news/khalti_ELEhMcPi9q_8KQHgO7gag.png" // Replace with your Khalti logo URL
+              src="https://encdn.ratopati.com/media/news/khalti_ELEhMcPi9q_8KQHgO7gag.png"
               alt="Khalti Logo"
               className="h-6"
             />
           </div>
         </div>
       </dialog>
-      {/* Payment Modal End */}
-      {/* Wallet Balance Card */}
+     
       <div className="bg-gradient-to-r from-indigo-800 via-blue-700 to-cyan-700 text-white p-8 rounded-xl flex justify-between items-center shadow-lg transition-transform duration-200 hover:shadow-xl">
         <div className="space-y-2">
           <h2 className="text-2xl font-semibold text-blue-100">
@@ -476,8 +369,7 @@ const WalletPage = ({ studentData }) => {
                 height={40}
                 borderRadius={8}
                 baseColor={darkMode ? "#374151" : "#e5e7eb"}
-                // baseColor={"#374151"}
-                // highlightColor={"#f3f4f6"}
+                
                 highlightColor={darkMode ? "#4b5563" : "#f3f4f6"}
               />
             ) : (
@@ -486,7 +378,6 @@ const WalletPage = ({ studentData }) => {
           </p>
         </div>
         <button
-          // onClick={handleLoadBalance}
           onClick={() => document.getElementById("payment_modal").showModal()}
           className="px-6 py-3 bg-white text-blue-600 hover:bg-blue-50 transition-all duration-200 rounded-lg shadow-md hover:shadow-lg font-semibold"
         >
@@ -495,38 +386,22 @@ const WalletPage = ({ studentData }) => {
         </button>
       </div>
 
-      {/* Tables Section */}
       <div className=" grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Recent Deductions Table */}
-        {/* <div className="bg-slate-100 dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-200">
-          <h3 className="text-xl font-bold mb-6 text-gray-800 dark:text-white">
-            Recent Deductions
-          </h3>
-          <CustomTable
-            data={deductionData}
-            columns={deductionColumns}
-            pageSize={5}
-          />
-        </div> */}
+       
 
-        {/* Balance Load Transactions Table */}
         <div className="bg-slate-100 dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-200">
           <h3 className="text-xl font-bold mb-6 text-gray-800 dark:text-white">
             Balance Load Transactions
           </h3>
           {loading ? (
-            // <p className="text-gray-600 dark:text-gray-300">
-            //   Loading transactions...
-            // </p>
+            
             <Skeleton
               count={6}
               height={30}
               borderRadius={8}
               className="mb-2"
-              // baseColor={"#e5e7eb"}
               baseColor={darkMode ? "#374151" : "#e5e7eb"}
               highlightColor={darkMode ? "#4b5563" : "#f3f4f6"}
-              // highlightColor={"#f3f4f6"}
             />
           ) : transactions.length > 0 ? (
             <CustomTable
@@ -540,36 +415,7 @@ const WalletPage = ({ studentData }) => {
             </p>
           )}
         </div>
-        <div className="bg-slate-100 dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-200">
-          <h3 className="text-xl font-bold mb-6 text-gray-800 dark:text-white">
-            Balance Load Transactions
-          </h3>
-          {loading ? (
-            // <p className="text-gray-600 dark:text-gray-300">
-            //   Loading transactions...
-            // </p>
-            <Skeleton
-              count={6}
-              height={30}
-              borderRadius={8}
-              className="mb-2"
-              // baseColor={"#e5e7eb"}
-              baseColor={darkMode ? "#374151" : "#e5e7eb"}
-              highlightColor={darkMode ? "#4b5563" : "#f3f4f6"}
-              // highlightColor={"#f3f4f6"}
-            />
-          ) : transactions.length > 0 ? (
-            <Tablicious
-              data={transactions}
-              columns={balanceLoadColumns}
-              pageSize={7}
-            />
-          ) : (
-            <p className="text-gray-600 dark:text-gray-300">
-              No transactions found.
-            </p>
-          )}
-        </div>
+        
       </div>
     </div>
   );

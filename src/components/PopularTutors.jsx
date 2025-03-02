@@ -56,7 +56,6 @@ const PopularTutors = ({ tutors }) => {
             ))}
           </Slider>
           
-          {/* Custom navigation buttons for larger screens */}
           <div className="hidden md:block">
             <button 
               className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-primary hover:bg-gray-50 z-10"

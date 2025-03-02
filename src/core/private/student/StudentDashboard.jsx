@@ -18,28 +18,25 @@ import StudentProfile from "./pages/MyProfile";
 import StudentSessions from "./pages/MySessions";
 
 const StudentDashboard = () => {
-  const { user } = useAuth(); // Using AuthContext for user
+  const { user } = useAuth();
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("darkMode") === "true" || false
-  ); // State for dark mode
-  const [currentPage, setCurrentPage] = useState("Overview"); // State for current page
+  );
+  const [currentPage, setCurrentPage] = useState("Overview");
   const [studentData, setStudentData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [drawerOpen, setDrawerOpen] = useState(false); // State for side drawer
+  const [drawerOpen, setDrawerOpen] = useState(false);
   console.log("Student:", studentData);
-  const drawerRef = useRef(null); // Ref for the side drawer
+  const drawerRef = useRef(null);
   const [playLight] = useSound(lightSound, { volume: 0.04 });
-  const [notifications, setNotifications] = useState([]); // Notifications state
-  const [unreadCount, setUnreadCount] = useState(0); // Unread notifications count
-  const [showNotifications, setShowNotifications] = useState(false); // Toggle notification container
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
-    socket.on("booking-request", (booking) => {
-  
-    });
+    socket.on("booking-request", (booking) => {});
     socket.on("new-notification", (notification) => {
-
       fetchUserNotifications();
     });
     socket.on("booking-accepted", (booking) => {
@@ -52,7 +49,6 @@ const StudentDashboard = () => {
       fetchUserNotifications();
     });
     return () => {
-      // Clean up event listeners on component unmount
       socket.off("booking-request");
       socket.off("booking-accepted");
       socket.off("booking-declined");
@@ -60,7 +56,6 @@ const StudentDashboard = () => {
     };
   }, [user]);
 
-  // Toggle Dark Mode
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
@@ -69,13 +64,12 @@ const StudentDashboard = () => {
     localStorage.setItem("darkMode", newMode);
   };
 
-  // Fetch student profile data on component mount
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        fetchUserNotifications(); // Fetch notifications
+        fetchUserNotifications();
         if (currentPage === "Overview") {
           const profile = await fetchStudentProfile();
           setStudentData(profile);
@@ -92,7 +86,6 @@ const StudentDashboard = () => {
   }, [currentPage]);
   console.log("state: ", studentData);
 
-  // Close drawer on outside click
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (
@@ -147,7 +140,6 @@ const StudentDashboard = () => {
     }
   };
 
-  // Dynamic rendering based on `currentPage`
   const renderContent = () => {
     if (loading) return <p>Loading...</p>;
     if (error) {
@@ -156,7 +148,6 @@ const StudentDashboard = () => {
     }
     switch (currentPage) {
       case "Overview":
-        // return <h1 className="text-2xl font-bold">Student Overview</h1>;
         return <StudentSessions />;
       case "Session Requests":
         return <StudentBookings />;
@@ -175,7 +166,6 @@ const StudentDashboard = () => {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen font-poppins dark:bg-gray-900 dark:text-white bg-gray-100 text-gray-900">
-      {/* Side Drawer */}
       <div
         ref={drawerRef}
         className={`fixed top-0 left-0 h-full bg-gray-100 dark:bg-gray-800 z-50 transform ${
@@ -213,7 +203,7 @@ const StudentDashboard = () => {
                   }`}
                   onClick={() => {
                     setCurrentPage(item.name);
-                    setDrawerOpen(false); // Close drawer after selection
+                    setDrawerOpen(false);
                   }}
                 >
                   <i className={`${item.icon} mr-2`}></i> {item.name}
@@ -224,11 +214,8 @@ const StudentDashboard = () => {
         </nav>
       </div>
 
-      {/* Main Content Area */}
       <div className="flex-grow flex flex-col">
-        {/* Header */}
         <header className="bg-white border-b-2 border-gray-200 dark:border-gray-600 dark:bg-gray-800 shadow p-4 flex justify-between items-center">
-          {/* Hamburger for small screens */}
           <button
             className="lg:hidden text-xl"
             onClick={() => setDrawerOpen(!drawerOpen)}
@@ -302,7 +289,6 @@ const StudentDashboard = () => {
                 </div>
               )}
             </div>
-            {/* Dark Mode Toggle */}
             <button
               className="btn btn-md hover:animate-pulse dark:bg-gray-700 bg-slate-200 text-2xl btn-circle btn-ghost"
               onClick={toggleDarkMode}
@@ -315,7 +301,6 @@ const StudentDashboard = () => {
               )}
             </button>
 
-            {/* Profile Dropdown */}
             <StudentProfileDropdown
               userName={studentData?.name || "Student"}
               userAvatar={studentData?.profileImage}
@@ -323,9 +308,8 @@ const StudentDashboard = () => {
           </div>
         </header>
 
-        {/* Dynamic Content */}
         <main className="flex-grow p-6 bg-white dark:bg-gray-900 shadow-lg overflow-y-auto">
-          {renderContent()} {/* Dynamic content based on selected menu item */}
+          {renderContent()}
         </main>
       </div>
       <ToastContainer />

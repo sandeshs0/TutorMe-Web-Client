@@ -92,7 +92,7 @@ const BrowseTutorsPage = () => {
           ? prev.subject.filter((s) => s !== subject)
           : [...prev.subject, subject],
       };
-      setCurrentPage(1); // Reset to first page when filters change
+      setCurrentPage(1); 
       return newFilters;
     });
   };
@@ -130,7 +130,6 @@ const BrowseTutorsPage = () => {
               </button>
             </div>
 
-            {/* Search Input */}
             <div className="mb-6">
               <label htmlFor="tutor-search" className="sr-only">
                 Search tutors
@@ -150,7 +149,6 @@ const BrowseTutorsPage = () => {
               </div>
             </div>
 
-            {/* Price Filter */}
             <div className="mb-8">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -180,7 +178,6 @@ const BrowseTutorsPage = () => {
               </div>
             </div>
 
-            {/* Rating Filter */}
             <div className="mb-8">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -214,7 +211,6 @@ const BrowseTutorsPage = () => {
               </div>
             </div>
 
-            {/* Subjects Filter */}
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Subjects
@@ -237,7 +233,6 @@ const BrowseTutorsPage = () => {
               </div>
             </div>
 
-            {/* Selected Subjects */}
             {filters.subject.length > 0 && (
               <div className="mb-4">
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -263,7 +258,6 @@ const BrowseTutorsPage = () => {
               </div>
             )}
 
-            {/* Reset Filters Button */}
             {(filters.subject.length > 0 ||
               filters.priceRange[1] < 5000 ||
               filters.rating[0] > 0 ||
@@ -284,9 +278,7 @@ const BrowseTutorsPage = () => {
             )}
           </aside>
 
-          {/* Main Content */}
           <main className="flex-1 lg:mt-20">
-            {/* Header */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 mb-6 shadow-sm">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
@@ -302,7 +294,7 @@ const BrowseTutorsPage = () => {
                   <SortDropdown
                     setSortOption={(option) => {
                       setSortOption(option);
-                      setCurrentPage(1); // Reset to page 1 when sorting changes
+                      setCurrentPage(1);
                     }}
                   />
 
@@ -332,7 +324,6 @@ const BrowseTutorsPage = () => {
               </div>
             </div>
 
-            {/* Content */}
             {loading ? (
               <div
                 className={

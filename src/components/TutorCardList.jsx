@@ -28,19 +28,14 @@ const TutorCardList = ({ tutor }) => {
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white text-center sm:text-left">
             {tutor.name}
           </h2>
-          {/* {tutor.isVerified && ( */}
-            {/* <FaCheckCircle className="text-blue-500 text-lg mt-1 mx-auto sm:mx-0" /> */}
-        {/* //   )} */}
+       
         </div>
         
         <div className="flex flex-wrap gap-y-1 items-center justify-center sm:justify-start gap-2">
           <span className="px-2 py-1 md:px-3 md:py-1 bg-primary/10 text-gray-700 dark:text-gray-300 text-xs md:text-sm rounded-full">
             {tutor.bio || "Tutor"} 
           </span>
-          {/* <span className="hidden sm:inline text-gray-500">•</span> */}
-          {/* <span className="text-gray-500 dark:text-gray-400 text-xs md:text-sm">
-            {tutor.lessonsTaught || "100+"} lessons
-          </span> */}
+        
         </div>
 
         <p className="text-sm md:text-base text-gray-600 dark:text-gray-300 line-clamp-2 md:line-clamp-3 leading-relaxed text-center sm:text-left">

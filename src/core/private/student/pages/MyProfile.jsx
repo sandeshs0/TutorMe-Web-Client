@@ -5,15 +5,15 @@ import Modal from "../../../../components/Modal";
 import { fetchStudentProfile } from "../../../../services/api";
 
 const StudentProfile = () => {
-  //   const { user } = useAuth(); // Access user context
-  const [profile, setProfile] = useState(null); // Student profile data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
-  const [isEditing, setIsEditing] = useState(false); // Edit mode state
-  const [formData, setFormData] = useState({}); // Form data for updates
-  const [selectedFile, setSelectedFile] = useState(null); // Profile image file
-  const [showModal, setShowModal] = useState(false); // Modal visibility state
-  const [isSubmitting, setIsSubmitting] = useState(false); // New loading state
+  //   const { user } = useAuth(); 
+  const [profile, setProfile] = useState(null); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+  const [isEditing, setIsEditing] = useState(false); 
+  const [formData, setFormData] = useState({}); 
+  const [selectedFile, setSelectedFile] = useState(null); 
+  const [showModal, setShowModal] = useState(false); 
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   useEffect(() => {
     fetchData();
@@ -66,8 +66,8 @@ const StudentProfile = () => {
       new Promise(async (resolve, reject) => {
         try {
           await updateStudentProfile(formData);
-          fetchData(); // Refresh data after the update
-          setShowModal(false); // Close modal
+          fetchData(); 
+          setShowModal(false); 
           resolve();
         } catch (error) {
           reject(error);
@@ -115,7 +115,6 @@ const StudentProfile = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
       <div className="animate-fade-in max-w-3xl mx-auto p-8 bg-white dark:bg-gray-800 shadow-lg rounded-xl font-poppins">
-        {/* Modal for file upload */}
         {showModal && (
           <Modal onClose={() => setShowModal(false)}>
             <div className="flex flex-col w-full max-w-md bg-white dark:bg-gray-800 rounded-lg">
@@ -172,7 +171,6 @@ const StudentProfile = () => {
         )}
 
         <div className="flex flex-col items-center text-center mb-8">
-          {/* Profile Image with Edit Icon */}
           <div className="relative mb-4 group">
             <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-500 shadow-md">
               {profile?.profileImage ? (

@@ -9,24 +9,24 @@ const VideoCall = ({ roomName, displayName, onClose }) => {
       return;
     }
 
-    const domain = "meet.jit.si"; // Free Jitsi server
+    const domain = "meet.jit.si"; 
     const options = {
-      roomName: roomName, // Unique session name
+      roomName: roomName,
       width: "100%",
       height: "100%",
       parentNode: jitsiContainer.current,
       userInfo: {
-        displayName: displayName, // Tutor/Student name
+        displayName: displayName, 
       },
     };
 
     const api = new window.JitsiMeetExternalAPI(domain, options);
 
     api.addEventListener("videoConferenceLeft", () => {
-      onClose(); // Close video on exit
+      onClose(); 
     });
 
-    return () => api.dispose(); // Cleanup
+    return () => api.dispose(); 
   }, [roomName, displayName, onClose]);
 
   return <div ref={jitsiContainer} className="w-full h-full" />;

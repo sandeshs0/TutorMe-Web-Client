@@ -6,7 +6,7 @@ const SortDropdown = ({ setSortOption }) => {
 
   const handleSortChange = (option) => {
     setSelectedOption(option);
-    setSortOption(option); // Immediately apply sort filter
+    setSortOption(option); 
   };
 
   return (

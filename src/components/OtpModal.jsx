@@ -1,4 +1,4 @@
-// File: components/OtpModal.jsx
+
 import React from "react";
 
 const OtpModal = ({ 

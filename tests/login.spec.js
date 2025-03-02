@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-// Mock API response for successful login
 const mockUserResponse = {
   user: {
     _id: "12345",

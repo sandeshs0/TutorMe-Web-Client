@@ -10,9 +10,8 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { fetchTutorSessions } from "../../../../services/api"; // Adjust the path as needed
+import { fetchTutorSessions } from "../../../../services/api";
 
-// Initialize moment localizer with proper moment configuration
 const localizer = momentLocalizer(moment);
 
 const SessionsCalendar = ({ tutorData }) => {
@@ -27,22 +26,18 @@ const SessionsCalendar = ({ tutorData }) => {
         setLoading(true);
         const response = await fetchTutorSessions();
 
-        // Check if response exists and has a sessions array
         if (!response || typeof response !== "object") {
           throw new Error("Invalid API response format");
         }
 
-        // Handle the response structure, ensuring sessions is an array
         let sessionsData = [];
         if (response.success === true && Array.isArray(response.sessions)) {
           sessionsData = response.sessions;
         } else if (Array.isArray(response)) {
-          // Fallback if the response is directly an array of sessions
           sessionsData = response;
         } else {
           throw new Error("Invalid session data format from API");
         }
-
         setSessions(formatSessions(sessionsData));
       } catch (error) {
         setError(error.message || "Error fetching sessions data");
@@ -55,7 +50,6 @@ const SessionsCalendar = ({ tutorData }) => {
     fetchSessions();
   }, []);
 
-  // Format sessions for react-big-calendar, handling null endTime and date/time parsing
   const formatSessions = (sessionsData) => {
     if (!sessionsData || !Array.isArray(sessionsData)) {
       console.warn("Sessions data is invalid or undefined:", sessionsData);
@@ -64,22 +58,18 @@ const SessionsCalendar = ({ tutorData }) => {
 
     return sessionsData
       .map((session) => {
-        // Check if session exists and has required fields
         if (!session || typeof session !== "object") {
           console.warn("Invalid session object:", session);
-          return null; // Skip invalid sessions, they'll be filtered out by .filter below
+          return null; 
         }
 
-        // Parse startTime (string in "Sun Mar 02 2025 03:46:09 GMT+0545 (Nepal Time)" format)
         const start = moment(
           session.startTime,
           "ddd MMM DD YYYY HH:mm:ss GMT+XXXX (ZZ)"
         ).toDate();
 
-        // Handle null endTime by setting it to one hour after startTime
-        let end = moment(start).add(1, "hour").toDate(); // Default to 1 hour after startTime
+        let end = moment(start).add(1, "hour").toDate(); 
 
-        // If endTime exists, use it; otherwise, use duration or default
         if (session.endTime) {
           end = moment(
             session.endTime,
@@ -88,10 +78,9 @@ const SessionsCalendar = ({ tutorData }) => {
         } else if (session.duration && session.duration > 0) {
           end = moment(start)
             .add(session.duration * 60, "minutes")
-            .toDate(); // Convert duration (hours) to minutes
+            .toDate(); 
         }
 
-        // Filter out any null or invalid sessions after mapping
         return {
           id: session.sessionId || "unknown-id",
           title: `${session.studentName || "Unknown Student"} - ${
@@ -99,48 +88,44 @@ const SessionsCalendar = ({ tutorData }) => {
           }`,
           start,
           end,
-          status: session.status || "unknown", // Default to 'unknown' if status is missing
-          duration: session.duration || 1, // Default to 1 hour if duration is 0 or undefined
+          status: session.status || "unknown",
+          duration: session.duration || 1, 
           studentId: session.studentId || "unknown-student",
           subject: session.subject || "N/A",
           studentName: session.studentName || "Unknown Student",
         };
       })
-      .filter((session) => session !== null); // Remove any null entries from invalid sessions
+      .filter((session) => session !== null);
   };
 
-  // Custom event style for color-coding
   const eventStyleGetter = (event, start, end, isSelected) => {
-    let backgroundColor = "#059669"; // Emerald-600 for upcoming
+    let backgroundColor = "#059669"; 
     let opacity = 0.9;
-    let borderLeft = "4px solid #047857"; // Emerald-700
+    let borderLeft = "4px solid #047857";
 
     const now = new Date();
     const eventStart = new Date(event.start);
     const eventEnd = new Date(event.end);
 
     if (eventStart <= now && eventEnd >= now) {
-      // In progress
-      backgroundColor = "#4338CA"; // Indigo-700
-      borderLeft = "4px solid #3730A3"; // Indigo-800
+      backgroundColor = "#4338CA";
+      borderLeft = "4px solid #3730A3"; 
     } else if (event.status === "completed") {
-      // Completed
-      backgroundColor = "#0284C7"; // Sky-600
-      borderLeft = "4px solid #0369A1"; // Sky-700
+      backgroundColor = "#0284C7"; 
+      borderLeft = "4px solid #0369A1"; 
     } else if (eventStart < now && event.status !== "completed") {
-      // Missed or past sessions (not completed)
-      backgroundColor = "#DC2626"; // Red-600
-      borderLeft = "4px solid #B91C1C"; // Red-700
+      backgroundColor = "#DC2626"; 
+      borderLeft = "4px solid #B91C1C";
     }
 
     if (isSelected) {
       opacity = 1;
       backgroundColor =
         event.status === "completed"
-          ? "#0369A1" // Sky-700 for completed
+          ? "#0369A1" 
           : eventStart < now
           ? "#B91C1C"
-          : "#047857"; // Red-700 or Emerald-700
+          : "#047857"; 
     }
 
     return {
@@ -161,9 +146,8 @@ const SessionsCalendar = ({ tutorData }) => {
     };
   };
 
-  // Custom event component for richer display
+
   const EventComponent = ({ event }) => {
-    // Choose icon based on event status
     let StatusIcon = Check;
     if (event.status === "in-progress") {
       StatusIcon = Clock;
@@ -198,7 +182,6 @@ const SessionsCalendar = ({ tutorData }) => {
     );
   };
 
-  // Custom toolbar for better controls
   const CustomToolbar = (toolbar) => {
     const goToBack = () => {
       toolbar.onNavigate("PREV");
@@ -285,7 +268,6 @@ const SessionsCalendar = ({ tutorData }) => {
     );
   };
 
-  // Custom loading state
   if (loading) {
     return (
       <div className="p-6 space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
@@ -334,7 +316,6 @@ const SessionsCalendar = ({ tutorData }) => {
     );
   }
 
-  // Custom error state
   if (error) {
     return (
       <div className="p-6 space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
@@ -383,13 +364,7 @@ const SessionsCalendar = ({ tutorData }) => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
-              <CalendarIcon className="w-6 h-6 mr-2 text-blue-600 dark:text-blue-400" />
               Sessions Calendar
-              {tutorData.name && (
-                <span className="ml-2 text-blue-600 dark:text-blue-400">
-                  {tutorData.name}
-                </span>
-              )}
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-1 flex items-center">
               <User className="w-4 h-4 mr-1.5" />

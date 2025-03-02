@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const TutorCardGrid = ({ tutor }) => {
   const navigate = useNavigate();
   const handleViewProfile = () => {
-    navigate(`/tutors/${tutor.username}`); // Use the username to navigate to the profile
+    navigate(`/tutors/${tutor.username}`); 
   };
   return (
     <div data-testid="tutor-card" className="group bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out relative overflow-hidden">
@@ -29,7 +29,6 @@ const TutorCardGrid = ({ tutor }) => {
           </div>
         </div>
 
-        {/* Profile Image */}
         <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
           <div className="relative w-20 h-20 border-4 border-white dark:border-gray-800 rounded-full shadow-lg">
             <img
@@ -44,9 +43,7 @@ const TutorCardGrid = ({ tutor }) => {
         </div>
       </div>
 
-      {/* Content Section */}
       <div className="pt-10 text-center">
-        {/* Name and Bio */}
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-1">
           {tutor.name}
         </h2>
@@ -56,7 +53,6 @@ const TutorCardGrid = ({ tutor }) => {
           </p>
         )}
 
-        {/* Rating and Price */}
         <div className="flex items-center justify-center gap-4 mb-6">
           <div className="flex items-center bg-primary/10 dark:bg-gray-600 px-3 py-1 rounded-full">
             {[...Array(5)].map((_, index) => (
@@ -74,7 +70,6 @@ const TutorCardGrid = ({ tutor }) => {
           </span>
         </div>
 
-        {/* Expertise */}
         {tutor.subjects?.length > 0 && (
           <div className="mb-6">
             <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-3">
@@ -93,7 +88,6 @@ const TutorCardGrid = ({ tutor }) => {
           </div>
         )}
 
-        {/* Action Button */}
         <button
           onClick={handleViewProfile}
           className="w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-[1.02] shadow-sm hover:shadow-md flex items-center justify-center gap-2"
@@ -102,7 +96,6 @@ const TutorCardGrid = ({ tutor }) => {
         </button>
       </div>
 
-      {/* Floating Stats */}
       <div className="absolute top-4 left-4 flex items-center gap-2">
         <span className="bg-white/90 dark:bg-gray-800/90 px-3 py-1 rounded-full text-sm font-medium text-gray-700 dark:text-gray-300 backdrop-blur-sm">
           {tutor.lessonsTaught || "100+"} lessons

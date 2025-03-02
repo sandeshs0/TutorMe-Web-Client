@@ -34,9 +34,7 @@ const HomePage = () => {
       <Navbar />
       <HeroSection />
       
-      {/* Main Content with consistent padding and max-width */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Value Proposition Section */}
         <div className="text-center mb-16">
           <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-gray-800 md:text-5xl">
             Your Tutor, Your{" "}
@@ -47,12 +45,10 @@ const HomePage = () => {
           </p>
         </div>
         
-        {/* Search Section with visual enhancement */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-16">
           <SearchSection />
         </div>
         
-        {/* Popular Tutors Section */}
         <div className="mb-16">
           {loading ? (
             <div className="flex justify-center items-center h-40">
@@ -99,7 +95,6 @@ const HomePage = () => {
           </div>
         </div>
         
-        {/* Call to Action (New) */}
         <div className="bg-primary text-white rounded-xl shadow-md p-12 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Learning?</h2>
           <p className="max-w-2xl mx-auto mb-8 text-lg opacity-90">Join thousands of students who are already achieving their academic goals with our expert tutors.</p>

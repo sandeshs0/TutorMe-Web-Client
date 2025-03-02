@@ -27,7 +27,6 @@ const StudentSessions = () => {
   const [activeSession, setActiveSession] = useState(null);
   const { user } = useAuth();
 
-  // Fetch sessions on component mount
   useEffect(() => {
     const loadSessions = async () => {
       try {
@@ -52,23 +51,19 @@ const StudentSessions = () => {
     return () => socket.off("session-started");
   }, []);
 
-  // Filter and sort sessions when criteria change
   useEffect(() => {
     let filtered = [...sessions];
 
-    // Apply status filter
     if (filterStatus !== "all") {
       filtered = filtered.filter((session) => session.status === filterStatus);
     }
 
-    // Apply search filter on tutor name
     if (searchTerm) {
       filtered = filtered.filter((session) =>
         session.tutorName.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Apply sorting
     filtered.sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
@@ -78,7 +73,6 @@ const StudentSessions = () => {
     setFilteredSessions(filtered);
   }, [sessions, filterStatus, searchTerm, sortOrder]);
 
-  // Format date to a more readable format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -89,7 +83,6 @@ const StudentSessions = () => {
     });
   };
 
-  // Format time to a more readable format
   const formatTime = (timeString) => {
     if (!timeString) return "Not set";
     const date = new Date(timeString);
@@ -99,7 +92,6 @@ const StudentSessions = () => {
     });
   };
 
-  // Join session
   const handleJoinSession = async (session) => {
     try {
       const roomData = await getSessionRoom(session.bookingId);
@@ -114,7 +106,6 @@ const StudentSessions = () => {
     }
   };
 
-  // Get status badge style
   const getStatusBadgeStyle = (status) => {
     switch (status) {
       case "scheduled":
@@ -130,7 +121,6 @@ const StudentSessions = () => {
     }
   };
 
-  // Count sessions by status
   const scheduledCount = sessions.filter(
     (s) => s.status === "scheduled"
   ).length;
@@ -141,7 +131,6 @@ const StudentSessions = () => {
     (s) => s.status === "completed"
   ).length;
 
-  // Check if session can be joined
   const canJoinSession = (session) => {
     return session.status === "scheduled" || session.status === "in-progress";
   };
@@ -149,7 +138,6 @@ const StudentSessions = () => {
   return (
     <div className="p-4 space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
@@ -169,7 +157,6 @@ const StudentSessions = () => {
           </div>
         </div>
 
-        {/* Filter Pills */}
         <div className="mb-6 flex flex-wrap gap-3">
           <button
             onClick={() => setFilterStatus("all")}
@@ -228,7 +215,6 @@ const StudentSessions = () => {
           </button>
         </div>
 
-        {/* Filters & Search Section */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
@@ -260,7 +246,6 @@ const StudentSessions = () => {
           </button>
         </div>
 
-        {/* Loading State */}
         {loading && (
           <div className="flex justify-center py-12">
             <div className="animate-pulse flex space-x-4">
@@ -276,7 +261,6 @@ const StudentSessions = () => {
           </div>
         )}
 
-        {/* No Results State */}
         {!loading && filteredSessions.length === 0 && (
           <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex justify-center mb-4">
@@ -301,7 +285,7 @@ const StudentSessions = () => {
           </div>
         )}
 
-        {/* Sessions List */}
+       
         {!loading && filteredSessions.length > 0 && (
           <div className="space-y-6">
             {filteredSessions.map((session) => (
@@ -309,7 +293,6 @@ const StudentSessions = () => {
                 key={session.sessionId}
                 className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 dark:border-gray-700 overflow-hidden"
               >
-                {/* Status Bar */}
                 <div
                   className={`h-2 w-full ${
                     session.status === "scheduled"
@@ -324,7 +307,6 @@ const StudentSessions = () => {
 
                 <div className="p-6">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                    {/* Session Info */}
                     <div className="flex items-center gap-4">
                       <div className="hidden md:flex h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 items-center justify-center">
                         <User className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
@@ -346,7 +328,6 @@ const StudentSessions = () => {
                       </div>
                     </div>
 
-                    {/* Status Badge */}
                     <div className="flex items-center">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusBadgeStyle(
@@ -358,7 +339,6 @@ const StudentSessions = () => {
                     </div>
                   </div>
 
-                  {/* Session Details */}
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between border-t border-gray-100 dark:border-gray-700 pt-4 mt-2">
                     <div className="flex flex-col sm:flex-row gap-4 mb-4 md:mb-0">
                       <div className="bg-gray-50 dark:bg-gray-900 rounded-lg px-4 py-3">
@@ -382,7 +362,6 @@ const StudentSessions = () => {
                       )}
                     </div>
 
-                    {/* Action Button */}
                     <div>
                       {canJoinSession(session) ? (
                         <button
@@ -412,7 +391,6 @@ const StudentSessions = () => {
         )}
       </div>
 
-      {/* Video Session Modal */}
       {activeSession && (
         <JitsiMeetComponent
           sessionRoom={activeSession.roomId}

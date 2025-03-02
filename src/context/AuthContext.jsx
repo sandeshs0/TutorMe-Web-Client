@@ -1,46 +1,5 @@
-// import React, { createContext, useContext, useState, useEffect } from "react";
-
-// // Create the Auth Context
-// const AuthContext = createContext();
-
-// // Auth Provider Component
-// export const AuthProvider = ({ children }) => {
-//   const [user, setUser] = useState(null);
-//   const [token, setToken] = useState(null);
-
-//   // Load user data from localStorage when the app loads
-//   useEffect(() => {
-//     const storedUser = localStorage.getItem("user");
-//     if (storedUser) {
-//       setUser(JSON.parse(storedUser));
-//     }
-//   }, []);
-
-//   const login = (userData) => {
-//     localStorage.setItem("user", JSON.stringify(userData));
-//     setUser(userData);
-//   };
-
-//   const logout = () => {
-//     localStorage.removeItem("user");
-//     setUser(null);
-//   };
-
-//   return (
-//     <AuthContext.Provider value={{ user, login, logout }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// // Custom Hook to Use Auth Context
-// export const useAuth = () => {
-//   return useContext(AuthContext);
-// };
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-// Create the Auth Context
 const AuthContext = createContext({
   user: null,
   token: null,
@@ -48,14 +7,12 @@ const AuthContext = createContext({
   logout: () => {},
 });
 
-// Auth Provider Component
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true); // ✅ Add loading state
+  const [loading, setLoading] = useState(true); 
 
 
-  // Load user and token data from localStorage when the app loads
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem("user");
@@ -112,7 +69,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Custom Hook to Use Auth Context
 export const useAuth = () => {
   return useContext(AuthContext);
 };

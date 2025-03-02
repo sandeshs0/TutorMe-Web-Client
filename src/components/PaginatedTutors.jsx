@@ -14,7 +14,6 @@ const PaginatedTutors = ({ itemsPerPage = 6 }) => {
     priceRange: ""
   });
 
-  // Fetch tutors using the API
   const fetchTutors = async (page) => {
     setLoading(true);
     setError(null);
@@ -29,30 +28,25 @@ const PaginatedTutors = ({ itemsPerPage = 6 }) => {
     }
   };
 
-  // Fetch data on component mount and page/filter change
   useEffect(() => {
     fetchTutors(currentPage);
   }, [currentPage, filters]);
 
-  // Handle pagination
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
-      // Scroll to top of component
       window.scrollTo({ top: document.getElementById('tutors-section').offsetTop - 100, behavior: 'smooth' });
     }
   };
 
-  // Handle filter change
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
-    setCurrentPage(1); // Reset to first page when changing filters
+    setCurrentPage(1); 
   };
 
   return (
     <div id="tutors-section">
-      {/* Filters */}
       <div className="mb-6 p-4 bg-gray-50 rounded-lg">
         <div className="flex flex-wrap gap-4">
           <div className="w-full sm:w-auto">
@@ -113,7 +107,6 @@ const PaginatedTutors = ({ itemsPerPage = 6 }) => {
         </div>
       </div>
 
-      {/* Loading and Error States */}
       {loading && (
         <div className="flex justify-center items-center h-40">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
@@ -136,7 +129,6 @@ const PaginatedTutors = ({ itemsPerPage = 6 }) => {
         </div>
       )}
 
-      {/* Tutor Grid */}
       {!loading && !error && (
         <>
           {tutors.length === 0 ? (
@@ -153,7 +145,6 @@ const PaginatedTutors = ({ itemsPerPage = 6 }) => {
         </>
       )}
 
-      {/* Pagination Controls */}
       {!loading && !error && tutors.length > 0 && (
         <div className="mt-8 flex flex-wrap justify-center items-center gap-2">
           <button
@@ -167,13 +158,10 @@ const PaginatedTutors = ({ itemsPerPage = 6 }) => {
             Previous
           </button>
 
-          {/* Page Number Buttons */}
           <div className="flex flex-wrap justify-center">
             {[...Array(totalPages)].map((_, index) => {
-              // Show limited pagination numbers with ellipsis
               const pageNum = index + 1;
               
-              // Always show first page, last page, current page, and pages around current
               if (
                 pageNum === 1 ||
                 pageNum === totalPages ||
@@ -194,7 +182,6 @@ const PaginatedTutors = ({ itemsPerPage = 6 }) => {
                 );
               }
               
-              // Show ellipsis
               if (
                 (pageNum === 2 && currentPage > 3) ||
                 (pageNum === totalPages - 1 && currentPage < totalPages - 2)
@@ -223,7 +210,6 @@ const PaginatedTutors = ({ itemsPerPage = 6 }) => {
         </div>
       )}
       
-      {/* Showing results summary */}
       {!loading && !error && tutors.length > 0 && (
         <div className="mt-4 text-center text-sm text-gray-500">
           Showing page {currentPage} of {totalPages}

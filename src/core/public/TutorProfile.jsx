@@ -1,8 +1,8 @@
 import { CircleChevronLeft, SquareArrowOutUpRight, Star } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-// import { toast } from "sonner";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
+// import { toast, ToastContainer } from "react-toastify";
 import NavbarTwo from "../../components/NavbarTwo";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -24,10 +24,9 @@ const TutorProfilePage = () => {
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false); // New state for login prompt
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false); // Confirmation modal state
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false); 
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
-  // Mock reviews data - in production, this would come from an API
   const reviews = [
     {
       id: 1,
@@ -38,6 +37,7 @@ const TutorProfilePage = () => {
       helpful: 12,
       avatar: "/api/placeholder/32/32",
     },
+
     {
       id: 2,
       student: "James K.",
@@ -47,6 +47,7 @@ const TutorProfilePage = () => {
       helpful: 8,
       avatar: "/api/placeholder/32/32",
     },
+
     {
       id: 3,
       student: "Emma R.",
@@ -81,9 +82,9 @@ const TutorProfilePage = () => {
 
   const handleBookingClick = () => {
     if (!user) {
-      setShowLoginPrompt(true); // Show login modal if user is not logged in
+      setShowLoginPrompt(true);
     } else {
-      setIsModalOpen(true); // Open booking modal if user is logged in
+      setIsModalOpen(true);
     }
   };
 
@@ -106,8 +107,8 @@ const TutorProfilePage = () => {
         const updatedStudentData = await fetchStudentProfile();
         setStudentData(updatedStudentData);
       }
-      setIsModalOpen(false); // Close modal on success
-      setShowConfirmationModal(true); // Show confirmation modal
+      setIsModalOpen(false); 
+      setShowConfirmationModal(true);
     } catch (error) {
       toast.error(error.response?.data?.message || "Booking failed.", {
         position: "bottom-right",
@@ -147,9 +148,7 @@ const TutorProfilePage = () => {
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-xl">
           <div className="p-8">
             <div className="flex flex-col lg:flex-row justify-between items-start gap-12">
-              {/* Left Section: Profile Image and Basic Info */}
               <div className="flex items-start gap-8 flex-1">
-                {/* Profile Image */}
                 <div className="relative">
                   <div className="w-56 h-56 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700">
                     <img
@@ -170,7 +169,6 @@ const TutorProfilePage = () => {
                   </span>
                 </div>
 
-                {/* Profile Info */}
                 <div className="flex flex-col gap-4">
                   <div>
                     <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
@@ -216,7 +214,6 @@ const TutorProfilePage = () => {
                 </div>
               </div>
 
-              {/* Right Section: Pricing and Booking */}
               <div className="lg:w-72  mt-24 w-full flex flex-col items-center lg:items-end gap-4">
                 <div className="text-right">
                   <h2 className="text-xl text-gray-600 dark:text-gray-400">
@@ -238,9 +235,7 @@ const TutorProfilePage = () => {
           </div>
         </div>
 
-        {/* 🔥 Modal for Booking */}
 
-        {/* 🔥 Modal for Booking with Tailwind dark: Classes */}
         <input
           type="checkbox"
           id="booking-modal"
@@ -318,7 +313,6 @@ const TutorProfilePage = () => {
             </div>
           </div>
         </div>
-        {/* 🔥 Login Prompt Modal */}
         {showLoginPrompt && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-[400px] relative">
@@ -346,20 +340,17 @@ const TutorProfilePage = () => {
           </div>
         )}
 
-        {/* 🔥 Confirmation Modal */}
         {showConfirmationModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-[700px] m-4">
-              {/* Top Section */}
               <div className="flex items-center justify-center py-6 border-b border-gray-200 dark:border-gray-700">
                 <img
-                  src="https://i.postimg.cc/cJHjgTKP/tickk.png" // Replace with the tick image path
+                  src="https://i.postimg.cc/cJHjgTKP/tickk.png"
                   alt="Confirmation Tick"
                   className="w-20 h-20"
                 />
               </div>
 
-              {/* Main Content */}
               <div className="px-6 py-4">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
                   Session Requested!
@@ -387,7 +378,6 @@ const TutorProfilePage = () => {
                 </ul>
               </div>
 
-              {/* Buttons Section */}
               <div className="flex items-center justify-end px-6 py-4 border-t border-gray-200 dark:border-gray-700">
                 <button
                   onClick={() => setShowConfirmationModal(false)}
@@ -401,7 +391,6 @@ const TutorProfilePage = () => {
         )}
 
         <div className="grid lg:grid-cols-2 gap-8 mt-8">
-          {/* About Section */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-xl p-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
               About Me
@@ -412,7 +401,6 @@ const TutorProfilePage = () => {
             </p>
           </div>
 
-          {/* Reviews Section */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-xl p-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
               Student Reviews

@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import * as yup from "yup";
-import { useAuth } from "../../context/AuthContext"; // Import AuthContext
+import { useAuth } from "../../context/AuthContext"; 
 import { loginUser } from "../../services/api";
 import { registerSocket } from "../../utils/socket";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login } = useAuth(); // Access login method from AuthContext
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false); 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -17,7 +17,6 @@ const LoginPage = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  //validation schema with yup
   const validationSchema = yup.object().shape({
     email: yup
       .string()
@@ -35,13 +34,10 @@ const LoginPage = () => {
     setErrors({});
     setIsSubmitting(true);
     try {
-      // Validate form data with Yup schema
       await validationSchema.validate(formData, { abortEarly: false });
 
-      // Call the loginUser function from the API
-      const { user, token } = await loginUser(formData); // Call the login method from AuthContext
+      const { user, token } = await loginUser(formData); 
       login({ userData: user, authToken: token });
-      // Redirect based on user role
       if (user.role === "student") {
         navigate("/");
         toast.success("Login successful", { position: "bottom-right" });
@@ -53,9 +49,7 @@ const LoginPage = () => {
         toast.info("Redirecting to dashboard...", { position: "bottom-right" });
       }
       console.log(user);
-      // ✅ Ensure WebSocket registration happens
       console.log("🔹 Registering socket for user:", user._id);
-      // socket.emit("register", user._id);
       registerSocket(user._id);
     } catch (err) {
       if (err.name === "ValidationError") {
@@ -77,22 +71,15 @@ const LoginPage = () => {
 
   return (
     <div>
-      {/* <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-b-3xl"></div> */}
 
-      {/* Page Content */}
       <div className="relative flex items-center justify-center min-h-screen bg-[#F8FAFC] px-4">
-        {/* Background Shape */}
-
-        {/* Login Card */}
         <div className="relative bg-white shadow-md rounded-2xl max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2">
           <button
             className="absolute font-poppins opacity-100 hover:opacity-100 top-3 right-3 font-thin text-red-300 hover:text-red-500 text-3xl hover:bg-red-100 px-3 rounded-md py-2 bg-transparent focus:outline-none z-50"
             onClick={() => navigate("/")}
-            // aria-label="Close"
           >
             <i class="fas fa-xmark"></i>
           </button>
-          {/* Left Section - Form */}
 
           <div className="p-8 lg:p-12">
             <h1 className="text-3xl font-bold font-poppins  text-gray-800">
@@ -106,7 +93,6 @@ const LoginPage = () => {
               className="mt-6 space-y-6 font-poppins"
               onSubmit={handleLogin}
             >
-              {/* Email Input */}
               <div>
                 <label
                   htmlFor="email"
@@ -115,7 +101,6 @@ const LoginPage = () => {
                   Email
                 </label>
                 <input
-                  // type="email"
                   id="email"
                   name="email"
                   placeholder="Enter your email"
@@ -130,7 +115,6 @@ const LoginPage = () => {
                 )}
               </div>
 
-              {/* Password Input */}
               <div className="relative">
                 <label
                   htmlFor="password"
@@ -193,7 +177,6 @@ const LoginPage = () => {
               </button>
             </form>
 
-            {/* Sign Up Link */}
             <p className="text-center font-poppins text-sm text-gray-600 mt-6">
               Don’t have an account?{" "}
               <a
@@ -204,8 +187,6 @@ const LoginPage = () => {
               </a>
             </p>
           </div>
-
-          {/* Right Section - Illustration */}
           <div className="hidden lg:flex items-center justify-center bg-transparent rounded-r-2xl">
             <img
               src="src/assets/loginIllus.png"

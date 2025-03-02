@@ -6,7 +6,6 @@ const HeroSection = () => {
   
   return (
     <div className="relative p-14 bg-white overflow-hidden">
-      {/* Background Pattern */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute right-0 bottom-0 -mb-48 -mr-48 lg:mb-0 lg:mr-0">
           <svg className="w-96 h-96 text-primary" fill="currentColor" viewBox="0 0 100 100">
@@ -70,8 +69,7 @@ const HeroSection = () => {
               </div>
             </div>
           </div>
-          
-          {/* Right Side Illustration */}
+        
           <div className="lg:w-1/2 relative">
             <div className="relative z-10 p-4 ">
               <img
@@ -81,16 +79,7 @@ const HeroSection = () => {
               />
             </div>
             
-            {/* Floating elements */}
-            {/* <div className="absolute animate-[ping_4s_infinite] -top-6 -left-6 bg-yellow-400 text-white p-4 rounded-lg shadow-lg z-20 hidden lg:block">
-              <div className="flex items-center gap-2">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                <span className="font-bold">Affordable</span>
-              </div>
-              <p className="text-sm">Tutoring</p>
-            </div> */}
+            
             
             <div className="absolute animate-[bounce_4s_infinite] -bottom-6 -right-6 bg-green-500 text-white p-4 rounded-lg shadow-lg z-20 hidden lg:block">
               <div className="flex items-center gap-2">

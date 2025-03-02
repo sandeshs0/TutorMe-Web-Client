@@ -60,18 +60,17 @@ const OverviewSection = ({ tutorData }) => {
           totalHours: totalHours.toFixed(1),
           studentsHelped: uniqueStudents,
           completionRate: Math.round(completionRate),
-          averageRating: 4.8, // Placeholder; needs reviews API
+          averageRating: 4.8, 
         });
 
-        // Prepare earnings data from API (all instances by date)
         const earningsByDate = earnings
           .map((e) => ({
-            date: new Date(e.date).toLocaleDateString(), // Show as date (e.g., "3/1/2025")
+            date: new Date(e.date).toLocaleDateString(), 
             earnings: Number(e.amount.toFixed(2)),
           }))
           .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-        setMonthlyEarningsData(earningsByDate); // Renamed for clarity, but keeping the state name for now
+        setMonthlyEarningsData(earningsByDate);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -82,7 +81,6 @@ const OverviewSection = ({ tutorData }) => {
     fetchData();
   }, []);
 
-  // Filter upcoming sessions
   const upcomingSessions = sessionsData
     .filter(
       (session) =>
@@ -143,7 +141,7 @@ const OverviewSection = ({ tutorData }) => {
           </div>
         </div>
 
-        {/* Wallet Card and Stats */}
+        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           <TutorWalletCard
             name={tutorData.name || "N/A"}
@@ -151,12 +149,9 @@ const OverviewSection = ({ tutorData }) => {
             date={new Date().toLocaleDateString()}
             onWithdraw={() => alert("Withdraw initiated!")}
           />
-
-          {/* Stats Cards (Updated Design) */}
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {/* Total Sessions Card */}
             <div className="relative bg-indigo-100 dark:bg-indigo-900 rounded-xl shadow-md border border-indigo-300 dark:border-indigo-700 p-6 flex flex-col items-center hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-              {/* Wave Pattern */}
+              
               <div className="absolute hidden bottom-0 inset-0 z-0 opacity-20">
                 <svg
                   className="w-full h-full"
@@ -176,14 +171,10 @@ const OverviewSection = ({ tutorData }) => {
               <h3 className="relative z-10 text-8xl font-bold text-gray-900 dark:text-white mb-2">
                 {stats.totalSessions}
               </h3>
-              {/* <p className="relative z-10 text-lg text-green-600 dark:text-green-400 font-medium">
-                +12% this month
-              </p> */}
+             
             </div>
 
-            {/* Minutes Tutored Card */}
             <div className="relative bg-teal-100 dark:bg-teal-900 rounded-xl shadow-md border border-teal-300 dark:border-teal-700 p-6 flex flex-col items-center hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-              {/* Wave Pattern */}
               <div className="absolute hidden inset-0 z-0 opacity-20">
                 <svg
                   className="w-full h-full"
@@ -203,22 +194,17 @@ const OverviewSection = ({ tutorData }) => {
               <h3 className="relative z-10 text-8xl font-bold text-gray-900 dark:text-white mb-2">
                 {(stats.totalHours * 60).toFixed(1)}
               </h3>
-              {/* <p className="relative z-10 text-lg text-blue-600 dark:text-blue-400 font-medium">
-                Lifetime duration
-              </p> */}
+              
             </div>
           </div>
         </div>
 
-        {/* Charts and Upcoming Sessions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Performance Analytics (Charts) */}
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
               Performance Analytics
             </h2>
 
-            {/* Monthly Earnings Chart (Dynamic from API) */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
@@ -262,8 +248,7 @@ const OverviewSection = ({ tutorData }) => {
             </div>
           </div>
 
-          {/* Upcoming Sessions */}
-          {/* Upcoming Sessions */}
+         
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-800 dark:text-white">

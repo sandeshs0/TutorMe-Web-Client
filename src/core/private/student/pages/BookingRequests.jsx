@@ -44,7 +44,6 @@ const StudentBookings = () => {
             My Bookings
           </h1>
 
-          {/* Filter tabs */}
           <div className="flex space-x-2 bg-white dark:bg-gray-800 p-1 rounded-lg shadow-sm">
             <button
               onClick={() => setActiveFilter("all")}
@@ -157,11 +156,9 @@ const StudentBookings = () => {
                     </div>
 
                     <div>
-                      {/* Tutor Name */}
                       <h2 className="text-xl font-bold text-gray-800 dark:text-white">
                         {booking.tutorName}
                       </h2>
-                      {/* Status Badge */}
                       <span
                         className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeClass(
                           booking.status
@@ -173,10 +170,8 @@ const StudentBookings = () => {
                     </div>
                   </div>
 
-                  {/* Divider */}
                   <div className="my-4 border-b border-gray-200 dark:border-gray-700"></div>
 
-                  {/* Booking Details */}
                   <div className="space-y-3">
                     <div className="flex items-center text-gray-700 dark:text-gray-300">
                       <MdOutlineDateRange className="text-lg text-blue-500 mr-3 flex-shrink-0" />
@@ -207,7 +202,6 @@ const StudentBookings = () => {
                     )}
                   </div>
 
-                  {/* Action button based on status */}
                   <div className="mt-6">
                     {booking.status === "accepted" && (
                       <button className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2">
@@ -231,31 +225,25 @@ const StudentBookings = () => {
   );
 };
 
-// Skeleton loader for bookings
 const SkeletonCard = () => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden animate-pulse">
       <div className="h-2 bg-gray-200 dark:bg-gray-700"></div>
       <div className="p-6">
         <div className="flex items-center gap-4">
-          {/* Skeleton Profile Image */}
           <div className="relative">
             <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-700"></div>
             <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-white bg-gray-200 dark:bg-gray-600"></div>
           </div>
 
           <div className="space-y-2">
-            {/* Skeleton Tutor Name */}
             <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
-            {/* Skeleton Status Badge */}
             <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
           </div>
         </div>
 
-        {/* Divider */}
         <div className="my-4 border-b border-gray-200 dark:border-gray-700"></div>
 
-        {/* Skeleton Booking Details */}
         <div className="space-y-3">
           <div className="flex items-center">
             <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 mr-3"></div>
@@ -278,7 +266,6 @@ const SkeletonCard = () => {
           </div>
         </div>
 
-        {/* Skeleton Action Button */}
         <div className="mt-6">
           <div className="h-8 w-full bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
         </div>
@@ -287,7 +274,6 @@ const SkeletonCard = () => {
   );
 };
 
-// Function to format the date nicely
 const formatDate = (dateString) => {
   const options = {
     weekday: "long",
@@ -298,7 +284,6 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-// Functions for status styling
 const getStatusColorClass = (status) => {
   switch (status) {
     case "pending":

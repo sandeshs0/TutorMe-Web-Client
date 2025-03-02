@@ -3,11 +3,10 @@ const khaltiConfig = {
   publicKey: "8c527add932941339ae20d9658212044",
   productIdentity: "student_wallet_load",
   productName: "Wallet Load",
-  productUrl: window.location.href, // Replace with the appropriate URL
+  productUrl: window.location.href, 
 
   eventHandler: {
     onSuccess(payload) {
-      // Call the verify transaction endpoint
       console.log("Payment Success:", payload);
     },
     onError(error) {

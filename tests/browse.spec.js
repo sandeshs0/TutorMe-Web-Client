@@ -28,7 +28,7 @@ test.describe("BrowseTutorsPage Tests", () => {
     await expect(activePage).toHaveText("1");
     const nextButton = await page.locator('[data-testid="next-page-btn"]');
     const prevButton = await page.locator('[data-testid="prev-page-btn"]');
-    const totalPages = await page.locator(".join-item.btn").count(); // Number of page buttons
+    const totalPages = await page.locator(".join-item.btn").count();
     if (totalPages > 1) {
       await nextButton.click();
       await page.waitForFunction(

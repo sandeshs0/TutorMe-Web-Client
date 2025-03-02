@@ -7,7 +7,7 @@ import { registerUser, resendOtp, verifyEmail } from "../../services/api";
 const SignupPage = () => {
   const [isStudent, setIsStudent] = useState(true);
   const [passwordStrength, setPasswordStrength] = useState("");
-  const [currentStep, setCurrentStep] = useState(1); // Step tracker for Tutor Signup
+  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -19,13 +19,13 @@ const SignupPage = () => {
     description: "",
     hourlyRate: "",
     subjects: [],
-  }); // Common form data for Student/Tutor
-  const [otp, setOtp] = useState(""); // OTP state
+  });
+  const [otp, setOtp] = useState("");
   const [errors, setErrors] = useState({});
-  const [showModal, setShowModal] = useState(false); // Success modal state
-  const [error, setError] = useState(""); // Error message state
-  const [success, setSuccess] = useState(""); // Success message state
-  const [isSubmitting, setIsSubmitting] = useState(false); // Loading state for API calls
+  const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isStrongPassword = (password) => {
     const strongPasswordRegex =
@@ -42,10 +42,10 @@ const SignupPage = () => {
 
     let strength = strengthLevels.weak;
     const conditions = [
-      /[a-z]/.test(password), // Lowercase
-      /[A-Z]/.test(password), // Uppercase
-      /\d/.test(password), // Number
-      /[@$!%*?&]/.test(password), // Special character
+      /[a-z]/.test(password),
+      /[A-Z]/.test(password),
+      /\d/.test(password),
+      /[@$!%*?&]/.test(password),
     ];
 
     const validConditions = conditions.filter((condition) => condition).length;
@@ -68,16 +68,15 @@ const SignupPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value }); // Update form state
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleStudentSignup = async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
     setError("");
     setSuccess("");
-    setIsSubmitting(true); // Show loading animation
+    setIsSubmitting(true);
 
-    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -88,17 +87,17 @@ const SignupPage = () => {
       phone: formData.phone,
       password: formData.password,
       username: formData.username,
-      role: "student", // Role is fixed to "student" for this form
+      role: "student",
     };
     try {
-      const response = await registerUser(payload); // Call API
-      setSuccess(response.message); // Show success message
+      const response = await registerUser(payload);
+      setSuccess(response.message);
       toast.success("User Registered successfully", {
         position: "bottom-right",
       });
       navigate("/verify-otp", { state: { email: formData.email } });
     } catch (err) {
-      setError(err.message || "An error occurred. Please try again."); // Show error message
+      setError(err.message || "An error occurred. Please try again.");
       toast.error("An Error Occurred.", { position: "bottom-right" });
     } finally {
       setIsSubmitting(false);
@@ -111,9 +110,7 @@ const SignupPage = () => {
     if (!validateStep()) {
       return;
     }
-    setIsSubmitting(true); // Show loading animation
-
-    // Validate passwords match
+    setIsSubmitting(true);
 
     const payload = {
       name: formData.name,
@@ -144,8 +141,8 @@ const SignupPage = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await verifyEmail({ email: formData.email, otp }); // Call OTP verification API
-      setShowModal(true); // Show success modal
+      const response = await verifyEmail({ email: formData.email, otp });
+      setShowModal(true);
     } catch (err) {
       setError(err.message || "Invalid OTP. Please try again.");
     } finally {
@@ -158,7 +155,6 @@ const SignupPage = () => {
     setIsSubmitting(true);
 
     try {
-      // Call your resend OTP API here
       await resendOtp({ email: formData.email });
       setSuccess("A new OTP has been sent to your email.");
     } catch (err) {
@@ -168,7 +164,6 @@ const SignupPage = () => {
     }
   };
 
-  // Functions for navigation in the multistep flow
   const validateStep = () => {
     const newErrors = {};
 
@@ -212,7 +207,7 @@ const SignupPage = () => {
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Return true if no errors
+    return Object.keys(newErrors).length === 0; 
   };
 
   const handleNextStep = () => {
@@ -228,12 +223,10 @@ const SignupPage = () => {
   return (
     <div>
       <div className="min-h-screen flex flex-col items-center px-4 py-4 font-poppins">
-        {/* Card Container */}
         <div className="relative bg-white shadow-md rounded-2xl max-w-5xl w-full p-4">
           <button
             className="absolute font-poppins opacity-100 hover:opacity-100 top-3 right-3 font-thin text-red-300 hover:text-red-500 text-3xl hover:bg-red-100 px-3 rounded-md py-2 bg-transparent focus:outline-none z-50"
             onClick={() => navigate("/")}
-            // aria-label="Close"
           >
             <i class="fas fa-xmark"></i>
           </button>
@@ -242,7 +235,6 @@ const SignupPage = () => {
             Sign Up as a
           </h1>
 
-          {/* Toggle Buttons */}
           <div className="flex justify-center items-center font-poppins bg-[#9CBDF2] rounded-xl p-1.5 w-[300px] mx-auto">
             <button
               onClick={() => setIsStudent(true)}
@@ -279,7 +271,6 @@ const SignupPage = () => {
                       name="name"
                       onChange={handleInputChange}
                       value={formData.name}
-                      
                       placeholder="Enter Your Full Name"
                       className="w-full mt-1 p-3 border text-black rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -297,7 +288,6 @@ const SignupPage = () => {
                       name="username"
                       onChange={handleInputChange}
                       value={formData.username}
-                      
                       placeholder="Choose a username"
                       className="w-full mt-1 p-3 border text-black rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -315,7 +305,6 @@ const SignupPage = () => {
                       name="email"
                       onChange={handleInputChange}
                       value={formData.email}
-                      
                       placeholder="Enter Your Email"
                       className="w-full mt-1 p-3 text-black border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -334,7 +323,6 @@ const SignupPage = () => {
                       name="phone"
                       onChange={handleInputChange}
                       value={formData.phone}
-                      
                       placeholder="98XXXXXXXX"
                       className="w-full text-black mt-1 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -353,7 +341,6 @@ const SignupPage = () => {
                       name="password"
                       onChange={handleInputChange}
                       value={formData.password}
-                      
                       placeholder="***************"
                       className="w-full text-black mt-1 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
@@ -376,7 +363,11 @@ const SignupPage = () => {
                       className="w-full text-black mt-1 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
                     />
                   </div>
-                  {error && <p id="signup-error" className="text-red-500">{error}</p>}
+                  {error && (
+                    <p id="signup-error" className="text-red-500">
+                      {error}
+                    </p>
+                  )}
                   {success && <p className="text-green-500">{success}</p>}
                   <button
                     type="submit"
@@ -388,10 +379,8 @@ const SignupPage = () => {
                   </button>
                 </form>
               )}
-              {/* Tutor Registration Part: */}
               {!isStudent && (
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl mx-auto">
-                  {/* Step Indicator */}
                   <div className="mb-8">
                     <div className="flex justify-between items-center">
                       {[1, 2, 3, 4].map((step) => (
@@ -439,7 +428,6 @@ const SignupPage = () => {
                     </div>
                   </div>
 
-                  {/* State for form data and errors */}
                   <form className="space-y-6 text-black">
                     {currentStep === 1 && (
                       <div>
@@ -461,7 +449,7 @@ const SignupPage = () => {
                                   : "border-gray-300"
                               } rounded-lg shadow-sm focus:ring focus:ring-blue-200`}
                               value={formData.name}
-                              onChange={handleInputChange} // Pass the event object directly
+                              onChange={handleInputChange} 
                             />
                             {errors.name && (
                               <p className="text-red-500 text-sm">
@@ -483,7 +471,7 @@ const SignupPage = () => {
                                   : "border-gray-300"
                               } rounded-lg shadow-sm focus:ring focus:ring-blue-200`}
                               value={formData.email}
-                              onChange={handleInputChange} // Pass the event object directly
+                              onChange={handleInputChange} 
                             />
                             {errors.email && (
                               <p className="text-red-500 text-sm">
@@ -505,7 +493,7 @@ const SignupPage = () => {
                                   : "border-gray-300"
                               } rounded-lg shadow-sm focus:ring focus:ring-blue-200`}
                               value={formData.phone}
-                              onChange={handleInputChange} // Pass the event object directly
+                              onChange={handleInputChange} 
                             />
                             {errors.phone && (
                               <p className="text-red-500 text-sm">
@@ -528,7 +516,7 @@ const SignupPage = () => {
                                   : "border-gray-300"
                               } rounded-lg shadow-sm focus:ring focus:ring-blue-200`}
                               value={formData.username}
-                              onChange={handleInputChange} // Pass the event object directly
+                              onChange={handleInputChange} 
                             />
                             {errors.username && (
                               <p className="text-red-500 text-sm">
@@ -553,13 +541,12 @@ const SignupPage = () => {
                       </div>
                     )}
 
-                    {/* Other Steps */}
+                   
                     {currentStep === 2 && (
                       <div>
                         <h2 className="text-2xl font-bold mb-6 text-blue-700">
                           About Yourself
                         </h2>
-                        {/* Add fields for step 2 */}
                         <div className="space-y-4">
                           <div>
                             <label className="block text-md font-medium text-gray-900">
@@ -652,11 +639,7 @@ const SignupPage = () => {
                       </div>
                     )}
 
-                    {/* {currentStep === 3 && (
-        <div>
-          <h2 className="text-2xl font-bold mb-6 text-blue-700">Confirmation</h2>
-        </div>
-      )} */}
+         
                     {currentStep === 3 && (
                       <div>
                         <h2 className="text-2xl font-bold mb-4 text-blue-700">
@@ -673,14 +656,13 @@ const SignupPage = () => {
                           </ul>
                         </p>
                         <div className="space-y-4 ">
-                          {/* Password Input */}
                           <div>
                             <label className="block text-sm font-medium text-gray-600">
                               Password
                             </label>
                             <div className="relative">
                               <input
-                                type={isPasswordVisible ? "text" : "password"} // Toggle between "text" and "password"
+                                type={isPasswordVisible ? "text" : "password"}
                                 name="password"
                                 placeholder="Your strong password..."
                                 className={`w-full mt-2 p-3 border ${
@@ -708,15 +690,16 @@ const SignupPage = () => {
                               </span>
                             </div>
                             {errors.password && (
-                              <p id="error-bar" className="text-red-500 text-sm mt-2">
+                              <p
+                                id="error-bar"
+                                className="text-red-500 text-sm mt-2"
+                              >
                                 {errors.password}
                               </p>
                             )}
-                            {/* Password Strength Bar */}
                             <div className="mt-2">
                               <div className="h-2 w-full bg-gray-200 rounded">
                                 <div
-                                // id="password-strength-bar"
                                   className={`h-full rounded transition-all ${
                                     passwordStrength === "Too weak"
                                       ? "bg-red-500 w-1/4"
@@ -729,7 +712,6 @@ const SignupPage = () => {
                                 ></div>
                               </div>
                               <p
-                                // id="password-strength-bar"
                                 className={`mt-1 text-sm font-medium ${
                                   passwordStrength === "Too weak"
                                     ? "text-red-500"
@@ -745,7 +727,6 @@ const SignupPage = () => {
                             </div>
                           </div>
 
-                          {/* Confirm Password Input */}
                           <div>
                             <label className="block text-sm font-medium text-gray-600">
                               Confirm Password
@@ -782,7 +763,6 @@ const SignupPage = () => {
                           <span className="font-medium">{formData.email}</span>.
                         </p>
 
-                        {/* OTP Inputs */}
                         <div className="flex justify-center space-x-2">
                           {Array.from({ length: 6 }).map((_, index) => (
                             <input
@@ -796,7 +776,6 @@ const SignupPage = () => {
                                   const newOtp = otp.split("");
                                   newOtp[index] = value;
                                   setOtp(newOtp.join(""));
-                                  // Move focus to next input if not empty
                                   if (value !== "" && index < 5) {
                                     e.target.nextSibling?.focus();
                                   }
@@ -825,7 +804,6 @@ const SignupPage = () => {
                           </p>
                         )}
 
-                        {/* Verify Button */}
                         <button
                           onClick={handleOtpVerification}
                           className="w-full btn flex justify-center bg-blue-700 text-white py-3 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none"
@@ -833,7 +811,6 @@ const SignupPage = () => {
                         >
                           {isSubmitting ? "Verifying..." : "Verify"}
                         </button>
-                        {/* Resend Option */}
                         <div className="text-center">
                           <p className="text-gray-600">
                             Didn't get a code?{" "}
@@ -883,7 +860,6 @@ const SignupPage = () => {
                       </div>
                     )}
 
-                    {/* Navigation Buttons */}
                     <div className="flex justify-between mt-8">
                       {currentStep > 1 && (
                         <button

@@ -5,22 +5,21 @@ const socket = io("http://localhost:3000", {
   transports: ["websocket"],
 });
 
-// Log connection status
 socket.on("connect", () => {
-  console.log("✅ Connected to WebSocket Server:", socket.id);
+  console.log(" Connected to WebSocket Server:", socket.id);
 });
 
 socket.on("disconnect", () => {
-  console.log("❌ Disconnected from WebSocket Server");
+  console.log(" Disconnected from WebSocket Server");
 });
 
 // Function to register user with WebSockets
 const registerSocket = (userId) => {
   if (userId) {
-    console.log(`🟢 Emitting register event for user: ${userId}`);
+    console.log(`Emitting register event for user: ${userId}`);
     socket.emit("register", userId);
   } else {
-    console.log("⚠️ No userId provided for socket registration.");
+    console.log(" No userId provided for socket registration.");
   }
 };
 

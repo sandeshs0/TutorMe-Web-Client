@@ -3,9 +3,7 @@
 const Footer = () => {
   return (
     <div className="bg-[#F8EDE7] font-poppins">
-      {/* Footer Content */}
       <footer className="footer p-10 text-gray-700">
-        {/* Logo and Description */}
         <div>
           <img src="src/assets/logo.png" alt="TutorMe Logo" className="h-14 mb-4" />
           <p className="text-lg leading-6">
@@ -24,7 +22,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* For Students Section */}
         <div>
           <h4 className="text-lg font-semibold mb-2">For Students</h4>
           <ul className="space-y-1">
@@ -46,7 +43,6 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* For Freelancers Section */}
         <div>
           <h4 className="text-lg font-semibold mb-2">For Freelancers</h4>
           <ul className="space-y-1">
@@ -73,7 +69,6 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Call Us Section */}
         <div>
           <h4 className="text-lg font-semibold mb-2">Reach Out</h4>
           <ul className="space-y-2 text-sm">
@@ -97,7 +92,6 @@ const Footer = () => {
         </div>
       </footer>
 
-      {/* Bottom Footer */}
       <footer className="text-center py-4 text-sm text-gray-600 border-t border-gray-200">
         Sandesh Sapkota (220272)
       </footer>

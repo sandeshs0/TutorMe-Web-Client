@@ -23,16 +23,15 @@ import JitsiMeetComponent from "./JitsiMeetComponent";
 
 const SessionRequests = () => {
   const [bookings, setBookings] = useState([]);
-  const { user } = useAuth(); // Using AuthContext for user
+  const { user } = useAuth(); 
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [filterStatus, setFilterStatus] = useState("pending");
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [timers, setTimers] = useState({});
-  const [activeSession, setActiveSession] = useState(null); // Store active session
+  const [activeSession, setActiveSession] = useState(null); 
 
-  // Fetch bookings
   useEffect(() => {
     const fetchBookings = async () => {
       try {
@@ -54,7 +53,6 @@ const SessionRequests = () => {
     fetchBookings();
   }, []);
 
-  // Handle joining session
   const handleJoinSession = async (booking) => {
     try {
       console.log("🔹 Fetching session room for booking:", booking._id);
@@ -62,19 +60,18 @@ const SessionRequests = () => {
       const response = await startSession(booking._id);
 
       if (response.success && response.session.roomId) {
-        console.log("✅ Session room URL received:", response.session.roomId);
+        console.log(" Session room URL received:", response.session.roomId);
 
-        // Set sessionRoom and store the active session
         setActiveSession({ ...booking, roomId: response.session.roomId });
       } else {
         toast.error("Failed to retrieve session room.");
         console.error(
-          "❌ Error: Session room not found in API response",
+          "Error: Session room not found in API response",
           response
         );
       }
     } catch (error) {
-      console.error("❌ Error starting session:", error);
+      console.error(" Error starting session:", error);
       toast.error("Error starting session.");
     }
   };
@@ -95,7 +92,6 @@ const SessionRequests = () => {
     setFilteredBookings(filtered);
   }, [filterStatus, sortOrder, searchTerm, bookings]);
 
-  // Handle booking acceptance
   const handleAccept = async (bookingId) => {
     try {
       await acceptBooking(bookingId);
@@ -212,7 +208,6 @@ const SessionRequests = () => {
       className="p-4 space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen"
     >
       <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
@@ -232,7 +227,6 @@ const SessionRequests = () => {
           </div>
         </div>
 
-        {/* Filter Pills */}
         <div className="mb-6 flex flex-wrap gap-3">
           <button
             onClick={() => setFilterStatus("all")}
@@ -291,7 +285,6 @@ const SessionRequests = () => {
           </button>
         </div>
 
-        {/* Filters & Search Section */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
@@ -321,7 +314,6 @@ const SessionRequests = () => {
           </button>
         </div>
 
-        {/* No Results State */}
         {filteredBookings.length === 0 && !loading && (
           <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex justify-center mb-4">
@@ -350,7 +342,6 @@ const SessionRequests = () => {
           </div>
         )}
 
-        {/* Loading State */}
         {loading && (
           <div className="flex justify-center py-12">
             <div className="animate-pulse flex space-x-4">
@@ -366,7 +357,6 @@ const SessionRequests = () => {
           </div>
         )}
 
-        {/* Booking Cards */}
         {!loading && filteredBookings.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredBookings.map((booking) => (
@@ -374,7 +364,6 @@ const SessionRequests = () => {
                 key={booking._id}
                 className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 dark:border-gray-700 overflow-hidden"
               >
-                {/* Status Ribbon */}
                 <div
                   className={`h-2 w-full ${
                     booking.status === "accepted"
@@ -387,7 +376,6 @@ const SessionRequests = () => {
 
                 <div className="p-6">
                   <div className="flex items-start gap-5">
-                    {/* Profile Image */}
                     <div className="shrink-0">
                       <img
                         src={booking.studentId.profileImage}
@@ -396,7 +384,6 @@ const SessionRequests = () => {
                       />
                     </div>
 
-                    {/* Content */}
                     <div className="flex-1">
                       <div className="flex flex-wrap justify-between items-start mb-2">
                         <div>
@@ -422,14 +409,12 @@ const SessionRequests = () => {
                         </div>
                       </div>
 
-                      {/* Note */}
                       <div className="mt-4 mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-100 dark:border-gray-700">
                         <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3">
                           {booking.note || "No notes provided."}
                         </p>
                       </div>
 
-                      {/* Session Timer */}
                       {booking.status === "accepted" && (
                         <div className="mb-4">
                           <div
@@ -447,7 +432,6 @@ const SessionRequests = () => {
                         </div>
                       )}
 
-                      {/* Action Buttons */}
                       <div className="flex flex-wrap gap-3 mt-4">
                         {booking.status === "pending" ? (
                           <>
@@ -501,7 +485,6 @@ const SessionRequests = () => {
         )}
       </div>
 
-      {/* Video Session Modal */}
       {activeSession && (
         <JitsiMeetComponent
           sessionRoom={activeSession.roomId}

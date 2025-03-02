@@ -7,7 +7,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
-  const { user } = useAuth(); // Using AuthContext for user and logout
+  const { user } = useAuth(); 
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,7 +38,6 @@ const Navbar = () => {
           : "py-4 bg-primary text-white"
       }`}
     >
-      {/* Logo */}
       <div className="hidden lg:flex items-center">
         <a
           href="/"
@@ -52,7 +51,6 @@ const Navbar = () => {
         </a>
       </div>
 
-      {/* Hamburger Icon for Mobile */}
       <div className="lg:hidden">
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -76,8 +74,6 @@ const Navbar = () => {
           </svg>
         </button>
       </div>
-
-      {/* Menu Links */}
       <div
         className={`lg:flex lg:items-center lg:space-x-6 ${
           isMenuOpen

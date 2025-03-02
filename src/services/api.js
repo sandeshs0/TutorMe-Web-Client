@@ -4,12 +4,11 @@ const API = axios.create({
   baseURL: "http://localhost:3000",
 });
 
-// Add a request interceptor
 API.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token"); // Retrieve token from localStorage
+    const token = localStorage.getItem("token"); 
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // Add Bearer token
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -18,13 +17,12 @@ API.interceptors.request.use(
   }
 );
 
-// EndPoints
 const loginUser = async (credentials) => {
   try {
     const response = await API.post("/auth/login", credentials);
     const { token, user } = response.data;
     console.log(token, user);
-    return { token, user }; // Return the data from the API
+    return { token, user }; 
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -33,7 +31,7 @@ const loginUser = async (credentials) => {
 const registerUser = async (userData) => {
   try {
     const response = await API.post("/auth/register", userData);
-    return response.data; // Return the data from the API
+    return response.data;
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -50,37 +48,34 @@ const verifyEmail = async (payload) => {
 const resendOtp = async (payload) => {
   try {
     const response = await API.post("/auth/resend-otp", payload);
-    return response.data; // Return the data from the API
+    return response.data; 
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
 };
 
-// Fetch tutor profile (for logged-in tutor)
 const fetchTutorProfile = async () => {
   try {
     const response = await API.get("/api/tutors/profile");
-    return response.data.tutor; // Return the tutor profile data
+    return response.data.tutor; 
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
 };
 
-// Update tutor profile
 const updateTutorProfile = async (profileData) => {
   try {
     const response = await API.put("/api/tutors/update-profile", profileData);
-    return response.data.updatedTutor; // Return the updated tutor profile data
+    return response.data.updatedTutor;
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
 };
 
-// Fetch all tutors
 const fetchTutors = async (queryParams) => {
   try {
     const response = await API.get("/api/tutors/", { params: queryParams });
-    return response.data; // Return the data from the API
+    return response.data;
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -89,21 +84,12 @@ const fetchTutors = async (queryParams) => {
 const fetchAllSubjects = async () => {
   try {
     const response = await API.get("/api/subjects/getAll");
-    return response.data; // Return the subjects data
+    return response.data; 
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
 };
 
-// Fetch paginated tutors
-// const getTutors = async (page = 1, limit = 1) => {
-//   try {
-//     const response = await API.get(`/api/tutors?page=${page}&limit=${limit}`);
-//     return response.data; // Return tutors and pagination info
-//   } catch (error) {
-//     throw error.response ? error.response.data : { message: "Network error" };
-//   }
-// };
 
  const getTutors = async (page, limit, searchQuery, filters, sortOption) => {
   try {
@@ -119,7 +105,6 @@ const fetchAllSubjects = async () => {
       sortOrder: sortOption.includes("desc") ? "desc" : "asc",
     });
 
-    // Add subjects only if selected
     if (filters.subject.length > 0) {
       params.append("subject", filters.subject.join(","));
     }
@@ -132,12 +117,10 @@ const fetchAllSubjects = async () => {
   }
 };
 
-
-// Fetch student profile (Authenticated student)
 const fetchStudentProfile = async () => {
   try {
     const response = await API.get("/api/student/profile");
-    return response.data.student; // Return the student's profile
+    return response.data.student; 
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -146,7 +129,7 @@ const fetchStudentProfile = async () => {
 const fetchStudentBookings = async () => {
   try {
     const response = await API.get("/api/student/bookings");
-    return response.data.bookings; // Return the list of bookings
+    return response.data.bookings; 
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -154,15 +137,14 @@ const fetchStudentBookings = async () => {
 
 export default fetchStudentBookings;
 
-// Update student profile
 const updateStudentProfile = async (profileData) => {
   try {
     const response = await API.put("/api/student/profile", profileData, {
       headers: {
-        "Content-Type": "multipart/form-data", // To handle file uploads
+        "Content-Type": "multipart/form-data", 
       },
     });
-    return response.data.updatedUser; // Return the updated profile data
+    return response.data.updatedUser; 
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -170,7 +152,7 @@ const updateStudentProfile = async (profileData) => {
 const fetchWalletBalance = async (studentId) => {
   try {
     const response = await API.get(`api/wallet/balance/${studentId}`);
-    return response.data; // Return wallet balance data
+    return response.data; 
   } catch (error) {
     console.error(
       "Error fetching wallet balance:",
@@ -183,7 +165,7 @@ const fetchWalletBalance = async (studentId) => {
 const fetchTutor = async (username) => {
   try {
     const response = await API.get(`/api/tutors/profile/${username}`);
-    return response.data; // Return tutor data
+    return response.data; 
   } catch (error) {
     console.error(
       "Error fetching tutor data:",
@@ -196,11 +178,11 @@ const fetchTutor = async (username) => {
 const initiateWalletTransaction = async (studentId, amount, paymentGateway) => {
   try {
     const response = await API.post(`/api/transaction/initiate`, {
-      studentId, // Pass studentId as a string
+      studentId, 
       amount,
       paymentGateway,
     });
-    return response.data; // Return transaction initiation response
+    return response.data; 
   } catch (error) {
     console.error(
       "Error initiating wallet transaction:",
@@ -221,7 +203,7 @@ const confirmWalletTransaction = async (pidx, transaction_id) => {
       pidx,
       transaction_id,
     });
-    return response.data; // Return confirmation response
+    return response.data; 
   } catch (error) {
     console.error(
       "Error confirming wallet transaction:",
@@ -231,11 +213,10 @@ const confirmWalletTransaction = async (pidx, transaction_id) => {
   }
 };
 
-// Fetch transaction history
 const fetchWalletTransactions = async () => {
   try {
     const response = await API.get("api/transaction/history/");
-    return response.data; // Return wallet transactions data
+    return response.data; 
   } catch (error) {
     console.error(
       "Error fetching wallet transactions:",
@@ -245,7 +226,6 @@ const fetchWalletTransactions = async () => {
   }
 };
 
-// Booking APIs
 export const requestBooking = async (tutorId, date, time, note) => {
   try {
     const response = await API.post("/api/bookings/request", {
@@ -254,7 +234,7 @@ export const requestBooking = async (tutorId, date, time, note) => {
       time,
       note,
     });
-    return response.data; // Return success response
+    return response.data;
   } catch (error) {
     console.error(
       "Error requesting booking:",
@@ -263,9 +243,7 @@ export const requestBooking = async (tutorId, date, time, note) => {
     throw error;
   }
 };
-/**
- * Tutor accepts a booking.
- */
+
 export const acceptBooking = async (bookingId) => {
   try {
     const response = await API.put(`/api/bookings/accept/${bookingId}`);
@@ -279,9 +257,6 @@ export const acceptBooking = async (bookingId) => {
   }
 };
 
-/**
- * Tutor declines a booking.
- */
 export const declineBooking = async (bookingId) => {
   try {
     const response = await API.put(`/api/bookings/decline/${bookingId}`);
@@ -308,10 +283,6 @@ export const getSessionRoom = async (bookingId) => {
   }
 };
 
-
-/**
- * Fetch all bookings for a student.
- */
 export const getStudentBookings = async () => {
   try {
     const response = await API.get("/api/bookings/student");
@@ -328,7 +299,7 @@ export const getStudentBookings = async () => {
 const fetchTutorSessions = async () => {
   try {
     const response = await API.get("/api/sessions/tutor");
-    return response.data.sessions; // Return the array of sessions
+    return response.data.sessions; 
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -336,15 +307,13 @@ const fetchTutorSessions = async () => {
 const fetchStudentSessions = async () => {
   try {
     const response = await API.get("/api/sessions/student");
-    return response.data.sessions; // Return the array of sessions
+    return response.data.sessions; 
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
 };
 
-/**
- * Fetch all bookings for a tutor.
- */
+
 export const getTutorBookings = async () => {
   try {
     const response = await API.get("/api/bookings/tutor");
@@ -358,8 +327,6 @@ export const getTutorBookings = async () => {
   }
 };
 
-// For Notifications:
-// Fetch notifications
 export const fetchNotifications = async () => {
   try {
     const response = await API.get("/api/notifications");
@@ -370,7 +337,6 @@ export const fetchNotifications = async () => {
   }
 };
 
-// Mark notifications as read
 export const markNotificationsRead = async () => {
   try {
     await API.put("/api/notifications/mark-read");
@@ -414,7 +380,6 @@ const endSession = async (bookingId) => {
   }
 };
 
-// ✅ Process Payment After Session Ends
 const processSessionPayment = async (bookingId) => {
   try {
     const response = await API.put(
@@ -451,7 +416,6 @@ export const getTutorEarnings = async () => {
     throw error;
   }
 };
-
 
 export {
   confirmWalletTransaction,

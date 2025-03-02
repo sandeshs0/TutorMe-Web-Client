@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getTutorEarnings } from "../../../../services/api"; // Adjust the path as needed
+import { getTutorEarnings } from "../../../../services/api"; 
 import { Calendar, Download, Filter, ArrowUpDown } from "lucide-react";
 import * as XLSX from "xlsx";
 
@@ -37,17 +37,12 @@ const Statement = ({ tutorData }) => {
       Type: item.type,
       "Student ID": item.studentId
     }));
-    
     const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Earnings");
-    
-    // Generate Excel file and trigger download
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });
     const fileName = `earnings_statement_${new Date().toISOString().split('T')[0]}${fileExtension}`;
-    
-    // Create download link and trigger click
     const url = window.URL.createObjectURL(data);
     const link = document.createElement("a");
     link.href = url;
@@ -115,7 +110,6 @@ const Statement = ({ tutorData }) => {
   const sortedData = getSortedData();
   const total = earnings.reduce((sum, item) => sum + item.amount, 0).toFixed(2);
 
-  // Get type colors for BookingFee and SessionFee
   const getTypeColor = (type) => {
     switch(type) {
       case 'BookingFee':
@@ -149,7 +143,6 @@ const Statement = ({ tutorData }) => {
           </div>
         </div>
 
-        {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
@@ -214,7 +207,6 @@ const Statement = ({ tutorData }) => {
           </div>
         </div>
 
-        {/* Table */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -285,7 +277,6 @@ const Statement = ({ tutorData }) => {
           )}
         </div>
 
-        {/* Pagination (can be implemented if needed) */}
         {earnings.length > 10 && (
           <div className="mt-4 flex justify-center">
             <nav className="flex items-center space-x-2">

@@ -12,26 +12,26 @@ const ProtectedRoute = ({ requiredRole, children }) => {
   });
 
   if (loading) {
-    console.log("⏳ Authentication data is loading...");
-    return null; // Prevent redirecting before auth state is ready
+    console.log(" Authentication data is loading...");
+    return null; 
   }
   if (!isLoggedIn()) {
-    console.warn("🔴 User is not logged in, redirecting to login.");
+    console.warn(" User is not logged in, redirecting to login.");
     return <Navigate to="/login" />;
   }
 
   if (requiredRole === "tutor" && !isTutor()) {
-    console.warn("🔴 Access denied! Tutor role required.");
+    console.warn(" Access denied! Tutor role required.");
     return <Navigate to="/" />;
   }
 
   if (requiredRole === "student" && !isStudent()) {
-    console.warn("🔴 Access denied! Student role required.");
+    console.warn(" Access denied! Student role required.");
     return <Navigate to="/" />;
   }
 
-  console.log("✅ User authorized, rendering protected page.");
-  return children; // ✅ Render the child component directly
+  console.log("User authorized, rendering protected page.");
+  return children; 
 };
 
 export default ProtectedRoute;
