@@ -96,7 +96,6 @@ const BrowseTutorsPage = () => {
       return newFilters;
     });
   };
-
   return (
     <div className="min-h-screen font-poppins bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
       <NavbarTwo student={studentData} />
@@ -112,7 +111,6 @@ const BrowseTutorsPage = () => {
               Filters
             </span>
           </button>
-
           <aside
             className={`bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 w-full lg:w-80 lg:mt-20 transition-all ${
               isDropdownOpen ? "block" : "hidden lg:block"

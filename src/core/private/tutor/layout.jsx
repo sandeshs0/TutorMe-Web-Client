@@ -13,7 +13,6 @@ import {
 } from "../../../services/api";
 import { socket } from "../../../utils/socket";
 import Statement from "./dashboard/Statement";
-// import {}
 
 const TutorDashboard = () => {
   const { user } = useAuth(); // Using AuthContext for user
@@ -168,7 +167,7 @@ const TutorDashboard = () => {
         return <SessionRequests />;
       // return <h1 className="text-2xl font-bold">My Session Request Page</h1>;
       case "Statement":
-        return <Statement/>;
+        return <Statement />;
       case "Settings":
         return <h1 className="text-2xl font-bold">Settings</h1>;
       case "Schedule":
@@ -271,8 +270,8 @@ const TutorDashboard = () => {
               {/* Notification Dropdown */}
 
               {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 max-h-96 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 z-50 overflow-y-auto">
-                  <h2 className="font-bold text-lg mb-2">Notifications</h2>
+                <div className="notifications-dropdown absolute right-0 mt-2 w-80 max-h-96 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 z-50 overflow-y-auto">
+                  <h2 data-testid="notifications" className="font-bold text-lg mb-2">Notifications</h2>
                   <ul className="space-y-2">
                     {notifications.length > 0 ? (
                       notifications.map((notification) => (
@@ -338,7 +337,7 @@ const TutorDashboard = () => {
         </header>
 
         {/* Dynamic Content */}
-        <main className="flex-grow p-6 bg-white dark:bg-gray-900 rounded-t-lg shadow-lg overflow-y-auto">
+        <main data-testid="main" className="flex-grow p-6 bg-white dark:bg-gray-900 rounded-t-lg shadow-lg overflow-y-auto">
           {renderContent()} {/* Dynamic content based on selected menu item */}
         </main>
       </div>
