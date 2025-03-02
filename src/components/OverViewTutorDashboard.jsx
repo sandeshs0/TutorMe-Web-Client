@@ -225,11 +225,11 @@ const OverviewSection = ({ tutorData }) => {
                   <YAxis stroke="#6B7280" />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "rgba(17, 24, 39, 0.8)",
+                      backgroundColor: "rgba(17, 24, 39, 1)",
                       borderColor: "#4F46E5",
                       color: "white",
                     }}
-                    formatter={(value) => [`$${value}`, "Earnings"]}
+                    formatter={(value) => [`Rs.${value}`, "Earnings"]}
                   />
                   <Line
                     type="monotone"
