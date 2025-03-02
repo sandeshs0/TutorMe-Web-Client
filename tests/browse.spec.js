@@ -5,8 +5,6 @@ test.describe("BrowseTutorsPage Tests", () => {
     await page.goto("http://localhost:5173/browse");
   });
 
-
-
   test("should display tutors after loading", async ({ page }) => {
     await page.waitForSelector(".grid > div, .flex.flex-col > div", {
       state: "visible",
@@ -16,7 +14,6 @@ test.describe("BrowseTutorsPage Tests", () => {
     await expect(tutorCards).toHaveCount(6);
   });
 
- 
 
   test("should navigate pagination", async ({ page }) => {
     await page.waitForSelector(".grid > div, .flex.flex-col > div", {

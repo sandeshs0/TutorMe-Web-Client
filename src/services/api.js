@@ -6,7 +6,7 @@ const API = axios.create({
 
 API.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token"); 
+    const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -22,7 +22,7 @@ const loginUser = async (credentials) => {
     const response = await API.post("/auth/login", credentials);
     const { token, user } = response.data;
     console.log(token, user);
-    return { token, user }; 
+    return { token, user };
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -48,7 +48,7 @@ const verifyEmail = async (payload) => {
 const resendOtp = async (payload) => {
   try {
     const response = await API.post("/auth/resend-otp", payload);
-    return response.data; 
+    return response.data;
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -57,7 +57,7 @@ const resendOtp = async (payload) => {
 const fetchTutorProfile = async () => {
   try {
     const response = await API.get("/api/tutors/profile");
-    return response.data.tutor; 
+    return response.data.tutor;
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -84,14 +84,13 @@ const fetchTutors = async (queryParams) => {
 const fetchAllSubjects = async () => {
   try {
     const response = await API.get("/api/subjects/getAll");
-    return response.data; 
+    return response.data;
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
 };
 
-
- const getTutors = async (page, limit, searchQuery, filters, sortOption) => {
+const getTutors = async (page, limit, searchQuery, filters, sortOption) => {
   try {
     const params = new URLSearchParams({
       page,
@@ -120,7 +119,7 @@ const fetchAllSubjects = async () => {
 const fetchStudentProfile = async () => {
   try {
     const response = await API.get("/api/student/profile");
-    return response.data.student; 
+    return response.data.student;
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -129,7 +128,7 @@ const fetchStudentProfile = async () => {
 const fetchStudentBookings = async () => {
   try {
     const response = await API.get("/api/student/bookings");
-    return response.data.bookings; 
+    return response.data.bookings;
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -141,10 +140,10 @@ const updateStudentProfile = async (profileData) => {
   try {
     const response = await API.put("/api/student/profile", profileData, {
       headers: {
-        "Content-Type": "multipart/form-data", 
+        "Content-Type": "multipart/form-data",
       },
     });
-    return response.data.updatedUser; 
+    return response.data.updatedUser;
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -152,7 +151,7 @@ const updateStudentProfile = async (profileData) => {
 const fetchWalletBalance = async (studentId) => {
   try {
     const response = await API.get(`api/wallet/balance/${studentId}`);
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error(
       "Error fetching wallet balance:",
@@ -165,10 +164,22 @@ const fetchWalletBalance = async (studentId) => {
 const fetchTutor = async (username) => {
   try {
     const response = await API.get(`/api/tutors/profile/${username}`);
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error(
       "Error fetching tutor data:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+const getTutorReviews = async (username) => {
+  try {
+    const response = await API.get(`/api/review/tutor/${username}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching Review data:",
       error.response?.data || error.message
     );
     throw error;
@@ -178,11 +189,11 @@ const fetchTutor = async (username) => {
 const initiateWalletTransaction = async (studentId, amount, paymentGateway) => {
   try {
     const response = await API.post(`/api/transaction/initiate`, {
-      studentId, 
+      studentId,
       amount,
       paymentGateway,
     });
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error(
       "Error initiating wallet transaction:",
@@ -203,7 +214,7 @@ const confirmWalletTransaction = async (pidx, transaction_id) => {
       pidx,
       transaction_id,
     });
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error(
       "Error confirming wallet transaction:",
@@ -216,7 +227,7 @@ const confirmWalletTransaction = async (pidx, transaction_id) => {
 const fetchWalletTransactions = async () => {
   try {
     const response = await API.get("api/transaction/history/");
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error(
       "Error fetching wallet transactions:",
@@ -299,7 +310,7 @@ export const getStudentBookings = async () => {
 const fetchTutorSessions = async () => {
   try {
     const response = await API.get("/api/sessions/tutor");
-    return response.data.sessions; 
+    return response.data.sessions;
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
@@ -307,12 +318,11 @@ const fetchTutorSessions = async () => {
 const fetchStudentSessions = async () => {
   try {
     const response = await API.get("/api/sessions/student");
-    return response.data.sessions; 
+    return response.data.sessions;
   } catch (error) {
     throw error.response ? error.response.data : { message: "Network error" };
   }
 };
-
 
 export const getTutorBookings = async () => {
   try {
@@ -430,6 +440,7 @@ export {
   fetchWalletBalance,
   fetchWalletTransactions,
   getJaaSToken,
+  getTutorReviews,
   getTutors,
   initiateWalletTransaction,
   loginUser,

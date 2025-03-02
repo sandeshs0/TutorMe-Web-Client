@@ -7,7 +7,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
-  const { user } = useAuth(); 
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -99,7 +99,10 @@ const Navbar = () => {
             </a>
           </li>
           <li>
-            <a className="text-lg font-light text-white font-poppins hover:font-bold hover:text-xl hover:bg-transparent transition-colors">
+            <a
+              href="/signup"
+              className="text-lg font-light text-white font-poppins hover:font-bold hover:text-xl hover:bg-transparent transition-colors"
+            >
               Become a Tutor
             </a>
           </li>

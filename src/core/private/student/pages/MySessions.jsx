@@ -10,7 +10,6 @@ import {
   XCircle,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-// import { toast } from "sonner";
 import { toast } from "sonner";
 import JitsiMeetComponent from "../../../../components/JitsiMeetComponent";
 import { useAuth } from "../../../../context/AuthContext";
