@@ -1,9 +1,8 @@
 const khaltiConfig = {
-  //   publicKey: process.env.KHALTI_PUBLIC_KEY,
-  publicKey: "8c527add932941339ae20d9658212044",
+  publicKey: process.env.KHALTI_PUBLIC_KEY,
   productIdentity: "student_wallet_load",
   productName: "Wallet Load",
-  productUrl: window.location.href, 
+  productUrl: window.location.href,
 
   eventHandler: {
     onSuccess(payload) {
